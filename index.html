@@ -9,7 +9,6 @@
     <link href="https://vjs.zencdn.net/7.20.3/video-js.css" rel="stylesheet" />
     
     <style>
-        /* هێنانی فۆنتی GoranFontRegular-Regular */
         @font-face {
             font-family: 'GoranFontRegular-Regular';
             src: url('GoranFontRegular-Regular.ttf') format('truetype'),
@@ -18,7 +17,6 @@
             font-style: normal;
         }
 
-        /* جێبەجێکردنی فۆنت بۆ سەرجەم بەشەکان و تێکستەکان */
         * {
             box-sizing: border-box;
             font-family: 'GoranFontRegular-Regular', Tahoma, Arial, sans-serif !important;
@@ -30,21 +28,22 @@
             background-color: #0f172a;
             color: #ffffff;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             padding: 20px;
         }
 
-        .player-container {
+        .main-wrapper {
             width: 100%;
-            max-width: 900px;
+            max-width: 1100px;
             background: #1e293b;
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
             border: 1px solid #334155;
+            display: flex;
+            flex-direction: column;
         }
 
         .player-header {
@@ -60,7 +59,6 @@
             font-size: 20px;
             font-weight: bold;
             color: #38bdf8;
-            letter-spacing: 1px;
         }
 
         .live-badge {
@@ -78,30 +76,71 @@
             100% { opacity: 1; }
         }
 
-        /* ستایلی یاریپێکەری ڤیدیۆ */
+        /* ستایلی بەشی ناوەڕاست (ڤیدیۆ + پلەی لیست) */
+        .content-area {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+        }
+
+        .video-container {
+            flex: 1;
+            position: relative;
+            background: #000;
+        }
+
         .video-js {
             width: 100%;
-            height: 500px;
+            height: 480px;
         }
 
-        .vjs-big-play-button {
-            background-color: rgba(37, 99, 235, 0.8) !important;
-            border: none !important;
-            border-radius: 50% !important;
-            width: 70px !important;
-            height: 70px !important;
-            line-height: 70px !important;
-            margin-top: -35px !important;
-            margin-left: -35px !important;
+        /* بەشی پلەی لیست */
+        .playlist-sidebar {
+            width: 280px;
+            background: #0f172a;
+            border-right: 1px solid #334155;
+            display: flex;
+            flex-direction: column;
+            max-height: 480px;
+            overflow-y: auto;
         }
 
+        .playlist-title {
+            padding: 12px 15px;
+            background: #1e293b;
+            font-size: 14px;
+            font-weight: bold;
+            color: #94a3b8;
+            border-bottom: 1px solid #334155;
+        }
+
+        .playlist-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid #1e293b;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+
+        .playlist-item:hover {
+            background: #1e293b;
+        }
+
+        .playlist-item.active {
+            background: #2563eb;
+            color: #fff;
+        }
+
+        /* بەشی تێکستی جوڵاو */
         .ticker-bar {
             background: #0284c7;
             color: #ffffff;
             padding: 10px 0;
             overflow: hidden;
             white-space: nowrap;
-            position: relative;
         }
 
         .ticker-text {
@@ -116,36 +155,55 @@
             100% { transform: translate3d(100%, 0, 0); }
         }
 
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
+            .content-area {
+                flex-direction: column;
+            }
+            .playlist-sidebar {
+                width: 100%;
+                max-height: 200px;
+            }
             .video-js {
-                height: 280px;
+                height: 260px;
             }
         }
     </style>
 </head>
 <body>
 
-    <div class="player-container">
-        <!-- بەشی سەرەوە (Header) -->
+    <div class="main-wrapper">
         <div class="player-header">
             <div class="brand-title">ARA SPORT LIVE</div>
             <div class="live-badge">ڕاستەوخۆ</div>
         </div>
 
-        <!-- بەشی ڤیدیۆ پلەیەر -->
-        <video 
-            id="ara-sport-player" 
-            class="video-js vjs-default-skin vjs-big-play-centered" 
-            controls 
-            preload="auto" 
-            poster="https://via.placeholder.com/900x500/0f172a/ffffff?text=ARA+SPORT+LIVE">
-            
-            <!-- لینک یان پەخشی HLS/m3u8 لێرە دابنێ -->
-            <source src="HTTPS://YOUR_STREAM_URL_HERE/stream.m3u8" type="application/x-mpegURL">
-            پێگەی تۆ پشتگیری ئەم ڤیدیۆیە ناکات.
-        </video>
+        <div class="content-area">
+            <!-- بەشی لێدانی ڤیدیۆ -->
+            <div class="video-container">
+                <video 
+                    id="ara-sport-player" 
+                    class="video-js vjs-default-skin vjs-big-play-centered" 
+                    controls 
+                    preload="auto">
+                    <source src="https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8" type="application/x-mpegURL">
+                </video>
+            </div>
 
-        <!-- بەشی تێکستی جوڵاو (Ticker) -->
+            <!-- بەشی لیستی کەناڵەکان / پلەی لیست -->
+            <div class="playlist-sidebar">
+                <div class="playlist-title">لیستی کەناڵەکان</div>
+                <div class="playlist-item active" onclick="changeStream('https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', this)">
+                    📺 کەناڵی ١ (HD)
+                </div>
+                <div class="playlist-item" onclick="changeStream('https://playertest.longtailvideo.com/adaptive/bbcaa/bbb360p.m3u8', this)">
+                    📺 کەناڵی ٢ (SD)
+                </div>
+                <div class="playlist-item" onclick="changeStream('YOUR_M3U8_LINK_HERE', this)">
+                    📺 ARA SPORT 3
+                </div>
+            </div>
+        </div>
+
         <div class="ticker-bar">
             <div class="ticker-text">
                 بەخێربێن بۆ کەناڵی ARA SPORT LIVE - بۆ بینینی تەواوی یارییەکان و بەرنامەکان لەگەڵمان بەردەوام بن.
@@ -157,6 +215,25 @@
     <script src="https://vjs.zencdn.net/7.20.3/video.js"></script>
     <script>
         var player = videojs('ara-sport-player');
+
+        // فەنکشن بۆ گۆڕینی کەناڵ لە پلەی لیستەکەوە
+        function changeStream(url, element) {
+            // سڕینەوەی ستافی active لە کەناڵەکانی تر
+            var items = document.querySelectorAll('.playlist-item');
+            items.forEach(function(item) {
+                item.classList.remove('active');
+            });
+            
+            // دیاریکردنی کەناڵی هەڵبژێردراو
+            element.classList.add('active');
+
+            // گۆڕینی لینکی پەخش و لێدانی
+            player.src({
+                src: url,
+                type: 'application/x-mpegURL'
+            });
+            player.play();
+        }
     </script>
 </body>
 </html>
