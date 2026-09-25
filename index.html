@@ -509,7 +509,6 @@
                     document.getElementById("trialBadge").style.display = "none";
                     if (player) player.pause();
                     
-                    // تۆمارکردنی کاتی کۆتایی هاتنی ترایەڵ بۆ دەستپێکردنی ٥ خولەک بلۆک
                     const cooldownEnd = new Date().getTime() + (5 * 60 * 1000);
                     localStorage.setItem("ara_trial_cooldown", cooldownEnd);
                     
@@ -567,7 +566,6 @@
                     statusMsg.innerText = "ئەم ماک ئادرێسە هێشتا ئەکتیڤ نەکراوە!";
                     statusMsg.style.color = "#ef4444";
                 } else {
-                    // پشکنینی تایمەری ٥ خولەکی بڵۆککردنی ترایەڵ
                     const storedCooldown = localStorage.getItem("ara_trial_cooldown");
                     if (storedCooldown && parseInt(storedCooldown) > now) {
                         showCooldownOverlay(parseInt(storedCooldown));
@@ -588,7 +586,6 @@
                 return false;
             }
 
-            // ئەگەر ئامێرەکە ئەکتیڤ کرا بێت
             if (trialInterval) clearInterval(trialInterval);
             if (cooldownInterval) clearInterval(cooldownInterval);
             localStorage.removeItem("ara_trial_cooldown");
@@ -659,7 +656,9 @@
             });
 
             if (channels.length > 0) {
-                playChannel(channels[0].url, null);
+                setTimeout(function() {
+                    playChannel(channels[0].url, container.children[0]);
+                }, 500);
             }
         }
 
@@ -675,7 +674,15 @@
                     src: url,
                     type: 'application/x-mpegURL'
                 });
-                player.play();
+
+                var promise = player.play();
+                if (promise !== undefined) {
+                    promise.catch(function(error) {
+                        console.log("Autoplay failed, playing muted:", error);
+                        player.muted(true);
+                        player.play();
+                    });
+                }
             }
         }
 
