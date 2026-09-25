@@ -7,7 +7,7 @@
     
     <!-- Video.js CSS -->
     <link href="https://vjs.zencdn.net/7.20.3/video-js.css" rel="stylesheet" />
-    <!-- Font Awesome بۆ ئایکۆنەکانی پلەیەر -->
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     
     <style>
@@ -64,6 +64,27 @@
             color: #38bdf8;
         }
 
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* ستایلی تایمەری ماوەی ئابوونە لەسەر پلەیەر */
+        .expire-countdown-badge {
+            background: rgba(30, 41, 59, 0.9);
+            border: 1px solid #38bdf8;
+            color: #38bdf8;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            direction: ltr;
+        }
+
         .live-badge {
             background-color: #ef4444;
             color: white;
@@ -96,12 +117,10 @@
             height: 480px;
         }
 
-        /* چاککردنی فۆنتی ئایکۆنەکانی Video.js */
         .video-js .vjs-icon-placeholder:before {
             font-family: VideoJS !important;
         }
 
-        /* ستایلی لۆگۆی ناو ڤیدیۆ */
         .vjs-watermark-logo {
             position: absolute;
             top: 15px;
@@ -189,14 +208,14 @@
             100% { transform: translate3d(100%, 0, 0); }
         }
 
-        /* --- شاشەی ئەکتیڤکردن (Activation Modal) --- */
+        /* --- شاشەی ئەکتیڤکردنی ماک ئادرس --- */
         .auth-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(15, 23, 42, 0.95);
+            background: rgba(15, 23, 42, 0.96);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -210,38 +229,49 @@
             border-radius: 12px;
             border: 1px solid #334155;
             text-align: center;
-            max-width: 400px;
+            max-width: 440px;
             width: 90%;
             box-shadow: 0 10px 25px rgba(0,0,0,0.5);
         }
 
         .auth-card h2 {
             color: #38bdf8;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             font-size: 20px;
         }
 
         .auth-card p {
-            font-size: 14px;
+            font-size: 13px;
             color: #94a3b8;
-            margin-bottom: 20px;
-        }
-
-        .auth-input {
-            width: 100%;
-            padding: 12px;
-            border-radius: 6px;
-            border: 1px solid #334155;
-            background: #0f172a;
-            color: #fff;
-            text-align: center;
-            font-size: 16px;
-            outline: none;
             margin-bottom: 15px;
+            line-height: 1.6;
         }
 
-        .auth-input:focus {
-            border-color: #2563eb;
+        .mac-box {
+            background: #0f172a;
+            border: 1px dashed #38bdf8;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #ef4444;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            user-select: all;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            direction: ltr;
+        }
+
+        .copy-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
         }
 
         .auth-btn {
@@ -249,7 +279,7 @@
             padding: 12px;
             border: none;
             border-radius: 6px;
-            background: #2563eb;
+            background: #059669;
             color: #fff;
             font-size: 15px;
             cursor: pointer;
@@ -258,14 +288,32 @@
         }
 
         .auth-btn:hover {
-            background: #1d4ed8;
+            background: #047857;
         }
 
-        .error-msg {
-            color: #ef4444;
+        .status-msg {
             font-size: 13px;
-            margin-top: 10px;
-            display: none;
+            margin-top: 12px;
+            color: #ef4444;
+            line-height: 1.5;
+        }
+
+        /* بەشی زانیاری پەیوەندی لە خوارەوەی ویندۆکە */
+        .contact-box {
+            margin-top: 18px;
+            padding-top: 15px;
+            border-top: 1px solid #334155;
+            font-size: 13px;
+            color: #cbd5e1;
+            line-height: 1.6;
+        }
+
+        .contact-phones {
+            margin-top: 6px;
+            font-weight: bold;
+            color: #38bdf8;
+            direction: ltr;
+            font-size: 14px;
         }
 
         @media (max-width: 768px) {
@@ -279,34 +327,45 @@
             .video-js {
                 height: 260px;
             }
-            .vjs-watermark-logo {
-                top: 10px;
-                right: 10px;
-                padding: 4px 8px;
-            }
-            .vjs-watermark-text {
-                font-size: 12px;
-            }
         }
     </style>
 </head>
 <body>
 
-    <!-- شاشەی داواکردنی کۆدی ئەکتیڤکردن -->
+    <!-- شاشەی ئەکتیڤکردن بە MAC Address -->
     <div id="authOverlay" class="auth-overlay">
         <div class="auth-card">
-            <h2>ئەکتیڤکردنی ARA SPORT LIVE</h2>
-            <p>تکایە کۆدی چوونەژوورەوە بنووسە بۆ چالاککردنی پەخشەکە:</p>
-            <input type="password" id="accessCodeInput" class="auth-input" placeholder="کۆد لێرە بنووسە..." />
-            <button onclick="verifyCode()" class="auth-btn">چالاککردن</button>
-            <div id="errorMsg" class="error-msg">کۆدەکە هەڵەیە! تکایە دووبارە هەوڵبدەرەوە.</div>
+            <h2>ئەکتیڤکردنی ئامێرەکەت</h2>
+            <p>ئەمە ماک ئادرێسی تایبەت بە ئامێرەکەتە. کۆپی بکە و بۆ ئادمیگراسی بنێرە تاوەکو پەخشەکەت بۆ چالاک بکات:</p>
+            
+            <div class="mac-box">
+                <span id="deviceMac">باردەکرێت...</span>
+                <button class="copy-btn" onclick="copyMac()">کۆپی</button>
+            </div>
+
+            <button onclick="checkActivation()" class="auth-btn">پشکنینی ئەکتیڤبوون</button>
+            <div id="statusMsg" class="status-msg">ئامێرەکەت ئەکتیڤ نەکراوە!</div>
+
+            <!-- زیاترکردنی زانیاری پەیوەندیکردن لە خوارەوەی ویندۆکە -->
+            <div class="contact-box">
+                بۆ زانیاری زیاتر یان نوێکردنەوەی ئابوونە، پەیوەندی بکە بە:
+                <div class="contact-phones">
+                    07501224994 &nbsp;|&nbsp; 07748134314
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="main-wrapper">
         <div class="player-header">
             <div class="brand-title">ARA SPORT LIVE</div>
-            <div class="live-badge">ڕاستەوخۆ</div>
+            <div class="header-right">
+                <!-- تایمەری نیشاندانی کاتی ماوەی ئێکسپایەر -->
+                <div id="countdownBox" class="expire-countdown-badge" style="display: none;">
+                    ⏳ <span id="countdownTimer">00d 00h 00m</span>
+                </div>
+                <div class="live-badge">ڕاستەوخۆ</div>
+            </div>
         </div>
 
         <div class="content-area">
@@ -337,27 +396,92 @@
     <!-- Video.js JS -->
     <script src="https://vjs.zencdn.net/7.20.3/video.js"></script>
     <script>
-        // سیستەمی فێریکردنی کۆد (Ara2026)
-        const SECRET_CODE = "Ara2026";
+        // =============================================================
+        // 📋 خشتەی ئامێرە ڕێگەپێدراوەکان (MAC + Expiration Date)
+        // کاتەکە دەتوانیت بە شێوازی YYYY-MM-DDTHH:mm:ss دابنێیت
+        // =============================================================
+        const ALLOWED_DEVICES = [
+            { mac: "AA:11:BB:22:CC:33", expire: "2026-12-31T23:59:59" }, 
+            { mac: "00:1A:2C:3D:4E:5F", expire: "2026-10-15T18:00:00" }
+        ];
 
-        function checkAuth() {
-            const isAuth = localStorage.getItem("ara_sport_auth");
-            if (isAuth === "true") {
-                document.getElementById("authOverlay").style.display = "none";
-                initPlayer();
+        function getDeviceMac() {
+            let mac = localStorage.getItem("ara_device_mac");
+            if (!mac) {
+                const hexDigits = "0123456789ABCDEF";
+                let macArr = [];
+                for (let i = 0; i < 6; i++) {
+                    macArr.push(hexDigits.charAt(Math.floor(Math.random() * 16)) + hexDigits.charAt(Math.floor(Math.random() * 16)));
+                }
+                mac = macArr.join(":");
+                localStorage.setItem("ara_device_mac", mac);
             }
+            return mac;
         }
 
-        function verifyCode() {
-            const input = document.getElementById("accessCodeInput").value;
-            const errorMsg = document.getElementById("errorMsg");
-            if (input === SECRET_CODE) {
-                localStorage.setItem("ara_sport_auth", "true");
-                document.getElementById("authOverlay").style.display = "none";
-                initPlayer();
-            } else {
-                errorMsg.style.display = "block";
+        const currentMac = getDeviceMac();
+        document.getElementById("deviceMac").innerText = currentMac;
+
+        function copyMac() {
+            navigator.clipboard.writeText(currentMac);
+            alert("ماک ئادرێسەکەت کۆپی کرا: " + currentMac);
+        }
+
+        let timerInterval;
+
+        function startCountdown(expireDateStr) {
+            document.getElementById("countdownBox").style.display = "flex";
+            const expireTime = new Date(expireDateStr).getTime();
+
+            if (timerInterval) clearInterval(timerInterval);
+
+            timerInterval = setInterval(function() {
+                const now = new Date().getTime();
+                const distance = expireTime - now;
+
+                if (distance < 0) {
+                    clearInterval(timerInterval);
+                    document.getElementById("countdownTimer").innerText = "ئێکسپایەر بووە";
+                    // ڕاگرتنی پلەیەرەکە و نیشاندانی شاشەی داواکاری کاتێک کاتەکە بەسەر دەچێت
+                    if (player) player.pause();
+                    document.getElementById("statusMsg").innerText = "ئابوونەکەت بەسەرچوو! تکایە نوێی بکەرەوە.";
+                    document.getElementById("authOverlay").style.display = "flex";
+                    return;
+                }
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                document.getElementById("countdownTimer").innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+            }, 1000);
+        }
+
+        function checkActivation() {
+            const now = new Date().getTime();
+            const foundDevice = ALLOWED_DEVICES.find(item => item.mac === currentMac);
+            const statusMsg = document.getElementById("statusMsg");
+
+            if (!foundDevice) {
+                statusMsg.innerText = "ئەم ماک ئادرێسە ئەکتیڤ نەکراوە!";
+                statusMsg.style.color = "#ef4444";
+                return false;
             }
+
+            const expireTime = new Date(foundDevice.expire).getTime();
+
+            if (now > expireTime) {
+                statusMsg.innerText = "ئابوونەکەت لە بەرواری (" + foundDevice.expire.split('T')[0] + ") بەسەرچووە!";
+                statusMsg.style.color = "#f59e0b";
+                return false;
+            }
+
+            // ئەگەر چالاک بوو، ویندۆکە لادەچێت و کاتژمێری بژارەی ماوەکە دەستپێدەکات
+            document.getElementById("authOverlay").style.display = "none";
+            startCountdown(foundDevice.expire);
+            initPlayer();
+            return true;
         }
 
         var player;
@@ -377,7 +501,6 @@
             }
         }
 
-        // خوێندنەوەی فایلی M3U
         async function loadM3UPlaylist() {
             try {
                 const response = await fetch('playlist.m3u');
@@ -441,8 +564,7 @@
             }
         }
 
-        // پشکنین کاتێک پەڕەکە دەکەرێتەوە
-        checkAuth();
+        checkActivation();
     </script>
 </body>
 </html>
