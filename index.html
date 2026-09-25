@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ku" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ARASPORT LIVE - مشغل البث المباشر</title>
+  <title>ARASPORT LIVE - وەب پلەیەر</title>
   
   <!-- Video.js CSS -->
   <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
@@ -18,7 +18,7 @@
 
     body {
       background-color: #0f172a;
-      color: #f8fafc;
+      color: #facc15; /* هەموو نووسینەکان بە ڕەنگی زەرد */
       display: flex;
       flex-direction: column;
       height: 100vh;
@@ -38,27 +38,12 @@
     }
 
     .brand-title {
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       font-weight: 700;
-      color: #38bdf8;
+      color: #facc15;
       display: flex;
       align-items: center;
       gap: 10px;
-    }
-
-    /* Requirement 1: Logo text ARA SPORT at top right corner */
-    .top-right-logo {
-      font-size: 1.4rem;
-      font-weight: 900;
-      letter-spacing: 1.5px;
-      background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-transform: uppercase;
-      padding: 4px 12px;
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      border-radius: 8px;
-      background-color: rgba(30, 41, 59, 0.6);
     }
 
     /* Main Container */
@@ -69,7 +54,7 @@
       overflow: hidden;
     }
 
-    /* Video Player Section (Left Side in RTL) */
+    /* Video Player Section */
     .player-section {
       flex: 1;
       background-color: #000;
@@ -82,11 +67,63 @@
     .video-js {
       width: 100% !important;
       height: 100% !important;
+      color: #facc15;
     }
 
-    /* Sidebar Channels List Section (Right Side in RTL) */
+    /* Logo Overlay ON top of Video Container */
+    .video-logo-overlay {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 20;
+      font-size: 1.2rem;
+      font-weight: 900;
+      letter-spacing: 1.5px;
+      color: #facc15; /* نووسینی زەرد */
+      text-transform: uppercase;
+      padding: 6px 16px;
+      border: 2px solid #ffffff; /* ڕێکتانگڵی سپی */
+      border-radius: 4px;
+      background-color: rgba(0, 0, 0, 0.4); /* باکگراوندی کاڵی تۆخ بۆ بەرزکردنەوەی ڕوونی */
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+      pointer-events: none; /* رێگری لە گرپکردن ناکات */
+    }
+
+    /* Custom Offline / Error Message Overlay inside Player */
+    .player-message-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(15, 23, 42, 0.92);
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 15;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .player-message-overlay.active {
+      display: flex;
+    }
+
+    .player-message-text {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #facc15;
+      border: 1px solid #facc15;
+      padding: 16px 24px;
+      border-radius: 8px;
+      background-color: rgba(30, 41, 59, 0.8);
+      box-shadow: 0 4px 15px rgba(250, 204, 21, 0.2);
+    }
+
+    /* Sidebar Channels List Section */
     .playlist-section {
-      width: 360px;
+      width: 340px;
       background-color: #1e293b;
       border-right: 1px solid #334155;
       display: flex;
@@ -100,7 +137,7 @@
       border-bottom: 1px solid #334155;
       font-size: 1.1rem;
       font-weight: 700;
-      color: #94a3b8;
+      color: #facc15;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -109,9 +146,10 @@
     .channel-count {
       font-size: 0.85rem;
       background-color: #334155;
-      color: #38bdf8;
-      padding: 2px 8px;
+      color: #fde047;
+      padding: 2px 10px;
       border-radius: 12px;
+      border: 1px solid #facc15;
     }
 
     .playlist-items {
@@ -123,7 +161,7 @@
       gap: 10px;
     }
 
-    /* Requirement 2: Channels with Logos inside cards */
+    /* Channels Cards */
     .channel-card {
       display: flex;
       align-items: center;
@@ -139,24 +177,24 @@
 
     .channel-card:hover {
       background-color: #475569;
-      border-color: #38bdf8;
+      border-color: #facc15;
       transform: translateY(-1px);
     }
 
     .channel-card.active {
-      background: linear-gradient(135deg, #0284c7 0%, #1d4ed8 100%);
-      border-color: #38bdf8;
-      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.4);
+      background: linear-gradient(135deg, #854d0e 0%, #a16207 100%);
+      border-color: #facc15;
+      box-shadow: 0 4px 12px rgba(250, 204, 21, 0.25);
     }
 
     .channel-logo {
-      width: 48px;
-      height: 48px;
+      width: 45px;
+      height: 45px;
       border-radius: 8px;
       object-fit: contain;
       background-color: #0f172a;
       padding: 4px;
-      border: 1px solid #475569;
+      border: 1px solid #facc15;
       flex-shrink: 0;
     }
 
@@ -170,7 +208,7 @@
     .channel-name {
       font-size: 0.95rem;
       font-weight: 600;
-      color: #f8fafc;
+      color: #facc15;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -178,11 +216,8 @@
 
     .channel-group {
       font-size: 0.75rem;
-      color: #94a3b8;
-    }
-
-    .channel-card.active .channel-group {
-      color: #e0f2fe;
+      color: #fde047;
+      opacity: 0.85;
     }
 
     /* Custom Scrollbar */
@@ -195,12 +230,12 @@
     }
 
     .playlist-items::-webkit-scrollbar-thumb {
-      background: #475569;
+      background: #ca8a04;
       border-radius: 4px;
     }
 
     .playlist-items::-webkit-scrollbar-thumb:hover {
-      background: #64748b;
+      background: #eab308;
     }
 
     @media (max-width: 850px) {
@@ -222,10 +257,8 @@
   <!-- Top Navigation Bar -->
   <header>
     <div class="brand-title">
-      <span>مشغل ARASPORT LIVE</span>
+      <span>وەب پلەیەر - ARASPORT LIVE</span>
     </div>
-    <!-- Requirement 1: Logo text ARA SPORT at top right -->
-    <div class="top-right-logo">ARA SPORT</div>
   </header>
 
   <!-- Main Content Area -->
@@ -234,16 +267,27 @@
     <!-- Sidebar / Playlist Section -->
     <div class="playlist-section">
       <div class="playlist-header">
-        <span>قائمة القنوات</span>
-        <span class="channel-count" id="channelCount">0 قناة</span>
+        <span>لیستی کەناڵەکان</span>
+        <span class="channel-count" id="channelCount">0 کەناڵ</span>
       </div>
       <div class="playlist-items" id="playlistItems">
-        <!-- Dynamic Channel Cards will be loaded here -->
+        <!-- Dynamic Channel Cards -->
       </div>
     </div>
 
     <!-- Video Player Section -->
-    <div class="player-section">
+    <div class="player-section" id="playerContainer">
+      
+      <!-- Logo overlay on top right of video -->
+      <div class="video-logo-overlay">ARA SPORT HD</div>
+
+      <!-- Offline / Error Display Overlay -->
+      <div class="player-message-overlay" id="messageOverlay">
+        <div class="player-message-text" id="messageText">
+          ببورن پەخش نەما لە نزیکترین کاتدا دەگەڕێینەوە
+        </div>
+      </div>
+
       <video
         id="mainPlayer"
         class="video-js vjs-big-play-centered vjs-default-skin"
@@ -252,7 +296,7 @@
         poster=""
       >
         <p class="vjs-no-js">
-          يرجى تفعيل JavaScript أو استخدام متصفح يدعم فيديو HTML5.
+          تکایە پێویستە JavaScript چالاک بکەیت یان وێبگەڕێک بەکاربهێنیت کە پشتیوانی ڤیدیۆی HTML5 دەکات.
         </p>
       </video>
     </div>
@@ -263,7 +307,6 @@
   <script src="https://vjs.zencdn.net/8.10.0/video.js"></script>
 
   <script>
-    // Initialize Video.js player instance
     const player = videojs('mainPlayer', {
       autoplay: false,
       controls: true,
@@ -271,32 +314,80 @@
       fluid: false
     });
 
+    // Move Logo & Message Overlays into Video.js element to persist on Fullscreen
+    const playerEl = player.el();
+    const logoOverlay = document.querySelector('.video-logo-overlay');
+    const messageOverlay = document.getElementById('messageOverlay');
+    
+    if (playerEl) {
+      playerEl.appendChild(logoOverlay);
+      playerEl.appendChild(messageOverlay);
+    }
+
     let channelsList = [];
     let currentChannelUrl = "";
 
-    // Default placeholder logo when tvg-logo is missing
-    const DEFAULT_LOGO = "https://via.placeholder.com/100x100/0f172a/38bdf8?text=ARA+SPORT";
+    const DEFAULT_LOGO = "https://via.placeholder.com/100x100/0f172a/facc15?text=ARA+SPORT";
+
+    function showMessage(text) {
+      document.getElementById('messageText').textContent = text;
+      messageOverlay.classList.add('active');
+    }
+
+    function hideMessage() {
+      messageOverlay.classList.remove('active');
+    }
+
+    // Check Network Connection Status
+    function checkInternetConnection() {
+      if (!navigator.onLine) {
+        showMessage("تکایە هێڵی ئینتەرنێتەکەت کارا بکە");
+        return false;
+      }
+      return true;
+    }
+
+    window.addEventListener('offline', () => {
+      showMessage("تکایە هێڵی ئینتەرنێتەکەت کارا بکە");
+    });
+
+    window.addEventListener('online', () => {
+      hideMessage();
+      if (currentChannelUrl) {
+        playChannel(currentChannelUrl, null);
+      }
+    });
+
+    // Handle Player Stream Errors
+    player.on('error', () => {
+      if (!navigator.onLine) {
+        showMessage("تکایە هێڵی ئینتەرنێتەکەت کارا بکە");
+      } else {
+        showMessage("ببورن پەخش نەما لە نزیکترین کاتدا دەگەڕێینەوە");
+      }
+    });
 
     // Fetch and Parse M3U Playlist File
     async function loadPlaylist() {
+      if (!checkInternetConnection()) return;
+
       try {
         const response = await fetch('playlist.m3u');
-        if (!response.ok) throw new Error("تعذر تحميل ملف القائمة");
+        if (!response.ok) throw new Error("نەتوانرا پەڕگەی لیستی کەناڵەکان باربکرێت");
         
         const content = await response.text();
         channelsList = parseM3U(content);
         
         renderChannels(channelsList);
 
-        // Auto play first channel if available
         if (channelsList.length > 0) {
           playChannel(channelsList[0].url, 0);
         }
       } catch (error) {
         console.error("Error loading playlist:", error);
         document.getElementById('playlistItems').innerHTML = `
-          <div style="color: #ef4444; padding: 16px; text-align: center;">
-            عذراً، تعذر تحميل قائمة القنوات. يرجى التأكد من وجود ملف playlist.m3u.
+          <div style="color: #facc15; padding: 16px; text-align: center;">
+            ببوورە! نەتوانرا لیستی کەناڵەکان باربکرێت. تکایە دڵنیابەوە لە بوونی پەڕگەی playlist.m3u.
           </div>
         `;
       }
@@ -314,20 +405,17 @@
         if (line.startsWith('#EXTINF:')) {
           currentChannel = {};
           
-          // Extract tvg-logo
           const logoMatch = line.match(/tvg-logo="([^"]*)"/);
           currentChannel.logo = (logoMatch && logoMatch[1]) ? logoMatch[1] : DEFAULT_LOGO;
 
-          // Extract group-title
           const groupMatch = line.match(/group-title="([^"]*)"/);
-          currentChannel.group = (groupMatch && groupMatch[1]) ? groupMatch[1] : "عام";
+          currentChannel.group = (groupMatch && groupMatch[1]) ? groupMatch[1] : "گشتی";
 
-          // Extract channel name (after the last comma)
           const commaIndex = line.lastIndexOf(',');
           if (commaIndex !== -1) {
             currentChannel.name = line.substring(commaIndex + 1).trim();
           } else {
-            currentChannel.name = "قناة بدون اسم";
+            currentChannel.name = "کەناڵی بێ ناو";
           }
         } else if (line.length > 0 && !line.startsWith('#')) {
           if (currentChannel) {
@@ -344,7 +432,7 @@
     // Render Channel Cards
     function renderChannels(channels) {
       const container = document.getElementById('playlistItems');
-      document.getElementById('channelCount').textContent = `${channels.length} قناة`;
+      document.getElementById('channelCount').textContent = `${channels.length} کەناڵ`;
       container.innerHTML = '';
 
       channels.forEach((channel, index) => {
@@ -368,23 +456,25 @@
       });
     }
 
-    // Requirement 3: Smooth transition fix (Prevents black screen / flicker bug when switching channels)
+    // Smooth Channel Switching
     function playChannel(url, index) {
-      // Avoid re-triggering if clicking the currently playing channel URL
-      if (currentChannelUrl === url) return;
+      hideMessage();
+
+      if (!checkInternetConnection()) return;
+
       currentChannelUrl = url;
 
-      // Update Active Card Styling
-      const cards = document.querySelectorAll('.channel-card');
-      cards.forEach((card, i) => {
-        if (i === index) {
-          card.classList.add('active');
-        } else {
-          card.classList.remove('active');
-        }
-      });
+      if (index !== null) {
+        const cards = document.querySelectorAll('.channel-card');
+        cards.forEach((card, i) => {
+          if (i === index) {
+            card.classList.add('active');
+          } else {
+            card.classList.remove('active');
+          }
+        });
+      }
 
-      // Smooth Channel Switching Logic using Video.js API properly
       player.pause();
       player.src({
         src: url,
@@ -395,7 +485,7 @@
       const playPromise = player.play();
       if (playPromise !== undefined) {
         playPromise.catch(error => {
-          console.warn("Autoplay prevented or load interrupted:", error);
+          console.warn("ئۆتۆپلەی ڕاگیرا یان ستریمەکە ئامادە نییە:", error);
         });
       }
     }
