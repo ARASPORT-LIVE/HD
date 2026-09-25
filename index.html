@@ -129,10 +129,6 @@
             height: 480px;
         }
 
-        .video-js .vjs-icon-placeholder:before {
-            font-family: VideoJS !important;
-        }
-
         .vjs-watermark-logo {
             position: absolute;
             top: 15px;
@@ -154,7 +150,6 @@
             font-weight: bold;
             font-size: 14px;
             letter-spacing: 0.5px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
         }
 
         .vjs-watermark-text span {
@@ -252,13 +247,6 @@
             font-size: 20px;
         }
 
-        .auth-card p {
-            font-size: 13px;
-            color: #94a3b8;
-            margin-bottom: 15px;
-            line-height: 1.6;
-        }
-
         .mac-box {
             background: #0f172a;
             border: 1px dashed #38bdf8;
@@ -308,21 +296,8 @@
             text-decoration: none;
         }
 
-        .whatsapp-btn {
-            background: #16a34a;
-        }
-
-        .whatsapp-btn:hover {
-            background: #15803d;
-        }
-
-        .sms-btn {
-            background: #0284c7;
-        }
-
-        .sms-btn:hover {
-            background: #0369a1;
-        }
+        .whatsapp-btn { background: #16a34a; }
+        .sms-btn { background: #0284c7; }
 
         .auth-btn {
             width: 100%;
@@ -335,10 +310,6 @@
             cursor: pointer;
             font-weight: bold;
             transition: background 0.2s;
-        }
-
-        .auth-btn:hover {
-            background: #047857;
         }
 
         .status-msg {
@@ -365,17 +336,20 @@
             font-size: 14px;
         }
 
+        .cooldown-box {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid #ef4444;
+            color: #fca5a5;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
+
         @media (max-width: 768px) {
-            .content-area {
-                flex-direction: column;
-            }
-            .playlist-sidebar {
-                width: 100%;
-                max-height: 220px;
-            }
-            .video-js {
-                height: 260px;
-            }
+            .content-area { flex-direction: column; }
+            .playlist-sidebar { width: 100%; max-height: 220px; }
+            .video-js { height: 260px; }
         }
     </style>
 </head>
@@ -385,7 +359,12 @@
     <div id="authOverlay" class="auth-overlay" style="display: none;">
         <div class="auth-card">
             <h2>ئەکتیڤکردنی ئامێرەکەت</h2>
-            <p id="overlayIntroMsg">کاتی تاقیکردنەوە (Trial) تەواو بوو! بۆ بینینی بەردەوامی پەخشەکە، تەواوی ماک ئادرێسەکەت بۆ ئادمیگراسی بنێرە:</p>
+            
+            <div id="cooldownNotice" class="cooldown-box" style="display: none;">
+                تایمەری ترایەڵ تەواو بوو! تکایە <span id="cooldownTimer" style="font-weight: bold; color: #fff;">05:00</span> چاوەڕێ بکە بۆ ترایەڵی داهاتوو.
+            </div>
+
+            <p id="overlayIntroMsg">بۆ بینینی بەردەوامی پەخشەکە، تەواوی ماک ئادرێسەکەت بۆ ئادمیگراسی بنێرە:</p>
             
             <div class="mac-box">
                 <span id="deviceMac">باردەکرێت...</span>
@@ -417,11 +396,9 @@
         <div class="player-header">
             <div class="brand-title">ARA SPORT LIVE</div>
             <div class="header-right">
-                <!-- تایمەری ترایەڵ (١ خولەک) -->
                 <div id="trialBadge" class="trial-badge" style="display: none;">
                     ⏱️ ترایەڵ: <span id="trialTimer">01:00</span>
                 </div>
-                <!-- تایمەری ئابوونەی ئاسایی -->
                 <div id="countdownBox" class="expire-countdown-badge" style="display: none;">
                     ⏳ <span id="countdownTimer">00d 00h 00m</span>
                 </div>
@@ -431,12 +408,7 @@
 
         <div class="content-area">
             <div class="video-container">
-                <video 
-                    id="ara-sport-player" 
-                    class="video-js vjs-default-skin vjs-big-play-centered" 
-                    controls 
-                    preload="auto">
-                </video>
+                <video id="ara-sport-player" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="auto"></video>
             </div>
 
             <div class="playlist-sidebar">
@@ -457,10 +429,7 @@
     <!-- Video.js JS -->
     <script src="https://vjs.zencdn.net/7.20.3/video.js"></script>
     <script>
-        const ALLOWED_DEVICES = [
-            { mac: "87:90:2E:49:76:1E", expire: "2026-10-25T23:59:59" },
-            { mac: "AA:11:BB:22:CC:33", expire: "2026-12-31T23:59:59" }
-        ];
+        const GITHUB_JSON_URL = "https://raw.githubusercontent.com/ARASPORT-LIVE/HD/main/allowed.json";
 
         function getDeviceMac() {
             let mac = localStorage.getItem("ara_device_mac");
@@ -520,16 +489,16 @@
             }, 1000);
         }
 
-        // --- سیستەمی تایمەری ترایەڵ (١ خولەک = ٦٠ چڕکە) ---
+        // --- ڕێکخستنی ترایەڵ و تایمەری ٥ خولەکی بلۆککردن (Cooldown) ---
         let trialInterval;
-        let trialSecondsLeft = 60;
+        let cooldownInterval;
 
         function startTrialTimer() {
             document.getElementById("trialBadge").style.display = "flex";
-            
+            let trialSecondsLeft = 60;
+
             trialInterval = setInterval(function() {
                 trialSecondsLeft--;
-                
                 let mins = Math.floor(trialSecondsLeft / 60);
                 let secs = trialSecondsLeft % 60;
                 document.getElementById("trialTimer").innerText = 
@@ -539,25 +508,73 @@
                     clearInterval(trialInterval);
                     document.getElementById("trialBadge").style.display = "none";
                     if (player) player.pause();
-                    document.getElementById("statusMsg").innerText = "کاتی ترایەڵی ١ خولەکی تەواو بوو!";
-                    document.getElementById("authOverlay").style.display = "flex";
+                    
+                    // تۆمارکردنی کاتی کۆتایی هاتنی ترایەڵ بۆ دەستپێکردنی ٥ خولەک بلۆک
+                    const cooldownEnd = new Date().getTime() + (5 * 60 * 1000);
+                    localStorage.setItem("ara_trial_cooldown", cooldownEnd);
+                    
+                    showCooldownOverlay(cooldownEnd);
                 }
             }, 1000);
         }
 
-        function checkActivation(isManualCheck = false) {
-            const now = new Date().getTime();
-            const foundDevice = ALLOWED_DEVICES.find(item => item.mac === currentMac);
+        function showCooldownOverlay(cooldownEnd) {
+            document.getElementById("authOverlay").style.display = "flex";
+            document.getElementById("cooldownNotice").style.display = "block";
+            document.getElementById("statusMsg").innerText = "کاتی ترایەڵی ١ خولەکی تەواو بوو!";
+
+            if (cooldownInterval) clearInterval(cooldownInterval);
+
+            cooldownInterval = setInterval(function() {
+                const now = new Date().getTime();
+                const distance = cooldownEnd - now;
+
+                if (distance <= 0) {
+                    clearInterval(cooldownInterval);
+                    localStorage.removeItem("ara_trial_cooldown");
+                    document.getElementById("cooldownNotice").style.display = "none";
+                    document.getElementById("authOverlay").style.display = "none";
+                    initPlayer();
+                    startTrialTimer();
+                    return;
+                }
+
+                const mins = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const secs = Math.floor((distance % (1000 * 60)) / 1000);
+                document.getElementById("cooldownTimer").innerText = 
+                    (mins < 10 ? "0" + mins : mins) + ":" + (secs < 10 ? "0" + secs : secs);
+            }, 1000);
+        }
+
+        async function checkActivation(isManualCheck = false) {
             const statusMsg = document.getElementById("statusMsg");
+            let allowedDevices = [];
+
+            try {
+                const response = await fetch(GITHUB_JSON_URL + "?t=" + new Date().getTime());
+                if (response.ok) {
+                    allowedDevices = await response.json();
+                }
+            } catch (e) {
+                console.log("Error loading JSON from GitHub:", e);
+            }
+
+            const now = new Date().getTime();
+            const foundDevice = allowedDevices.find(item => item.mac === currentMac);
 
             if (!foundDevice) {
                 if (isManualCheck) {
                     statusMsg.innerText = "ئەم ماک ئادرێسە هێشتا ئەکتیڤ نەکراوە!";
                     statusMsg.style.color = "#ef4444";
                 } else {
-                    // ئەگەر یەکەم جار بوو و ئەکتیڤ نەبوو، دەست بە ترایەڵ دەکات
-                    initPlayer();
-                    startTrialTimer();
+                    // پشکنینی تایمەری ٥ خولەکی بڵۆککردنی ترایەڵ
+                    const storedCooldown = localStorage.getItem("ara_trial_cooldown");
+                    if (storedCooldown && parseInt(storedCooldown) > now) {
+                        showCooldownOverlay(parseInt(storedCooldown));
+                    } else {
+                        initPlayer();
+                        startTrialTimer();
+                    }
                 }
                 return false;
             }
@@ -565,14 +582,17 @@
             const expireTime = new Date(foundDevice.expire).getTime();
 
             if (now > expireTime) {
-                statusMsg.innerText = "ئابوونەکەت لە بەرواری (" + foundDevice.expire.split('T')[0] + ") بەسەرچووە!";
+                statusMsg.innerText = "ئابوونەکەت بەسەرچوو!";
                 statusMsg.style.color = "#f59e0b";
                 document.getElementById("authOverlay").style.display = "flex";
                 return false;
             }
 
-            // ئەگەر ئەکتیڤ بوو
+            // ئەگەر ئامێرەکە ئەکتیڤ کرا بێت
             if (trialInterval) clearInterval(trialInterval);
+            if (cooldownInterval) clearInterval(cooldownInterval);
+            localStorage.removeItem("ara_trial_cooldown");
+            document.getElementById("cooldownNotice").style.display = "none";
             document.getElementById("authOverlay").style.display = "none";
             startCountdown(foundDevice.expire);
             initPlayer();
@@ -659,7 +679,7 @@
             }
         }
 
-        // بەگەڕخستنی سیستەمەکە
+        // بەگەڕخستنی پشکنین
         checkActivation();
     </script>
 </body>
