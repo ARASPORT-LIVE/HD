@@ -1,497 +1,162 @@
 <!DOCTYPE html>
 <html lang="ku" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ARASPORT LIVE - وەب پلەیەر</title>
-  
-  <!-- Video.js CSS -->
-  <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
-  
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARA SPORT LIVE - Web Player</title>
+    
+    <!-- Video.js CSS -->
+    <link href="https://vjs.zencdn.net/7.20.3/video-js.css" rel="stylesheet" />
+    
+    <style>
+        /* هێنانی فۆنتی GoranFontRegular-Regular */
+        @font-face {
+            font-family: 'GoranFontRegular-Regular';
+            src: url('GoranFontRegular-Regular.ttf') format('truetype'),
+                 url('GoranFontRegular-Regular.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
 
-    body {
-      background-color: #0f172a;
-      color: #facc15; /* هەموو نووسینەکان بە ڕەنگی زەرد */
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-      overflow: hidden;
-    }
+        /* جێبەجێکردنی فۆنت بۆ سەرجەم بەشەکان و تێکستەکان */
+        * {
+            box-sizing: border-box;
+            font-family: 'GoranFontRegular-Regular', Tahoma, Arial, sans-serif !important;
+            margin: 0;
+            padding: 0;
+        }
 
-    /* Top Navigation Bar */
-    header {
-      background: linear-gradient(90deg, #1e293b 0%, #0f172a 100%);
-      padding: 12px 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 2px solid #334155;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-      z-index: 10;
-    }
+        body {
+            background-color: #0f172a;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
 
-    .brand-title {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: #facc15;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+        .player-container {
+            width: 100%;
+            max-width: 900px;
+            background: #1e293b;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            border: 1px solid #334155;
+        }
 
-    /* Main Container */
-    .main-container {
-      display: flex;
-      flex: 1;
-      height: calc(100vh - 60px);
-      overflow: hidden;
-    }
+        .player-header {
+            background: #0f172a;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #2563eb;
+        }
 
-    /* Video Player Section */
-    .player-section {
-      flex: 1;
-      background-color: #000;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: relative;
-    }
+        .brand-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #38bdf8;
+            letter-spacing: 1px;
+        }
 
-    .video-js {
-      width: 100% !important;
-      height: 100% !important;
-      color: #facc15;
-    }
+        .live-badge {
+            background-color: #ef4444;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            animation: pulse 1.5s infinite;
+        }
 
-    /* Logo Overlay ON top of Video Container */
-    .video-logo-overlay {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      z-index: 20;
-      font-size: 1.2rem;
-      font-weight: 900;
-      letter-spacing: 1.5px;
-      color: #facc15; /* نووسینی زەرد */
-      text-transform: uppercase;
-      padding: 6px 16px;
-      border: 2px solid #ffffff; /* ڕێکتانگڵی سپی */
-      border-radius: 4px;
-      background-color: rgba(0, 0, 0, 0.4); /* باکگراوندی کاڵی تۆخ بۆ بەرزکردنەوەی ڕوونی */
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-      pointer-events: none; /* رێگری لە گرپکردن ناکات */
-    }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
 
-    /* Custom Offline / Error Message Overlay inside Player */
-    .player-message-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(15, 23, 42, 0.92);
-      display: none;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 15;
-      padding: 20px;
-      text-align: center;
-    }
+        /* ستایلی یاریپێکەری ڤیدیۆ */
+        .video-js {
+            width: 100%;
+            height: 500px;
+        }
 
-    .player-message-overlay.active {
-      display: flex;
-    }
+        .vjs-big-play-button {
+            background-color: rgba(37, 99, 235, 0.8) !important;
+            border: none !important;
+            border-radius: 50% !important;
+            width: 70px !important;
+            height: 70px !important;
+            line-height: 70px !important;
+            margin-top: -35px !important;
+            margin-left: -35px !important;
+        }
 
-    .player-message-text {
-      font-size: 1.3rem;
-      font-weight: 700;
-      color: #facc15;
-      border: 1px solid #facc15;
-      padding: 16px 24px;
-      border-radius: 8px;
-      background-color: rgba(30, 41, 59, 0.8);
-      box-shadow: 0 4px 15px rgba(250, 204, 21, 0.2);
-    }
+        .ticker-bar {
+            background: #0284c7;
+            color: #ffffff;
+            padding: 10px 0;
+            overflow: hidden;
+            white-space: nowrap;
+            position: relative;
+        }
 
-    /* Sidebar Channels List Section */
-    .playlist-section {
-      width: 340px;
-      background-color: #1e293b;
-      border-right: 1px solid #334155;
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-    }
+        .ticker-text {
+            display: inline-block;
+            padding-right: 100%;
+            animation: ticker 25s linear infinite;
+            font-size: 15px;
+        }
 
-    .playlist-header {
-      padding: 16px;
-      background-color: #0f172a;
-      border-bottom: 1px solid #334155;
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: #facc15;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+        @keyframes ticker {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(100%, 0, 0); }
+        }
 
-    .channel-count {
-      font-size: 0.85rem;
-      background-color: #334155;
-      color: #fde047;
-      padding: 2px 10px;
-      border-radius: 12px;
-      border: 1px solid #facc15;
-    }
-
-    .playlist-items {
-      flex: 1;
-      overflow-y: auto;
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    /* Channels Cards */
-    .channel-card {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 10px 14px;
-      background-color: #334155;
-      border: 1px solid #475569;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      user-select: none;
-    }
-
-    .channel-card:hover {
-      background-color: #475569;
-      border-color: #facc15;
-      transform: translateY(-1px);
-    }
-
-    .channel-card.active {
-      background: linear-gradient(135deg, #854d0e 0%, #a16207 100%);
-      border-color: #facc15;
-      box-shadow: 0 4px 12px rgba(250, 204, 21, 0.25);
-    }
-
-    .channel-logo {
-      width: 45px;
-      height: 45px;
-      border-radius: 8px;
-      object-fit: contain;
-      background-color: #0f172a;
-      padding: 4px;
-      border: 1px solid #facc15;
-      flex-shrink: 0;
-    }
-
-    .channel-info {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      overflow: hidden;
-    }
-
-    .channel-name {
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: #facc15;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .channel-group {
-      font-size: 0.75rem;
-      color: #fde047;
-      opacity: 0.85;
-    }
-
-    /* Custom Scrollbar */
-    .playlist-items::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    .playlist-items::-webkit-scrollbar-track {
-      background: #1e293b;
-    }
-
-    .playlist-items::-webkit-scrollbar-thumb {
-      background: #ca8a04;
-      border-radius: 4px;
-    }
-
-    .playlist-items::-webkit-scrollbar-thumb:hover {
-      background: #eab308;
-    }
-
-    @media (max-width: 850px) {
-      .main-container {
-        flex-direction: column-reverse;
-      }
-      .playlist-section {
-        width: 100%;
-        height: 40%;
-      }
-      .player-section {
-        height: 60%;
-      }
-    }
-  </style>
+        @media (max-width: 600px) {
+            .video-js {
+                height: 280px;
+            }
+        }
+    </style>
 </head>
 <body>
 
-  <!-- Top Navigation Bar -->
-  <header>
-    <div class="brand-title">
-      <span>وەب پلەیەر - ARASPORT LIVE</span>
-    </div>
-  </header>
-
-  <!-- Main Content Area -->
-  <div class="main-container">
-    
-    <!-- Sidebar / Playlist Section -->
-    <div class="playlist-section">
-      <div class="playlist-header">
-        <span>لیستی کەناڵەکان</span>
-        <span class="channel-count" id="channelCount">0 کەناڵ</span>
-      </div>
-      <div class="playlist-items" id="playlistItems">
-        <!-- Dynamic Channel Cards -->
-      </div>
-    </div>
-
-    <!-- Video Player Section -->
-    <div class="player-section" id="playerContainer">
-      
-      <!-- Logo overlay on top right of video -->
-      <div class="video-logo-overlay">ARA SPORT HD</div>
-
-      <!-- Offline / Error Display Overlay -->
-      <div class="player-message-overlay" id="messageOverlay">
-        <div class="player-message-text" id="messageText">
-          ببورن پەخش نەما لە نزیکترین کاتدا دەگەڕێینەوە
+    <div class="player-container">
+        <!-- بەشی سەرەوە (Header) -->
+        <div class="player-header">
+            <div class="brand-title">ARA SPORT LIVE</div>
+            <div class="live-badge">ڕاستەوخۆ</div>
         </div>
-      </div>
 
-      <video
-        id="mainPlayer"
-        class="video-js vjs-big-play-centered vjs-default-skin"
-        controls
-        preload="auto"
-        poster=""
-      >
-        <p class="vjs-no-js">
-          تکایە پێویستە JavaScript چالاک بکەیت یان وێبگەڕێک بەکاربهێنیت کە پشتیوانی ڤیدیۆی HTML5 دەکات.
-        </p>
-      </video>
+        <!-- بەشی ڤیدیۆ پلەیەر -->
+        <video 
+            id="ara-sport-player" 
+            class="video-js vjs-default-skin vjs-big-play-centered" 
+            controls 
+            preload="auto" 
+            poster="https://via.placeholder.com/900x500/0f172a/ffffff?text=ARA+SPORT+LIVE">
+            
+            <!-- لینک یان پەخشی HLS/m3u8 لێرە دابنێ -->
+            <source src="HTTPS://YOUR_STREAM_URL_HERE/stream.m3u8" type="application/x-mpegURL">
+            پێگەی تۆ پشتگیری ئەم ڤیدیۆیە ناکات.
+        </video>
+
+        <!-- بەشی تێکستی جوڵاو (Ticker) -->
+        <div class="ticker-bar">
+            <div class="ticker-text">
+                بەخێربێن بۆ کەناڵی ARA SPORT LIVE - بۆ بینینی تەواوی یارییەکان و بەرنامەکان لەگەڵمان بەردەوام بن.
+            </div>
+        </div>
     </div>
 
-  </div>
-
-  <!-- Video.js Script -->
-  <script src="https://vjs.zencdn.net/8.10.0/video.js"></script>
-
-  <script>
-    const player = videojs('mainPlayer', {
-      autoplay: false,
-      controls: true,
-      responsive: true,
-      fluid: false
-    });
-
-    // Move Logo & Message Overlays into Video.js element to persist on Fullscreen
-    const playerEl = player.el();
-    const logoOverlay = document.querySelector('.video-logo-overlay');
-    const messageOverlay = document.getElementById('messageOverlay');
-    
-    if (playerEl) {
-      playerEl.appendChild(logoOverlay);
-      playerEl.appendChild(messageOverlay);
-    }
-
-    let channelsList = [];
-    let currentChannelUrl = "";
-
-    const DEFAULT_LOGO = "https://via.placeholder.com/100x100/0f172a/facc15?text=ARA+SPORT";
-
-    function showMessage(text) {
-      document.getElementById('messageText').textContent = text;
-      messageOverlay.classList.add('active');
-    }
-
-    function hideMessage() {
-      messageOverlay.classList.remove('active');
-    }
-
-    // Check Network Connection Status
-    function checkInternetConnection() {
-      if (!navigator.onLine) {
-        showMessage("تکایە هێڵی ئینتەرنێتەکەت کارا بکە");
-        return false;
-      }
-      return true;
-    }
-
-    window.addEventListener('offline', () => {
-      showMessage("تکایە هێڵی ئینتەرنێتەکەت کارا بکە");
-    });
-
-    window.addEventListener('online', () => {
-      hideMessage();
-      if (currentChannelUrl) {
-        playChannel(currentChannelUrl, null);
-      }
-    });
-
-    // Handle Player Stream Errors
-    player.on('error', () => {
-      if (!navigator.onLine) {
-        showMessage("تکایە هێڵی ئینتەرنێتەکەت کارا بکە");
-      } else {
-        showMessage("ببورن پەخش نەما لە نزیکترین کاتدا دەگەڕێینەوە");
-      }
-    });
-
-    // Fetch and Parse M3U Playlist File
-    async function loadPlaylist() {
-      if (!checkInternetConnection()) return;
-
-      try {
-        const response = await fetch('playlist.m3u');
-        if (!response.ok) throw new Error("نەتوانرا پەڕگەی لیستی کەناڵەکان باربکرێت");
-        
-        const content = await response.text();
-        channelsList = parseM3U(content);
-        
-        renderChannels(channelsList);
-
-        if (channelsList.length > 0) {
-          playChannel(channelsList[0].url, 0);
-        }
-      } catch (error) {
-        console.error("Error loading playlist:", error);
-        document.getElementById('playlistItems').innerHTML = `
-          <div style="color: #facc15; padding: 16px; text-align: center;">
-            ببوورە! نەتوانرا لیستی کەناڵەکان باربکرێت. تکایە دڵنیابەوە لە بوونی پەڕگەی playlist.m3u.
-          </div>
-        `;
-      }
-    }
-
-    // M3U Parser Function
-    function parseM3U(data) {
-      const lines = data.split('\n');
-      const channels = [];
-      let currentChannel = null;
-
-      for (let i = 0; i < lines.length; i++) {
-        let line = lines[i].trim();
-
-        if (line.startsWith('#EXTINF:')) {
-          currentChannel = {};
-          
-          const logoMatch = line.match(/tvg-logo="([^"]*)"/);
-          currentChannel.logo = (logoMatch && logoMatch[1]) ? logoMatch[1] : DEFAULT_LOGO;
-
-          const groupMatch = line.match(/group-title="([^"]*)"/);
-          currentChannel.group = (groupMatch && groupMatch[1]) ? groupMatch[1] : "گشتی";
-
-          const commaIndex = line.lastIndexOf(',');
-          if (commaIndex !== -1) {
-            currentChannel.name = line.substring(commaIndex + 1).trim();
-          } else {
-            currentChannel.name = "کەناڵی بێ ناو";
-          }
-        } else if (line.length > 0 && !line.startsWith('#')) {
-          if (currentChannel) {
-            currentChannel.url = line;
-            channels.push(currentChannel);
-            currentChannel = null;
-          }
-        }
-      }
-
-      return channels;
-    }
-
-    // Render Channel Cards
-    function renderChannels(channels) {
-      const container = document.getElementById('playlistItems');
-      document.getElementById('channelCount').textContent = `${channels.length} کەناڵ`;
-      container.innerHTML = '';
-
-      channels.forEach((channel, index) => {
-        const card = document.createElement('div');
-        card.className = `channel-card ${index === 0 ? 'active' : ''}`;
-        card.setAttribute('data-index', index);
-
-        card.innerHTML = `
-          <img src="${channel.logo}" class="channel-logo" alt="${channel.name}" onerror="this.src='${DEFAULT_LOGO}'" />
-          <div class="channel-info">
-            <div class="channel-name">${channel.name}</div>
-            <div class="channel-group">${channel.group}</div>
-          </div>
-        `;
-
-        card.addEventListener('click', () => {
-          playChannel(channel.url, index);
-        });
-
-        container.appendChild(card);
-      });
-    }
-
-    // Smooth Channel Switching
-    function playChannel(url, index) {
-      hideMessage();
-
-      if (!checkInternetConnection()) return;
-
-      currentChannelUrl = url;
-
-      if (index !== null) {
-        const cards = document.querySelectorAll('.channel-card');
-        cards.forEach((card, i) => {
-          if (i === index) {
-            card.classList.add('active');
-          } else {
-            card.classList.remove('active');
-          }
-        });
-      }
-
-      player.pause();
-      player.src({
-        src: url,
-        type: url.includes('.m3u8') ? 'application/x-mpegURL' : 'video/mp4'
-      });
-      player.load();
-      
-      const playPromise = player.play();
-      if (playPromise !== undefined) {
-        playPromise.catch(error => {
-          console.warn("ئۆتۆپلەی ڕاگیرا یان ستریمەکە ئامادە نییە:", error);
-        });
-      }
-    }
-
-    // Initialize on page load
-    window.addEventListener('DOMContentLoaded', loadPlaylist);
-  </script>
+    <!-- Video.js JS -->
+    <script src="https://vjs.zencdn.net/7.20.3/video.js"></script>
+    <script>
+        var player = videojs('ara-sport-player');
+    </script>
 </body>
 </html>
