@@ -93,6 +93,40 @@
             height: 480px;
         }
 
+        /* ستایلی لۆگۆی ناو ڤیدیۆ (بۆ ئەوەی لە Fullscreen و Rotate نەڕوات) */
+        .vjs-watermark-logo {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 10;
+            pointer-events: none; /* بۆ ئەوەی ڕێگری لە کلیک کردنی سەر ڤیدیۆکە نەکات */
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(15, 23, 42, 0.65);
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            backdrop-filter: blur(4px);
+        }
+
+        .vjs-watermark-logo img {
+            height: 24px;
+            width: auto;
+        }
+
+        .vjs-watermark-text {
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+        }
+
+        .vjs-watermark-text span {
+            color: #38bdf8;
+        }
+
         .playlist-sidebar {
             width: 300px;
             background: #0f172a;
@@ -163,6 +197,14 @@
             .video-js {
                 height: 260px;
             }
+            .vjs-watermark-logo {
+                top: 10px;
+                right: 10px;
+                padding: 4px 8px;
+            }
+            .vjs-watermark-text {
+                font-size: 12px;
+            }
         }
     </style>
 </head>
@@ -204,7 +246,22 @@
     <script>
         var player = videojs('ara-sport-player');
 
-        // فەنکشنی خوێندنەوەی فایلی M3U و دروستکردنی لیستی کەناڵەکان
+        // زیاکردنی لۆگۆکە بۆ ناو خودی پلەیەرەکە
+        player.ready(function() {
+            var watermark = document.createElement('div');
+            watermark.className = 'vjs-watermark-logo';
+            
+            // ئەگەر وێنەی لۆگۆت هەبوو دەتوانی فایلی logo.png دابنێیت، ئەگینا دیزاینی دەق بەکاردێت:
+            watermark.innerHTML = `
+                <!-- ئەگەر وێنەی لۆگۆت هەبوو ئەم دێرەی خوارەوە چالاک بکە: -->
+                <!-- <img src="logo.png" alt="ARA SPORT"> -->
+                <div class="vjs-watermark-text">ARA SPORT <span>HD</span></div>
+            `;
+            
+            this.el().appendChild(watermark);
+        });
+
+        // خوێندنەوەی فایلی M3U
         async function loadM3UPlaylist() {
             try {
                 const response = await fetch('playlist.m3u');
@@ -247,7 +304,6 @@
                 container.appendChild(div);
             });
 
-            // لێدانی کەناڵی یەکەم بە ئۆتۆماتیکی
             if (channels.length > 0) {
                 playChannel(channels[0].url, null);
             }
@@ -267,7 +323,6 @@
             player.play();
         }
 
-        // دەستپێکردنی بارکردنی M3U
         loadM3UPlaylist();
     </script>
 </body>
