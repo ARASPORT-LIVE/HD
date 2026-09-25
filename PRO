@@ -1,0 +1,25 @@
+#EXTM3U
+
+#EXTINF:-1 tvg-id="" tvg-name="DAZN 1" tvg-logo="" group-title="Sports", Dazn1
+https://footfytv.pro/proxy/direct?url=http%3A%2F%2F50.7.120.34%3A8080%2FDAZN1%2Ftracks-v1a1%2Fmono.m3u8
+
+#EXTINF:-1 tvg-id="" tvg-name="DAZN 2" tvg-logo="" group-title="Sports", Dazn2
+https://footfytv.pro/proxy/direct?url=http%3A%2F%2F23.237.104.106%3A8080%2FDAZN_2%2Ftracks-v1a1%2Fmono.m3u8
+
+#EXTINF:-1 tvg-id="" tvg-name="DAZN 3" tvg-logo="" group-title="Sports", Dazn3
+https://footfytv.pro/proxy/direct?url=http%3A%2F%2F23.237.104.106%3A8080%2FDAZN_3%2Ftracks-v1a1%2Fmono.m3u8
+
+#EXTINF:-1 tvg-id="" tvg-name="DAZN 4" tvg-logo="" group-title="Sports", Dazn4
+https://footfytv.pro/proxy/direct?url=http%3A%2F%2F23.237.104.106%3A8080%2FDAZN_4%2Ftracks-v1a1%2Fmono.m3u8
+
+#EXTINF:-1 tvg-id="" tvg-name="beIN Sports 1" tvg-logo="" group-title="Sports", bein1
+https://footfytv.pro/proxy/direct?url=https%3A%2F%2Fpr.footballii.ir%2Fhls2%2Fbein1.m3u8
+
+#EXTINF:-1 tvg-id="" tvg-name="beIN Sports 2" tvg-logo="" group-title="Sports", bein2
+https://footfytv.pro/proxy/direct?url=https%3A%2F%2Fladyboy.yedektv.cfd%2F%2Fbein2%2Ftracks-v1a1%2Fmono.m3u8
+
+#EXTINF:-1 tvg-id="" tvg-name="beIN Sports 3" tvg-logo="" group-title="Sports", bein3
+https://footfytv.pro/proxy/direct?url=https%3A%2F%2Fladyboy.yedektv.cfd%2F%2Fbein3%2Ftracks-v1a1%2Fmono.m3u8
+
+#EXTINF:-1 tvg-id="" tvg-name="beIN Sports 4" tvg-logo="" group-title="Sports", bein4
+https://footfytv.pro/proxy/direct?url=https%3A%2F%2Fladyboy.yedektv.cfd%2F%2Fbein4%2Ftracks-v1a1%2Fmono.m3u8
