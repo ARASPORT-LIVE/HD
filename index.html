@@ -76,7 +76,6 @@
             100% { opacity: 1; }
         }
 
-        /* ستایلی بەشی ناوەڕاست (ڤیدیۆ + پلەی لیست) */
         .content-area {
             display: flex;
             flex-direction: row;
@@ -94,9 +93,8 @@
             height: 480px;
         }
 
-        /* بەشی پلەی لیست */
         .playlist-sidebar {
-            width: 280px;
+            width: 300px;
             background: #0f172a;
             border-right: 1px solid #334155;
             display: flex;
@@ -134,7 +132,6 @@
             color: #fff;
         }
 
-        /* بەشی تێکستی جوڵاو */
         .ticker-bar {
             background: #0284c7;
             color: #ffffff;
@@ -161,7 +158,7 @@
             }
             .playlist-sidebar {
                 width: 100%;
-                max-height: 200px;
+                max-height: 220px;
             }
             .video-js {
                 height: 260px;
@@ -178,28 +175,19 @@
         </div>
 
         <div class="content-area">
-            <!-- بەشی لێدانی ڤیدیۆ -->
             <div class="video-container">
                 <video 
                     id="ara-sport-player" 
                     class="video-js vjs-default-skin vjs-big-play-centered" 
                     controls 
                     preload="auto">
-                    <source src="https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8" type="application/x-mpegURL">
                 </video>
             </div>
 
-            <!-- بەشی لیستی کەناڵەکان / پلەی لیست -->
             <div class="playlist-sidebar">
                 <div class="playlist-title">لیستی کەناڵەکان</div>
-                <div class="playlist-item active" onclick="changeStream('https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', this)">
-                    📺 کەناڵی ١ (HD)
-                </div>
-                <div class="playlist-item" onclick="changeStream('https://playertest.longtailvideo.com/adaptive/bbcaa/bbb360p.m3u8', this)">
-                    📺 کەناڵی ٢ (SD)
-                </div>
-                <div class="playlist-item" onclick="changeStream('YOUR_M3U8_LINK_HERE', this)">
-                    📺 ARA SPORT 3
+                <div id="playlist-items">
+                    <div class="playlist-item">تکایە چاوەڕێ بکە...</div>
                 </div>
             </div>
         </div>
@@ -216,24 +204,71 @@
     <script>
         var player = videojs('ara-sport-player');
 
-        // فەنکشن بۆ گۆڕینی کەناڵ لە پلەی لیستەکەوە
-        function changeStream(url, element) {
-            // سڕینەوەی ستافی active لە کەناڵەکانی تر
-            var items = document.querySelectorAll('.playlist-item');
-            items.forEach(function(item) {
-                item.classList.remove('active');
-            });
-            
-            // دیاریکردنی کەناڵی هەڵبژێردراو
-            element.classList.add('active');
+        // فەنکشنی خوێندنەوەی فایلی M3U و دروستکردنی لیستی کەناڵەکان
+        async function loadM3UPlaylist() {
+            try {
+                const response = await fetch('playlist.m3u');
+                const text = await response.text();
+                
+                const lines = text.split('\n');
+                const channels = [];
+                let currentName = '';
 
-            // گۆڕینی لینکی پەخش و لێدانی
+                lines.forEach(line => {
+                    line = line.trim();
+                    if (line.startsWith('#EXTINF:')) {
+                        const parts = line.split(',');
+                        currentName = parts[parts.length - 1].trim();
+                    } else if (line && !line.startsWith('#')) {
+                        if (currentName) {
+                            channels.push({ name: currentName, url: line });
+                            currentName = '';
+                        }
+                    }
+                });
+
+                renderPlaylist(channels);
+            } catch (error) {
+                document.getElementById('playlist-items').innerHTML = '<div class="playlist-item">کێشەیەک لە بارکردنی لیستەکە هەیە</div>';
+            }
+        }
+
+        function renderPlaylist(channels) {
+            const container = document.getElementById('playlist-items');
+            container.innerHTML = '';
+
+            channels.forEach((channel, index) => {
+                const div = document.createElement('div');
+                div.className = `playlist-item ${index === 0 ? 'active' : ''}`;
+                div.innerHTML = `📺 ${channel.name}`;
+                div.onclick = function() {
+                    playChannel(channel.url, this);
+                };
+                container.appendChild(div);
+            });
+
+            // لێدانی کەناڵی یەکەم بە ئۆتۆماتیکی
+            if (channels.length > 0) {
+                playChannel(channels[0].url, null);
+            }
+        }
+
+        function playChannel(url, element) {
+            if (element) {
+                const items = document.querySelectorAll('.playlist-item');
+                items.forEach(item => item.classList.remove('active'));
+                element.classList.add('active');
+            }
+
             player.src({
                 src: url,
                 type: 'application/x-mpegURL'
             });
             player.play();
         }
+
+        // دەستپێکردنی بارکردنی M3U
+        loadM3UPlaylist();
     </script>
 </body>
 </html>
