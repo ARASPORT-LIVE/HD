@@ -129,11 +129,16 @@
             height: 480px;
         }
 
+        /* چاککردنی داپۆشینی ئایکۆنی پلەی ڕاستەقینەی Video.js */
+        .video-js .vjs-big-play-button {
+            z-index: 5 !important;
+        }
+
         .vjs-watermark-logo {
             position: absolute;
             top: 15px;
             right: 15px;
-            z-index: 10;
+            z-index: 4;
             pointer-events: none;
             display: flex;
             align-items: center;
@@ -364,7 +369,8 @@
                 تایمەری ترایەڵ تەواو بوو! تکایە <span id="cooldownTimer" style="font-weight: bold; color: #fff;">05:00</span> چاوەڕێ بکە بۆ ترایەڵی داهاتوو.
             </div>
 
-            <p id="overlayIntroMsg">بۆ بینینی بەردەوامی پەخشەکە، تەواوی ماک ئادرێسەکەت بۆ ئادمیگراسی بنێرە:</p>
+            <!-- گۆڕینی دەقەکە بەپێی داواکارییەکەت -->
+            <p id="overlayIntroMsg">بۆ بینینی بەردەوامی پەخشەکە، تەواوی ماک ئادرێسەکەت بۆ ئەدمین بنێرە:</p>
             
             <div class="mac-box">
                 <span id="deviceMac">باردەکرێت...</span>
@@ -489,30 +495,46 @@
             }, 1000);
         }
 
-        // --- ڕێکخستنی ترایەڵ و تایمەری ٥ خولەکی بلۆککردن (Cooldown) ---
+        // --- ڕێکخستنی کاتی ترایەڵ بۆ ئەوەی لە ڕیفریشدا بەردەوام بێت ---
         let trialInterval;
         let cooldownInterval;
 
         function startTrialTimer() {
             document.getElementById("trialBadge").style.display = "flex";
-            let trialSecondsLeft = 60;
+            
+            const now = new Date().getTime();
+            let trialEnd = localStorage.getItem("ara_trial_end_time");
+
+            if (!trialEnd) {
+                // ئەگەر یەکەم جار بێت، کاتی کۆتایی هاتنی ٦٠ چڕکە تۆمار بکە
+                trialEnd = now + (60 * 1000);
+                localStorage.setItem("ara_trial_end_time", trialEnd);
+            } else {
+                trialEnd = parseInt(trialEnd);
+            }
+
+            if (trialInterval) clearInterval(trialInterval);
 
             trialInterval = setInterval(function() {
-                trialSecondsLeft--;
-                let mins = Math.floor(trialSecondsLeft / 60);
-                let secs = trialSecondsLeft % 60;
-                document.getElementById("trialTimer").innerText = 
-                    (mins < 10 ? "0" + mins : mins) + ":" + (secs < 10 ? "0" + secs : secs);
+                const currentTime = new Date().getTime();
+                const trialSecondsLeft = Math.ceil((trialEnd - currentTime) / 1000);
 
                 if (trialSecondsLeft <= 0) {
                     clearInterval(trialInterval);
                     document.getElementById("trialBadge").style.display = "none";
                     if (player) player.pause();
                     
+                    localStorage.removeItem("ara_trial_end_time");
+                    
                     const cooldownEnd = new Date().getTime() + (5 * 60 * 1000);
                     localStorage.setItem("ara_trial_cooldown", cooldownEnd);
                     
                     showCooldownOverlay(cooldownEnd);
+                } else {
+                    let mins = Math.floor(trialSecondsLeft / 60);
+                    let secs = trialSecondsLeft % 60;
+                    document.getElementById("trialTimer").innerText = 
+                        (mins < 10 ? "0" + mins : mins) + ":" + (secs < 10 ? "0" + secs : secs);
                 }
             }, 1000);
         }
@@ -589,6 +611,7 @@
             if (trialInterval) clearInterval(trialInterval);
             if (cooldownInterval) clearInterval(cooldownInterval);
             localStorage.removeItem("ara_trial_cooldown");
+            localStorage.removeItem("ara_trial_end_time");
             document.getElementById("cooldownNotice").style.display = "none";
             document.getElementById("authOverlay").style.display = "none";
             startCountdown(foundDevice.expire);
