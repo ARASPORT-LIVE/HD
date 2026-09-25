@@ -70,11 +70,23 @@
             gap: 12px;
         }
 
-        /* ستایلی تایمەری ماوەی ئابوونە لەسەر پلەیەر */
         .expire-countdown-badge {
             background: rgba(30, 41, 59, 0.9);
             border: 1px solid #38bdf8;
             color: #38bdf8;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            direction: ltr;
+        }
+
+        .trial-badge {
+            background-color: #f59e0b;
+            color: white;
             padding: 5px 12px;
             border-radius: 20px;
             font-size: 13px;
@@ -208,7 +220,7 @@
             100% { transform: translate3d(100%, 0, 0); }
         }
 
-        /* --- شاشەی ئەکتیڤکردنی ماک ئادرس --- */
+        /* --- شاشەی ئەکتیڤکردن --- */
         .auth-overlay {
             position: fixed;
             top: 0;
@@ -225,7 +237,7 @@
 
         .auth-card {
             background: #1e293b;
-            padding: 30px;
+            padding: 25px;
             border-radius: 12px;
             border: 1px solid #334155;
             text-align: center;
@@ -274,6 +286,44 @@
             font-size: 12px;
         }
 
+        .send-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .send-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-size: 13px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            text-decoration: none;
+        }
+
+        .whatsapp-btn {
+            background: #16a34a;
+        }
+
+        .whatsapp-btn:hover {
+            background: #15803d;
+        }
+
+        .sms-btn {
+            background: #0284c7;
+        }
+
+        .sms-btn:hover {
+            background: #0369a1;
+        }
+
         .auth-btn {
             width: 100%;
             padding: 12px;
@@ -298,7 +348,6 @@
             line-height: 1.5;
         }
 
-        /* بەشی زانیاری پەیوەندی لە خوارەوەی ویندۆکە */
         .contact-box {
             margin-top: 18px;
             padding-top: 15px;
@@ -332,21 +381,29 @@
 </head>
 <body>
 
-    <!-- شاشەی ئەکتیڤکردن بە MAC Address -->
-    <div id="authOverlay" class="auth-overlay">
+    <!-- شاشەی ئەکتیڤکردن -->
+    <div id="authOverlay" class="auth-overlay" style="display: none;">
         <div class="auth-card">
             <h2>ئەکتیڤکردنی ئامێرەکەت</h2>
-            <p>ئەمە ماک ئادرێسی تایبەت بە ئامێرەکەتە. کۆپی بکە و بۆ ئادمیگراسی بنێرە تاوەکو پەخشەکەت بۆ چالاک بکات:</p>
+            <p id="overlayIntroMsg">کاتی تاقیکردنەوە (Trial) تەواو بوو! بۆ بینینی بەردەوامی پەخشەکە، تەواوی ماک ئادرێسەکەت بۆ ئادمیگراسی بنێرە:</p>
             
             <div class="mac-box">
                 <span id="deviceMac">باردەکرێت...</span>
                 <button class="copy-btn" onclick="copyMac()">کۆپی</button>
             </div>
 
-            <button onclick="checkActivation()" class="auth-btn">پشکنینی ئەکتیڤبوون</button>
-            <div id="statusMsg" class="status-msg">ئامێرەکەت ئەکتیڤ نەکراوە!</div>
+            <div class="send-actions">
+                <a id="waLink" href="#" target="_blank" class="send-btn whatsapp-btn">
+                    <i class="fab fa-whatsapp"></i> واتسئاپ
+                </a>
+                <a id="smsLink" href="#" class="send-btn sms-btn">
+                    <i class="fas fa-comment-alt"></i> نامە (SMS)
+                </a>
+            </div>
 
-            <!-- زیاترکردنی زانیاری پەیوەندیکردن لە خوارەوەی ویندۆکە -->
+            <button onclick="checkActivation(true)" class="auth-btn">پشکنینی ئەکتیڤبوون</button>
+            <div id="statusMsg" class="status-msg">ئەم ئامێرە ئەکتیڤ نەکراوە!</div>
+
             <div class="contact-box">
                 بۆ زانیاری زیاتر یان نوێکردنەوەی ئابوونە، پەیوەندی بکە بە:
                 <div class="contact-phones">
@@ -360,7 +417,11 @@
         <div class="player-header">
             <div class="brand-title">ARA SPORT LIVE</div>
             <div class="header-right">
-                <!-- تایمەری نیشاندانی کاتی ماوەی ئێکسپایەر -->
+                <!-- تایمەری ترایەڵ (١ خولەک) -->
+                <div id="trialBadge" class="trial-badge" style="display: none;">
+                    ⏱️ ترایەڵ: <span id="trialTimer">01:00</span>
+                </div>
+                <!-- تایمەری ئابوونەی ئاسایی -->
                 <div id="countdownBox" class="expire-countdown-badge" style="display: none;">
                     ⏳ <span id="countdownTimer">00d 00h 00m</span>
                 </div>
@@ -396,13 +457,9 @@
     <!-- Video.js JS -->
     <script src="https://vjs.zencdn.net/7.20.3/video.js"></script>
     <script>
-        // =============================================================
-        // 📋 خشتەی ئامێرە ڕێگەپێدراوەکان (MAC + Expiration Date)
-        // =============================================================
         const ALLOWED_DEVICES = [
-            { mac: "87:90:2E:49:76:1E", expire: "2026-10-25T23:59:59" }, // مۆبایلەکەی تۆ (بۆ یەک مانگ)
-            { mac: "AA:11:BB:22:CC:33", expire: "2026-12-31T23:59:59" }, 
-            { mac: "00:1A:2C:3D:4E:5F", expire: "2026-10-15T18:00:00" }
+            { mac: "87:90:2E:49:76:1E", expire: "2026-10-25T23:59:59" },
+            { mac: "AA:11:BB:22:CC:33", expire: "2026-12-31T23:59:59" }
         ];
 
         function getDeviceMac() {
@@ -422,6 +479,11 @@
         const currentMac = getDeviceMac();
         document.getElementById("deviceMac").innerText = currentMac;
 
+        const targetPhone = "9647501224994";
+        const msgText = encodeURIComponent(`سڵاو، تکایە ئابوونەی ئەم ئامێرە ئەکتیڤ بکە:\nMAC Address: ${currentMac}`);
+        document.getElementById("waLink").href = `https://wa.me/${targetPhone}?text=${msgText}`;
+        document.getElementById("smsLink").href = `sms:${targetPhone}?body=${msgText}`;
+
         function copyMac() {
             navigator.clipboard.writeText(currentMac);
             alert("ماک ئادرێسەکەت کۆپی کرا: " + currentMac);
@@ -430,6 +492,7 @@
         let timerInterval;
 
         function startCountdown(expireDateStr) {
+            document.getElementById("trialBadge").style.display = "none";
             document.getElementById("countdownBox").style.display = "flex";
             const expireTime = new Date(expireDateStr).getTime();
 
@@ -442,7 +505,6 @@
                 if (distance < 0) {
                     clearInterval(timerInterval);
                     document.getElementById("countdownTimer").innerText = "ئێکسپایەر بووە";
-                    // ڕاگرتنی پلەیەرەکە و نیشاندانی شاشەی داواکاری کاتێک کاتەکە بەسەر دەچێت
                     if (player) player.pause();
                     document.getElementById("statusMsg").innerText = "ئابوونەکەت بەسەرچوو! تکایە نوێی بکەرەوە.";
                     document.getElementById("authOverlay").style.display = "flex";
@@ -458,14 +520,45 @@
             }, 1000);
         }
 
-        function checkActivation() {
+        // --- سیستەمی تایمەری ترایەڵ (١ خولەک = ٦٠ چڕکە) ---
+        let trialInterval;
+        let trialSecondsLeft = 60;
+
+        function startTrialTimer() {
+            document.getElementById("trialBadge").style.display = "flex";
+            
+            trialInterval = setInterval(function() {
+                trialSecondsLeft--;
+                
+                let mins = Math.floor(trialSecondsLeft / 60);
+                let secs = trialSecondsLeft % 60;
+                document.getElementById("trialTimer").innerText = 
+                    (mins < 10 ? "0" + mins : mins) + ":" + (secs < 10 ? "0" + secs : secs);
+
+                if (trialSecondsLeft <= 0) {
+                    clearInterval(trialInterval);
+                    document.getElementById("trialBadge").style.display = "none";
+                    if (player) player.pause();
+                    document.getElementById("statusMsg").innerText = "کاتی ترایەڵی ١ خولەکی تەواو بوو!";
+                    document.getElementById("authOverlay").style.display = "flex";
+                }
+            }, 1000);
+        }
+
+        function checkActivation(isManualCheck = false) {
             const now = new Date().getTime();
             const foundDevice = ALLOWED_DEVICES.find(item => item.mac === currentMac);
             const statusMsg = document.getElementById("statusMsg");
 
             if (!foundDevice) {
-                statusMsg.innerText = "ئەم ماک ئادرێسە ئەکتیڤ نەکراوە!";
-                statusMsg.style.color = "#ef4444";
+                if (isManualCheck) {
+                    statusMsg.innerText = "ئەم ماک ئادرێسە هێشتا ئەکتیڤ نەکراوە!";
+                    statusMsg.style.color = "#ef4444";
+                } else {
+                    // ئەگەر یەکەم جار بوو و ئەکتیڤ نەبوو، دەست بە ترایەڵ دەکات
+                    initPlayer();
+                    startTrialTimer();
+                }
                 return false;
             }
 
@@ -474,10 +567,12 @@
             if (now > expireTime) {
                 statusMsg.innerText = "ئابوونەکەت لە بەرواری (" + foundDevice.expire.split('T')[0] + ") بەسەرچووە!";
                 statusMsg.style.color = "#f59e0b";
+                document.getElementById("authOverlay").style.display = "flex";
                 return false;
             }
 
-            // ئەگەر چالاک بوو، ویندۆکە لادەچێت و کاتژمێری بژارەی ماوەکە دەستپێدەکات
+            // ئەگەر ئەکتیڤ بوو
+            if (trialInterval) clearInterval(trialInterval);
             document.getElementById("authOverlay").style.display = "none";
             startCountdown(foundDevice.expire);
             initPlayer();
@@ -564,6 +659,7 @@
             }
         }
 
+        // بەگەڕخستنی سیستەمەکە
         checkActivation();
     </script>
 </body>
