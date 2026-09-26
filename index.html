@@ -158,7 +158,7 @@
             right: 15px !important;
             z-index: 1000 !important;
             pointer-events: none;
-            display: none; /* بە شێوەی سەرەتایی دەشاردرێتەوە و تەنها لەسەر کەناڵی وەرزشی دیار دەبێت */
+            display: none;
             align-items: center;
             gap: 6px;
             background: rgba(15, 23, 42, 0.75);
@@ -253,7 +253,6 @@
             font-weight: bold;
         }
 
-        /* --- تیکەری دەستکاریکراو (باریکتر) --- */
         .ticker-bar {
             background: #0284c7;
             color: #ffffff;
@@ -277,7 +276,6 @@
             100% { transform: translate3d(100%, 0, 0); }
         }
 
-        /* --- شاشەی ئەکتیڤکردن --- */
         .auth-overlay {
             position: fixed;
             top: 0;
@@ -439,7 +437,6 @@
 </head>
 <body>
 
-    <!-- شاشەی ئەکتیڤکردن -->
     <div id="authOverlay" class="auth-overlay" style="display: none;">
         <div class="auth-card">
             <h2>ئەکتیڤکردنی ئامێرەکەت</h2>
@@ -475,7 +472,7 @@
             <div id="statusMsg" class="status-msg">ئەم ئامێرە ئەکتیڤ نەکراوە!</div>
 
             <div class="contact-box">
-                بۆ زانیاری زیاتر یان نوێکردنەوەی ئابوونە، پەیوەندی بکە بە:
+                بۆ زانیاری زیاتر یان نوێکردنەوەی سیستمەکە پەیوەندی بکەن بە:
                 <div class="contact-phones">
                     07501224994 &nbsp;|&nbsp; 07748134314
                 </div>
@@ -485,7 +482,6 @@
 
     <div class="main-wrapper">
         <div class="player-header">
-            <!-- ناوی نوێکراوەی سەرەوە -->
             <div class="brand-title">ARA TV</div>
             <div class="header-right">
                 <div id="trialBadge" class="trial-badge" style="display: none;">
@@ -516,7 +512,6 @@
             </div>
         </div>
 
-        <!-- تیکەری نوێکراوە -->
         <div class="ticker-bar">
             <div class="ticker-text">
                 بەخێر بێن بۆ سیستمی پەخشی ARA TV، تکایە لەکاتی بوونی هەر کێشە و گرفتێکدا پەیوەندی بکەن بە ژمارە تەلەفۆنی 07748134314 یان 07501224994
@@ -528,7 +523,9 @@
     <script src="https://vjs.zencdn.net/7.20.3/video.js"></script>
     <script>
         const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRgvWrahp_pwJWRnX4QCE4KmuhUb6gl5Rk_rDpjA2ODuCNH1nyLUcD-L0g0I6PrD45F0hb7odKi_zbW/pub?gid=250464113&single=true&output=csv";
-        const GITHUB_JSON_URL = "https://raw.githubusercontent.com/ARASPORT-LIVE/HD/main/allowed.json";
+        
+        // لینکی Sheet1 (ماک ئادرێسەکان)
+        const GOOGLE_SHEET_MAC_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRgvWrahp_pwJWRnX4QCE4KmuhUb6gl5Rk_rDpjA2ODuCNH1nyLUcD-L0g0I6PrD45F0hb7odKi_zbW/pub?gid=0&single=true&output=csv"; 
 
         function getDeviceMac() {
             let mac = localStorage.getItem("ara_device_mac");
@@ -541,7 +538,7 @@
                 mac = macArr.join(":");
                 localStorage.setItem("ara_device_mac", mac);
             }
-            return mac;
+            return mac.toUpperCase();
         }
 
         const currentMac = getDeviceMac();
@@ -563,10 +560,34 @@
 
         let timerInterval;
 
+        function parseDateString(dateStr) {
+            if (!dateStr) return null;
+            dateStr = dateStr.trim();
+            
+            // ئەگەر بە شێوازی 27/10/2027 بوو، دەیگۆڕێت بۆ 2027-10-27
+            if (dateStr.includes('/')) {
+                const parts = dateStr.split(' ');
+                const dateParts = parts[0].split('/');
+                if (dateParts.length === 3) {
+                    const day = dateParts[0];
+                    const month = dateParts[1];
+                    const year = dateParts[2];
+                    const timePart = parts[1] || '23:59:59';
+                    dateStr = `${year}-${month}-${day}T${timePart}`;
+                }
+            } else if (dateStr.includes(' ') && !dateStr.includes('T')) {
+                dateStr = dateStr.replace(' ', 'T');
+            }
+            
+            return new Date(dateStr);
+        }
+
         function startCountdown(expireDateStr) {
             document.getElementById("trialBadge").style.display = "none";
             document.getElementById("countdownBox").style.display = "flex";
-            const expireTime = new Date(expireDateStr).getTime();
+            
+            const expireDateObj = parseDateString(expireDateStr);
+            const expireTime = expireDateObj ? expireDateObj.getTime() : 0;
 
             if (timerInterval) clearInterval(timerInterval);
 
@@ -574,7 +595,7 @@
                 const now = new Date().getTime();
                 const distance = expireTime - now;
 
-                if (distance < 0) {
+                if (distance < 0 || isNaN(distance)) {
                     clearInterval(timerInterval);
                     document.getElementById("countdownTimer").innerText = "ئێکسپایەر بووە";
                     if (player) player.pause();
@@ -667,12 +688,25 @@
             let allowedDevices = [];
 
             try {
-                const response = await fetch(GITHUB_JSON_URL + "?t=" + new Date().getTime());
+                const response = await fetch(GOOGLE_SHEET_MAC_CSV_URL + "&t=" + new Date().getTime());
                 if (response.ok) {
-                    allowedDevices = await response.json();
+                    const csvText = await response.text();
+                    const lines = csvText.split("\n");
+                    lines.forEach((line, index) => {
+                        if (index === 0 || !line.trim()) return;
+                        const cols = line.split(",");
+                        
+                        // خوێندنەوەی MAC (ستوونی A) و ExpireDate (ستوونی C)
+                        if (cols.length >= 3) {
+                            allowedDevices.push({
+                                mac: cols[0].trim().toUpperCase(),
+                                expire: cols[2].trim()
+                            });
+                        }
+                    });
                 }
             } catch (e) {
-                console.log("Error loading JSON from GitHub:", e);
+                console.log("Error loading MACs from Google Sheets:", e);
             }
 
             const now = new Date().getTime();
@@ -694,7 +728,8 @@
                 return false;
             }
 
-            const expireTime = new Date(foundDevice.expire).getTime();
+            const expireDateObj = parseDateString(foundDevice.expire);
+            const expireTime = expireDateObj ? expireDateObj.getTime() : 0;
 
             if (now > expireTime) {
                 statusMsg.innerText = "ئابوونەکەت بەسەرچوو!";
@@ -858,7 +893,6 @@
                 activeChannelElement = element;
             }
 
-            // فلتەرکردنی لۆگۆ: تەنها لەر کاتێکدا دەرکەوێت کە گرووپەکە "وەرزشی" بێت
             const watermarkEl = document.getElementById('playerWatermark');
             if (watermarkEl) {
                 if (currentCategory.trim() === 'وەرزشی') {
