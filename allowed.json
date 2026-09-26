@@ -62,5 +62,9 @@
   {
     "mac": "مندالان",
     "expire": "https://65f16f0fdfc51.streamlock.net/afarinTV/livestream/chunklist_w1054217716.m3u8"
+  },
+  {
+    "mac": "خێزانی",
+    "expire": "https://vsd115.okcdn.ru/hls/3527542770279.m3u8/sig/SNhwgB0w7cc/expires/1790538008446/srcIp/62.201.244.135/urls/95.163.35.54/clientType/0/srcAg/CHROME/mid/4728653618791/3527542770279_medium/index.m3u8"
   }
 ]
