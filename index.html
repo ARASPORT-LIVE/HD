@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ARA SPORT LIVE - Web Player</title>
     
-    <!-- Video.js CSS + Font -->
+    <!-- Video.js CSS -->
     <link href="https://vjs.zencdn.net/7.20.3/video-js.css" rel="stylesheet" />
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -56,18 +56,22 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 2px solid #2563eb;
+            gap: 8px;
+            flex-wrap: nowrap;
         }
 
         .brand-title {
             font-size: 20px;
             font-weight: bold;
             color: #38bdf8;
+            white-space: nowrap;
         }
 
         .header-right {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
+            white-space: nowrap;
         }
 
         .expire-countdown-badge {
@@ -124,19 +128,17 @@
             background: #000;
         }
 
-        /* دڵنیابوونەوە لە نیشاندانی ئایکۆنەکانی Video.js */
         .video-js {
             width: 100%;
             height: 480px;
             font-family: Arial, Helvetica, sans-serif !important;
         }
 
-        /* لۆگۆی ARA SPORT HD لەسەر پلەیەرەکە */
-        .vjs-watermark-logo {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            z-index: 10;
+        .video-js .vjs-watermark-logo {
+            position: absolute !important;
+            top: 15px !important;
+            right: 15px !important;
+            z-index: 1000 !important;
             pointer-events: none;
             display: flex;
             align-items: center;
@@ -356,10 +358,52 @@
             margin-bottom: 15px;
         }
 
+        /* --- تایبەت بە مۆبایل و شاشەی بچووک (Responsive Design) --- */
         @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .player-header {
+                padding: 10px 12px;
+                gap: 6px;
+            }
+
+            .brand-title {
+                font-size: 13px;
+            }
+
+            .header-right {
+                gap: 5px;
+            }
+
+            .expire-countdown-badge, 
+            .trial-badge {
+                padding: 3px 7px;
+                font-size: 10px;
+                border-radius: 12px;
+            }
+
+            .live-badge {
+                padding: 3px 7px;
+                font-size: 10px;
+                border-radius: 12px;
+            }
+
             .content-area { flex-direction: column; }
             .playlist-sidebar { width: 100%; max-height: 220px; }
             .video-js { height: 260px; }
+        }
+
+        @media (max-width: 400px) {
+            .brand-title {
+                font-size: 11px;
+            }
+            .expire-countdown-badge, 
+            .trial-badge {
+                font-size: 9px;
+                padding: 2px 5px;
+            }
         }
     </style>
 </head>
@@ -381,7 +425,6 @@
                 <button class="copy-btn" onclick="copyMac()">کۆپی</button>
             </div>
 
-            <!-- دوگمەکانی واتسئاپ بۆ هەردوو ژمارەکە -->
             <div class="send-actions">
                 <div class="send-row">
                     <a id="waLink1" href="#" target="_blank" class="send-btn whatsapp-btn">
@@ -415,7 +458,7 @@
             <div class="brand-title">ARA SPORT LIVE</div>
             <div class="header-right">
                 <div id="trialBadge" class="trial-badge" style="display: none;">
-                    ⏱️ ترایەڵ: <span id="trialTimer">01:00</span>
+                    ⏱️ <span id="trialTimer">01:00</span>
                 </div>
                 <div id="countdownBox" class="expire-countdown-badge" style="display: none;">
                     ⏳ <span id="countdownTimer">00d 00h 00m</span>
@@ -466,10 +509,10 @@
         const currentMac = getDeviceMac();
         document.getElementById("deviceMac").innerText = currentMac;
 
-        // ڕێکخستنی واتسئاپ بۆ هەردوو ژمارەکە
         const phone1 = "9647501224994";
         const phone2 = "9647748134314";
-        const msgText = encodeURIComponent(`سڵاو، تکایە ئابوونەی ئەم ئامێرە ئەکتیڤ بکە:\nMAC Address: ${currentMac}`);
+        
+        const msgText = encodeURIComponent(`سڵاو، تکایە ئەم ئامێرە ئەکتیڤ بکە:\nMAC Address:\n${currentMac}`);
         
         document.getElementById("waLink1").href = `https://wa.me/${phone1}?text=${msgText}`;
         document.getElementById("waLink2").href = `https://wa.me/${phone2}?text=${msgText}`;
@@ -640,7 +683,6 @@
                 player = videojs('ara-sport-player');
 
                 player.ready(function() {
-                    // زامنکردنی لۆگۆی ARA SPORT HD لەسەر هەموو کەناڵەکان
                     var watermark = document.createElement('div');
                     watermark.className = 'vjs-watermark-logo';
                     watermark.innerHTML = `<div class="vjs-watermark-text">ARA SPORT <span>HD</span></div>`;
@@ -653,7 +695,7 @@
 
         async function loadM3UPlaylist() {
             try {
-                const response = await fetch('playlist.m3u');
+                const response = await fetch('playlist.m3u?v=' + new Date().getTime());
                 const text = await response.text();
 
                 const lines = text.split('\n');
