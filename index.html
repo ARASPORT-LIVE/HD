@@ -21,7 +21,6 @@
 
         * {
             box-sizing: border-box;
-            font-family: 'GoranFontRegular-Regular', Tahoma, Arial, sans-serif !important;
             margin: 0;
             padding: 0;
         }
@@ -29,6 +28,7 @@
         body {
             background-color: #0f172a;
             color: #ffffff;
+            font-family: 'GoranFontRegular-Regular', Tahoma, Arial, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -56,18 +56,22 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 2px solid #2563eb;
+            gap: 8px;
+            flex-wrap: nowrap;
         }
 
         .brand-title {
             font-size: 20px;
             font-weight: bold;
             color: #38bdf8;
+            white-space: nowrap;
         }
 
         .header-right {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
+            white-space: nowrap;
         }
 
         .expire-countdown-badge {
@@ -127,27 +131,24 @@
         .video-js {
             width: 100%;
             height: 480px;
+            font-family: Arial, Helvetica, sans-serif !important;
         }
 
-        /* چاککردنی داپۆشینی ئایکۆنی پلەی ڕاستەقینەی Video.js */
-        .video-js .vjs-big-play-button {
-            z-index: 5 !important;
-        }
-
-        .vjs-watermark-logo {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            z-index: 4;
+        .video-js .vjs-watermark-logo {
+            position: absolute !important;
+            top: 15px !important;
+            right: 15px !important;
+            z-index: 1000 !important;
             pointer-events: none;
             display: flex;
             align-items: center;
             gap: 6px;
-            background: rgba(15, 23, 42, 0.65);
-            padding: 6px 12px;
+            background: rgba(15, 23, 42, 0.75);
+            padding: 6px 14px;
             border-radius: 6px;
-            border: 1px solid rgba(56, 189, 248, 0.4);
+            border: 1px solid rgba(56, 189, 248, 0.5);
             backdrop-filter: blur(4px);
+            font-family: 'GoranFontRegular-Regular', Tahoma, sans-serif !important;
         }
 
         .vjs-watermark-text {
@@ -241,7 +242,7 @@
             border-radius: 12px;
             border: 1px solid #334155;
             text-align: center;
-            max-width: 440px;
+            max-width: 460px;
             width: 90%;
             box-shadow: 0 10px 25px rgba(0,0,0,0.5);
         }
@@ -281,17 +282,23 @@
 
         .send-actions {
             display: flex;
-            gap: 10px;
+            flex-direction: column;
+            gap: 8px;
             margin-bottom: 15px;
+        }
+
+        .send-row {
+            display: flex;
+            gap: 10px;
         }
 
         .send-btn {
             flex: 1;
-            padding: 10px;
+            padding: 9px;
             border: none;
             border-radius: 6px;
             color: white;
-            font-size: 13px;
+            font-size: 12px;
             cursor: pointer;
             font-weight: bold;
             display: flex;
@@ -351,10 +358,52 @@
             margin-bottom: 15px;
         }
 
+        /* --- تایبەت بە مۆبایل و شاشەی بچووک (Responsive) --- */
         @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .player-header {
+                padding: 10px 12px;
+                gap: 6px;
+            }
+
+            .brand-title {
+                font-size: 13px;
+            }
+
+            .header-right {
+                gap: 5px;
+            }
+
+            .expire-countdown-badge, 
+            .trial-badge {
+                padding: 3px 7px;
+                font-size: 10px;
+                border-radius: 12px;
+            }
+
+            .live-badge {
+                padding: 3px 7px;
+                font-size: 10px;
+                border-radius: 12px;
+            }
+
             .content-area { flex-direction: column; }
             .playlist-sidebar { width: 100%; max-height: 220px; }
             .video-js { height: 260px; }
+        }
+
+        @media (max-width: 400px) {
+            .brand-title {
+                font-size: 11px;
+            }
+            .expire-countdown-badge, 
+            .trial-badge {
+                font-size: 9px;
+                padding: 2px 5px;
+            }
         }
     </style>
 </head>
@@ -369,7 +418,6 @@
                 تایمەری ترایەڵ تەواو بوو! تکایە <span id="cooldownTimer" style="font-weight: bold; color: #fff;">05:00</span> چاوەڕێ بکە بۆ ترایەڵی داهاتوو.
             </div>
 
-            <!-- گۆڕینی دەقەکە بەپێی داواکارییەکەت -->
             <p id="overlayIntroMsg">بۆ بینینی بەردەوامی پەخشەکە، تەواوی ماک ئادرێسەکەت بۆ ئەدمین بنێرە:</p>
             
             <div class="mac-box">
@@ -378,12 +426,19 @@
             </div>
 
             <div class="send-actions">
-                <a id="waLink" href="#" target="_blank" class="send-btn whatsapp-btn">
-                    <i class="fab fa-whatsapp"></i> واتسئاپ
-                </a>
-                <a id="smsLink" href="#" class="send-btn sms-btn">
-                    <i class="fas fa-comment-alt"></i> نامە (SMS)
-                </a>
+                <div class="send-row">
+                    <a id="waLink1" href="#" target="_blank" class="send-btn whatsapp-btn">
+                        <i class="fab fa-whatsapp"></i> واتسئاپ 1
+                    </a>
+                    <a id="waLink2" href="#" target="_blank" class="send-btn whatsapp-btn" style="background: #15803d;">
+                        <i class="fab fa-whatsapp"></i> واتسئاپ 2
+                    </a>
+                </div>
+                <div class="send-row">
+                    <a id="smsLink" href="#" class="send-btn sms-btn">
+                        <i class="fas fa-comment-alt"></i> بە نامە (SMS)
+                    </a>
+                </div>
             </div>
 
             <button onclick="checkActivation(true)" class="auth-btn">پشکنینی ئەکتیڤبوون</button>
@@ -403,7 +458,7 @@
             <div class="brand-title">ARA SPORT LIVE</div>
             <div class="header-right">
                 <div id="trialBadge" class="trial-badge" style="display: none;">
-                    ⏱️ ترایەڵ: <span id="trialTimer">01:00</span>
+                    ⏱️ <span id="trialTimer">01:00</span>
                 </div>
                 <div id="countdownBox" class="expire-countdown-badge" style="display: none;">
                     ⏳ <span id="countdownTimer">00d 00h 00m</span>
@@ -454,10 +509,14 @@
         const currentMac = getDeviceMac();
         document.getElementById("deviceMac").innerText = currentMac;
 
-        const targetPhone = "9647501224994";
-        const msgText = encodeURIComponent(`سڵاو، تکایە ئابوونەی ئەم ئامێرە ئەکتیڤ بکە:\nMAC Address: ${currentMac}`);
-        document.getElementById("waLink").href = `https://wa.me/${targetPhone}?text=${msgText}`;
-        document.getElementById("smsLink").href = `sms:${targetPhone}?body=${msgText}`;
+        const phone1 = "9647501224994";
+        const phone2 = "9647748134314";
+        
+        const msgText = encodeURIComponent(`سڵاو، تکایە ئەم ئامێرە ئەکتیڤ بکە:\nMAC Address:\n${currentMac}`);
+        
+        document.getElementById("waLink1").href = `https://wa.me/${phone1}?text=${msgText}`;
+        document.getElementById("waLink2").href = `https://wa.me/${phone2}?text=${msgText}`;
+        document.getElementById("smsLink").href = `sms:${phone1}?body=${msgText}`;
 
         function copyMac() {
             navigator.clipboard.writeText(currentMac);
@@ -495,7 +554,6 @@
             }, 1000);
         }
 
-        // --- ڕێکخستنی کاتی ترایەڵ بۆ ئەوەی لە ڕیفریشدا بەردەوام بێت ---
         let trialInterval;
         let cooldownInterval;
 
@@ -506,7 +564,6 @@
             let trialEnd = localStorage.getItem("ara_trial_end_time");
 
             if (!trialEnd) {
-                // ئەگەر یەکەم جار بێت، کاتی کۆتایی هاتنی ٦٠ چڕکە تۆمار بکە
                 trialEnd = now + (60 * 1000);
                 localStorage.setItem("ara_trial_end_time", trialEnd);
             } else {
@@ -638,7 +695,7 @@
 
         async function loadM3UPlaylist() {
             try {
-                const response = await fetch('playlist.m3u');
+                const response = await fetch('playlist.m3u?v=' + new Date().getTime());
                 const text = await response.text();
 
                 const lines = text.split('\n');
@@ -693,6 +750,7 @@
             }
 
             if (player) {
+                // ١. تاقیکردنەوەی ڕاستەوخۆ
                 player.src({
                     src: url,
                     type: 'application/x-mpegURL'
@@ -701,9 +759,17 @@
                 var promise = player.play();
                 if (promise !== undefined) {
                     promise.catch(function(error) {
-                        console.log("Autoplay failed, playing muted:", error);
+                        console.log("Direct play failed, trying proxied stream...", error);
+                        
+                        // ٢. هەوڵدان لە ڕێگەی پروکسی لە کاتی بوونی کێشەی CORS
+                        const proxiedUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
+                        player.src({
+                            src: proxiedUrl,
+                            type: 'application/x-mpegURL'
+                        });
+                        
                         player.muted(true);
-                        player.play();
+                        player.play().catch(e => console.log("Proxied play also failed:", e));
                     });
                 }
             }
