@@ -522,8 +522,9 @@
     <!-- Video.js JS -->
     <script src="https://vjs.zencdn.net/7.20.3/video.js"></script>
     <script>
-        const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRgvWrahp_pwJWRnX4QCE4KmuhUb6gl5Rk_rDpjA2ODuCNH1nyLUcD-L0g0I6PrD45F0hb7odKi_zbW/pub?gid=250464113&single=true&output=csv";
+        // لینکەکان بۆ Sheet1 و Sheet2
         const GOOGLE_SHEET_MAC_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRgvWrahp_pwJWRnX4QCE4KmuhUb6gl5Rk_rDpjA2ODuCNH1nyLUcD-L0g0I6PrD45F0hb7odKi_zbW/pub?gid=0&single=true&output=csv"; 
+        const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRgvWrahp_pwJWRnX4QCE4KmuhUb6gl5Rk_rDpjA2ODuCNH1nyLUcD-L0g0I6PrD45F0hb7odKi_zbW/pub?gid=250464113&single=true&output=csv";
 
         function getDeviceMac() {
             let mac = localStorage.getItem("ara_device_mac");
@@ -536,7 +537,7 @@
                 mac = macArr.join(":");
                 localStorage.setItem("ara_device_mac", mac);
             }
-            return mac.toUpperCase();
+            return mac.toUpperCase().trim();
         }
 
         const currentMac = getDeviceMac();
@@ -558,12 +559,10 @@
 
         let timerInterval;
 
-        // فانکشنی زیرەک بۆ شیکارکردنی بەروار لە هەموو شێوازەکاندا
         function parseFlexibleDate(dateStr) {
             if (!dateStr) return null;
-            dateStr = dateStr.trim();
+            dateStr = dateStr.trim().replace(/"/g, '');
 
-            // بڕینی کات و بەروار
             let parts = dateStr.split(' ');
             let datePart = parts[0];
             let timePart = parts[1] || '23:59:59';
@@ -588,8 +587,8 @@
                 return new Date(dateStr);
             }
 
-            if (month.length === 1) month = '0' + month;
-            if (day.length === 1) day = '0' + day;
+            if (month && month.length === 1) month = '0' + month;
+            if (day && day.length === 1) day = '0' + day;
 
             return new Date(`${year}-${month}-${day}T${timePart}`);
         }
@@ -695,42 +694,30 @@
             }, 1000);
         }
 
-        // فێچکردنی فایلی CSV بە پشت بەستن بە پروکسی بۆ نەهێشتنی بلۆکبوون
-        async function fetchCsvWithFallback(url) {
-            try {
-                let res = await fetch(url + "&t=" + new Date().getTime());
-                if (res.ok) return await res.text();
-            } catch (e) {}
-
-            try {
-                let proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
-                let res = await fetch(proxyUrl);
-                if (res.ok) return await res.text();
-            } catch (e) {}
-
-            return null;
-        }
-
         async function checkActivation(isManualCheck = false) {
             const statusMsg = document.getElementById("statusMsg");
             if (isManualCheck) statusMsg.innerText = "چاوەڕوانبە... لە پشکنیندایە";
 
             let allowedDevices = [];
-            const csvText = await fetchCsvWithFallback(GOOGLE_SHEET_MAC_CSV_URL);
-
-            if (csvText) {
-                const lines = csvText.split("\n");
-                lines.forEach((line, index) => {
-                    if (index === 0 || !line.trim()) return;
-                    const cols = line.split(",");
-                    
-                    if (cols.length >= 3) {
-                        allowedDevices.push({
-                            mac: cols[0].trim().replaceAll('"', '').toUpperCase(),
-                            expire: cols[2].trim().replaceAll('"', '')
-                        });
-                    }
-                });
+            
+            try {
+                const res = await fetch(GOOGLE_SHEET_MAC_CSV_URL + "&cache=" + Date.now());
+                if (res.ok) {
+                    const csvText = await res.text();
+                    const lines = csvText.split("\n");
+                    lines.forEach((line, index) => {
+                        if (index === 0 || !line.trim()) return;
+                        const cols = line.split(",");
+                        if (cols.length >= 3) {
+                            allowedDevices.push({
+                                mac: cols[0].replace(/"/g, '').trim().toUpperCase(),
+                                expire: cols[2].replace(/"/g, '').trim()
+                            });
+                        }
+                    });
+                }
+            } catch (e) {
+                console.log("Error loading sheet:", e);
             }
 
             const now = new Date().getTime();
@@ -738,7 +725,7 @@
 
             if (!foundDevice) {
                 if (isManualCheck) {
-                    statusMsg.innerText = "ئەم ماک ئادرێسە لە شیتەکەدا نەدۆزرایەوە یان ئەکتیڤ نەکراوە!";
+                    statusMsg.innerText = "ئەم ماک ئادرێسە لە شیتەکەدا نەدۆزرایەوە!";
                     statusMsg.style.color = "#ef4444";
                 } else {
                     const storedCooldown = localStorage.getItem("ara_trial_cooldown");
@@ -806,29 +793,14 @@
             const overlay = document.getElementById('streamStatusOverlay');
             if (isWaiting) {
                 overlay.style.display = 'flex';
-                if (activeChannelElement) {
-                    let tag = activeChannelElement.querySelector('.channel-status-tag');
-                    if (!tag) {
-                        tag = document.createElement('span');
-                        tag.className = 'channel-status-tag';
-                        activeChannelElement.appendChild(tag);
-                    }
-                    tag.innerText = 'چاوەڕوانبە...';
-                }
             } else {
                 overlay.style.display = 'none';
-                if (activeChannelElement) {
-                    const tag = activeChannelElement.querySelector('.channel-status-tag');
-                    if (tag) tag.remove();
-                }
             }
         }
 
-        // یەکخستنەوەی ناوی جۆرەکان (کتگۆرییەکان)
         function normalizeCategoryName(catName) {
             if (!catName) return 'گشتی';
-            let clean = catName.trim();
-            // یەکخستنی "مناڵان" و "منداڵان" بۆ یەک کتگۆری
+            let clean = catName.replace(/"/g, '').trim();
             if (clean === 'مناڵان' || clean === 'منداڵان') {
                 return 'منداڵان';
             }
@@ -837,8 +809,9 @@
 
         async function loadGoogleSheetsPlaylist() {
             try {
-                const csvData = await fetchCsvWithFallback(GOOGLE_SHEET_CSV_URL);
-                if (!csvData) throw new Error("نەتوانرا شیتی کەناڵەکان باربکرێت");
+                const res = await fetch(GOOGLE_SHEET_CSV_URL + '&cache=' + Date.now());
+                if (!res.ok) throw new Error();
+                const csvData = await res.text();
 
                 const lines = csvData.split('\n');
                 parsedCategorizedChannels = {};
@@ -849,8 +822,8 @@
                     const columns = line.split(',');
                     if (columns.length >= 3) {
                         let group = normalizeCategoryName(columns[0]);
-                        const name = columns[1].trim().replaceAll('"', '');
-                        const url = columns[2].trim().replaceAll('"', '');
+                        const name = columns[1].replace(/"/g, '').trim();
+                        const url = columns[2].replace(/"/g, '').trim();
 
                         if (name && url) {
                             if (!parsedCategorizedChannels[group]) {
@@ -919,11 +892,7 @@
         function playChannel(url, element) {
             if (element) {
                 const items = document.querySelectorAll('.playlist-item');
-                items.forEach(item => {
-                    item.classList.remove('active');
-                    const tag = item.querySelector('.channel-status-tag');
-                    if (tag) tag.remove();
-                });
+                items.forEach(item => item.classList.remove('active'));
                 element.classList.add('active');
                 activeChannelElement = element;
             }
@@ -939,27 +908,11 @@
 
             if (player) {
                 showStreamWaiting(false);
-
                 player.src({
                     src: url,
                     type: 'application/x-mpegURL'
                 });
-
-                var promise = player.play();
-                if (promise !== undefined) {
-                    promise.catch(function(error) {
-                        const proxiedUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
-                        player.src({
-                            src: proxiedUrl,
-                            type: 'application/x-mpegURL'
-                        });
-                        
-                        player.muted(true);
-                        player.play().catch(e => {
-                            showStreamWaiting(true);
-                        });
-                    });
-                }
+                player.play().catch(() => {});
             }
         }
 
