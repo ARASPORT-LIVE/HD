@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ل<!DOCTYPE html>
 <html lang="ku" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -358,7 +358,7 @@
             margin-bottom: 15px;
         }
 
-        /* --- تایبەت بە مۆبایل و شاشەی بچووک (Responsive Design) --- */
+        /* --- تایبەت بە مۆبایل و شاشەی بچووک (Responsive) --- */
         @media (max-width: 768px) {
             body {
                 padding: 10px;
@@ -750,8 +750,11 @@
             }
 
             if (player) {
+                // بەکارهێنانی پروکسی بۆ تێپەڕاندنی بلۆکی CORS / HTTP لە وێبگەڕدا
+                const proxiedUrl = 'https://corsproxy.io/?' + encodeURIComponent(url);
+
                 player.src({
-                    src: url,
+                    src: proxiedUrl,
                     type: 'application/x-mpegURL'
                 });
 
