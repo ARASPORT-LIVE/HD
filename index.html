@@ -514,11 +514,9 @@
     <!-- Video.js JS -->
     <script src="https://vjs.zencdn.net/7.20.3/video.js"></script>
     <script>
-        // 1. فایلی كەناڵەكان لە GitHub
+        // بەستەرەکانی GitHub
         const GITHUB_PLAYLIST_URL = "https://raw.githubusercontent.com/arasport-live/arasport-live.github.io/main/playlist.m3u";
-        
-        // 2. فایلی ماك ئادرێسەكان لە Google Sheet (Sheet1)
-        const GOOGLE_SHEET_MAC_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRgvWrahp_pwJWRnX4QCE4KmuhUb6gl5Rk_rDpjA2ODuCNH1nyLUcD-L0g0I6PrD45F0hb7odKi_zbW/pub?gid=0&single=true&output=csv"; 
+        const GITHUB_MAC_URL = "https://raw.githubusercontent.com/arasport-live/arasport-live.github.io/main/allowed.json";
 
         function getDeviceMac() {
             let mac = localStorage.getItem("ara_device_mac");
@@ -552,9 +550,16 @@
 
         let timerInterval;
 
+        // فەنکشنی پەرەپێدراو بۆ خوێندنەوەی هەموو جۆرە بەروارەکان (لەوانەش بەروارە درێژەکانی GitHub)
         function parseFlexibleDate(dateStr) {
             if (!dateStr) return null;
             dateStr = dateStr.trim().replace(/"/g, '');
+
+            // ئەگەر بەرواری ستاندارد یان درێژی GMT / JavaScript Date string بێت
+            let parsedDate = new Date(dateStr);
+            if (!isNaN(parsedDate.getTime())) {
+                return parsedDate;
+            }
 
             let parts = dateStr.split(' ');
             let datePart = parts[0];
@@ -570,7 +575,7 @@
                 if (dSplit[0].length === 4) { year = dSplit[0]; month = dSplit[1]; day = dSplit[2]; }
                 else { day = dSplit[0]; month = dSplit[1]; year = dSplit[2]; }
             } else {
-                return new Date(dateStr);
+                return null;
             }
 
             if (month && month.length === 1) month = '0' + month;
@@ -677,18 +682,6 @@
             }, 1000);
         }
 
-        function parseCSVLine(text) {
-            let result = [], cell = '', inQuotes = false;
-            for (let i = 0; i < text.length; i++) {
-                let c = text[i];
-                if (c === '"') inQuotes = !inQuotes;
-                else if (c === ',' && !inQuotes) { result.push(cell.trim()); cell = ''; }
-                else cell += c;
-            }
-            result.push(cell.trim());
-            return result;
-        }
-
         async function checkActivation(isManualCheck = false) {
             const statusMsg = document.getElementById("statusMsg");
             if (isManualCheck) statusMsg.innerText = "لە پشکنیندایە...";
@@ -696,41 +689,20 @@
             let allowedDevices = [];
 
             try {
-                // هێنانەوەی MAC ئادرێسەکان لە Google Sheet لەڕێی Proxy یان بەشێوەی ڕاستەوخۆ
-                const targetUrl = GOOGLE_SHEET_MAC_CSV_URL + "&cache=" + Date.now();
-                const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(targetUrl);
-
-                let response;
-                try {
-                    response = await fetch(proxyUrl);
-                } catch(e) {
-                    response = await fetch(targetUrl);
-                }
-
-                if (response && response.ok) {
-                    const csvText = await response.text();
-                    const lines = csvText.split("\n");
-                    lines.forEach((line, index) => {
-                        if (index === 0 || !line.trim()) return;
-                        const cols = parseCSVLine(line);
-                        if (cols.length >= 3) {
-                            allowedDevices.push({
-                                mac: cols[0].replace(/^"|"$/g, '').trim().toUpperCase(),
-                                expire: cols[2].replace(/^"|"$/g, '').trim()
-                            });
-                        }
-                    });
+                const response = await fetch(GITHUB_MAC_URL + "?t=" + Date.now());
+                if (response.ok) {
+                    allowedDevices = await response.json();
                 }
             } catch (e) {
-                console.error("Error loading MACs from Google Sheets:", e);
+                console.error("Error loading allowed.json:", e);
             }
 
             const now = new Date().getTime();
-            const foundDevice = allowedDevices.find(item => item.mac === currentMac);
+            const foundDevice = allowedDevices.find(item => item.mac && item.mac.toUpperCase().trim() === currentMac);
 
             if (!foundDevice) {
                 if (isManualCheck) {
-                    statusMsg.innerText = "ئەم ماک ئادرێسە لە شیتەکەدا نەدۆزرایەوە!";
+                    statusMsg.innerText = "ئەم ماک ئادرێسە لە فایلی GitHub نەدۆزرایەوە!";
                     statusMsg.style.color = "#ef4444";
                 } else {
                     const storedCooldown = localStorage.getItem("ara_trial_cooldown");
