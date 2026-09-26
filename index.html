@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ARA SPORT LIVE - Web Player</title>
+    <title>ARA TV - Web Player</title>
     
     <!-- Video.js CSS -->
     <link href="https://vjs.zencdn.net/7.20.3/video-js.css" rel="stylesheet" />
@@ -134,7 +134,6 @@
             font-family: Arial, Helvetica, sans-serif !important;
         }
 
-        /* ستایلی پەیامی سەر شاشەی ڤیدیۆ کاتێک ستریم نامێنێت */
         .stream-status-overlay {
             position: absolute;
             top: 0;
@@ -159,7 +158,7 @@
             right: 15px !important;
             z-index: 1000 !important;
             pointer-events: none;
-            display: flex;
+            display: none; /* بە شێوەی سەرەتایی دەشاردرێتەوە و تەنها لەسەر کەناڵی وەرزشی دیار دەبێت */
             align-items: center;
             gap: 6px;
             background: rgba(15, 23, 42, 0.75);
@@ -190,7 +189,6 @@
             max-height: 480px;
         }
 
-        /* ستایلی تابەکان (Category Tabs) */
         .category-tabs {
             display: flex;
             background: #1e293b;
@@ -255,19 +253,23 @@
             font-weight: bold;
         }
 
+        /* --- تیکەری دەستکاریکراو (باریکتر) --- */
         .ticker-bar {
             background: #0284c7;
             color: #ffffff;
-            padding: 10px 0;
+            padding: 4px 0;
             overflow: hidden;
             white-space: nowrap;
+            display: flex;
+            align-items: center;
         }
 
         .ticker-text {
             display: inline-block;
             padding-right: 100%;
             animation: ticker 25s linear infinite;
-            font-size: 15px;
+            font-size: 13px;
+            line-height: 1.2;
         }
 
         @keyframes ticker {
@@ -412,7 +414,6 @@
             margin-bottom: 15px;
         }
 
-        /* --- تایبەت بە مۆبایل و شاشەی بچووک (Responsive) --- */
         @media (max-width: 768px) {
             body { padding: 10px; }
             .player-header { padding: 10px 12px; gap: 6px; }
@@ -426,6 +427,8 @@
             .content-area { flex-direction: column; }
             .playlist-sidebar { width: 100%; max-height: 250px; }
             .video-js { height: 260px; }
+            .ticker-text { font-size: 12px; }
+            .ticker-bar { padding: 3px 0; }
         }
 
         @media (max-width: 400px) {
@@ -482,7 +485,8 @@
 
     <div class="main-wrapper">
         <div class="player-header">
-            <div class="brand-title">ARA SPORT LIVE</div>
+            <!-- ناوی نوێکراوەی سەرەوە -->
+            <div class="brand-title">ARA TV</div>
             <div class="header-right">
                 <div id="trialBadge" class="trial-badge" style="display: none;">
                     ⏱️ <span id="trialTimer">01:00</span>
@@ -497,14 +501,12 @@
         <div class="content-area">
             <div class="video-container">
                 <video id="ara-sport-player" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="auto"></video>
-                <!-- پەیامی "چاوەڕوانبە..." بۆ سەر شاشە -->
                 <div id="streamStatusOverlay" class="stream-status-overlay" style="display: none;">
                     <i class="fas fa-spinner fa-spin" style="margin-left: 10px;"></i> چاوەڕوانبە...
                 </div>
             </div>
 
             <div class="playlist-sidebar">
-                <!-- تابەکانی جۆری کەناڵ -->
                 <div id="categoryTabs" class="category-tabs"></div>
                 <div class="playlist-items-wrapper">
                     <div id="playlist-items">
@@ -514,9 +516,10 @@
             </div>
         </div>
 
+        <!-- تیکەری نوێکراوە -->
         <div class="ticker-bar">
             <div class="ticker-text">
-                بەخێربێن بۆ کەناڵی ARA SPORT LIVE - بۆ بینینی تەواوی یارییەکان و بەرنامەکان لەگەڵمان بەردەوام بن.
+                بەخێر بێن بۆ سیستمی پەخشی ARA TV، تکایە لەکاتی بوونی هەر کێشە و گرفتێکدا پەیوەندی بکەن بە ژمارە تەلەفۆنی 07748134314 یان 07501224994
             </div>
         </div>
     </div>
@@ -524,6 +527,7 @@
     <!-- Video.js JS -->
     <script src="https://vjs.zencdn.net/7.20.3/video.js"></script>
     <script>
+        const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRgvWrahp_pwJWRnX4QCE4KmuhUb6gl5Rk_rDpjA2ODuCNH1nyLUcD-L0g0I6PrD45F0hb7odKi_zbW/pub?gid=250464113&single=true&output=csv";
         const GITHUB_JSON_URL = "https://raw.githubusercontent.com/ARASPORT-LIVE/HD/main/allowed.json";
 
         function getDeviceMac() {
@@ -713,6 +717,7 @@
         var player;
         let parsedCategorizedChannels = {};
         let activeChannelElement = null;
+        let currentCategory = "";
 
         function initPlayer() {
             if (!player) {
@@ -721,11 +726,11 @@
                 player.ready(function() {
                     var watermark = document.createElement('div');
                     watermark.className = 'vjs-watermark-logo';
+                    watermark.id = 'playerWatermark';
                     watermark.innerHTML = `<div class="vjs-watermark-text">ARA SPORT <span>HD</span></div>`;
                     this.el().appendChild(watermark);
                 });
 
-                // بەدواداچوون بۆ کێشەکانی ستریم و پچڕان
                 player.on(['waiting', 'stalled', 'error'], function() {
                     showStreamWaiting(true);
                 });
@@ -734,7 +739,7 @@
                     showStreamWaiting(false);
                 });
 
-                loadM3UPlaylist();
+                loadGoogleSheetsPlaylist();
             }
         }
 
@@ -760,43 +765,35 @@
             }
         }
 
-        async function loadM3UPlaylist() {
+        async function loadGoogleSheetsPlaylist() {
             try {
-                const response = await fetch('playlist.m3u?v=' + new Date().getTime());
-                const text = await response.text();
+                const response = await fetch(GOOGLE_SHEET_CSV_URL + '&t=' + new Date().getTime());
+                const csvData = await response.text();
 
-                const lines = text.split('\n');
+                const lines = csvData.split('\n');
                 parsedCategorizedChannels = {};
-                let currentGroup = 'گشتی';
-                let currentName = '';
 
-                lines.forEach(line => {
-                    line = line.trim();
-                    if (line.startsWith('#EXTINF:')) {
-                        // دروستکردنی پۆڵێنەکان بەپێی group-title
-                        const groupMatch = line.match(/group-title="([^"]+)"/i);
-                        if (groupMatch && groupMatch[1]) {
-                            currentGroup = groupMatch[1].trim();
-                        } else {
-                            currentGroup = 'گشتی';
-                        }
+                lines.forEach((line, index) => {
+                    if (index === 0 || !line.trim()) return;
 
-                        const parts = line.split(',');
-                        currentName = parts[parts.length - 1].trim();
-                    } else if (line && !line.startsWith('#')) {
-                        if (currentName) {
-                            if (!parsedCategorizedChannels[currentGroup]) {
-                                parsedCategorizedChannels[currentGroup] = [];
+                    const columns = line.split(',');
+                    if (columns.length >= 3) {
+                        const group = columns[0].trim() || 'گشتی';
+                        const name = columns[1].trim();
+                        const url = columns[2].trim();
+
+                        if (name && url) {
+                            if (!parsedCategorizedChannels[group]) {
+                                parsedCategorizedChannels[group] = [];
                             }
-                            parsedCategorizedChannels[currentGroup].push({ name: currentName, url: line });
-                            currentName = '';
+                            parsedCategorizedChannels[group].push({ name, url });
                         }
                     }
                 });
 
                 renderTabs();
             } catch (error) {
-                document.getElementById('playlist-items').innerHTML = '<div class="playlist-item">کێشەیەک لە بارکردنی لیستەکە هەیە</div>';
+                document.getElementById('playlist-items').innerHTML = '<div class="playlist-item">کێشەیەک لە خوێندنەوەی گۆگڵ شیت هەیە</div>';
             }
         }
 
@@ -818,12 +815,13 @@
                 tab.onclick = function() {
                     document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
                     this.classList.add('active');
+                    currentCategory = cat;
                     renderPlaylist(parsedCategorizedChannels[cat]);
                 };
                 tabsContainer.appendChild(tab);
             });
 
-            // ڕاستەوخۆ کەناڵەکانی یەکەم تاب نیشان بدە
+            currentCategory = categories[0];
             renderPlaylist(parsedCategorizedChannels[categories[0]]);
         }
 
@@ -860,10 +858,19 @@
                 activeChannelElement = element;
             }
 
+            // فلتەرکردنی لۆگۆ: تەنها لەر کاتێکدا دەرکەوێت کە گرووپەکە "وەرزشی" بێت
+            const watermarkEl = document.getElementById('playerWatermark');
+            if (watermarkEl) {
+                if (currentCategory.trim() === 'وەرزشی') {
+                    watermarkEl.style.display = 'flex';
+                } else {
+                    watermarkEl.style.display = 'none';
+                }
+            }
+
             if (player) {
                 showStreamWaiting(false);
 
-                // ١. تاقیکردنەوەی ڕاستەوخۆ
                 player.src({
                     src: url,
                     type: 'application/x-mpegURL'
@@ -872,9 +879,6 @@
                 var promise = player.play();
                 if (promise !== undefined) {
                     promise.catch(function(error) {
-                        console.log("Direct play failed, trying proxied stream...", error);
-                        
-                        // ٢. هەوڵدان لە ڕێگەی پروکسی لە کاتی بوونی کێشەی CORS
                         const proxiedUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
                         player.src({
                             src: proxiedUrl,
@@ -883,7 +887,6 @@
                         
                         player.muted(true);
                         player.play().catch(e => {
-                            console.log("Proxied play also failed:", e);
                             showStreamWaiting(true);
                         });
                     });
@@ -891,7 +894,6 @@
             }
         }
 
-        // بەگەڕخستنی پشکنین
         checkActivation();
     </script>
 </body>
