@@ -244,15 +244,6 @@
             color: #fff;
         }
 
-        .channel-status-tag {
-            font-size: 11px;
-            padding: 2px 6px;
-            border-radius: 4px;
-            background: #f59e0b;
-            color: #000;
-            font-weight: bold;
-        }
-
         .ticker-bar {
             background: #0284c7;
             color: #ffffff;
@@ -523,10 +514,10 @@
     <!-- Video.js JS -->
     <script src="https://vjs.zencdn.net/7.20.3/video.js"></script>
     <script>
-        // بەستەری ڕاستی RAW بۆ playlist.m3u
+        // 1. فایلی كەناڵەكان لە GitHub
         const GITHUB_PLAYLIST_URL = "https://raw.githubusercontent.com/arasport-live/arasport-live.github.io/main/playlist.m3u";
         
-        // لینکی Google Sheets بۆ MAC Address
+        // 2. فایلی ماك ئادرێسەكان لە Google Sheet (Sheet1)
         const GOOGLE_SHEET_MAC_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRgvWrahp_pwJWRnX4QCE4KmuhUb6gl5Rk_rDpjA2ODuCNH1nyLUcD-L0g0I6PrD45F0hb7odKi_zbW/pub?gid=0&single=true&output=csv"; 
 
         function getDeviceMac() {
@@ -540,7 +531,7 @@
                 mac = macArr.join(":");
                 localStorage.setItem("ara_device_mac", mac);
             }
-            return mac.toUpperCase();
+            return mac.toUpperCase().trim();
         }
 
         const currentMac = getDeviceMac();
@@ -548,7 +539,6 @@
 
         const phone1 = "9647501224994";
         const phone2 = "9647748134314";
-        
         const msgText = encodeURIComponent(`سڵاو، تکایە ئەم ئامێرە ئەکتیڤ بکە:\nMAC Address:\n${currentMac}`);
         
         document.getElementById("waLink1").href = `https://wa.me/${phone1}?text=${msgText}`;
@@ -569,23 +559,16 @@
             let parts = dateStr.split(' ');
             let datePart = parts[0];
             let timePart = parts[1] || '23:59:59';
-
             let year, month, day;
 
             if (datePart.includes('/')) {
                 let dSplit = datePart.split('/');
-                if (dSplit[0].length === 4) {
-                    year = dSplit[0]; month = dSplit[1]; day = dSplit[2];
-                } else {
-                    day = dSplit[0]; month = dSplit[1]; year = dSplit[2];
-                }
+                if (dSplit[0].length === 4) { year = dSplit[0]; month = dSplit[1]; day = dSplit[2]; }
+                else { day = dSplit[0]; month = dSplit[1]; year = dSplit[2]; }
             } else if (datePart.includes('-')) {
                 let dSplit = datePart.split('-');
-                if (dSplit[0].length === 4) {
-                    year = dSplit[0]; month = dSplit[1]; day = dSplit[2];
-                } else {
-                    day = dSplit[0]; month = dSplit[1]; year = dSplit[2];
-                }
+                if (dSplit[0].length === 4) { year = dSplit[0]; month = dSplit[1]; day = dSplit[2]; }
+                else { day = dSplit[0]; month = dSplit[1]; year = dSplit[2]; }
             } else {
                 return new Date(dateStr);
             }
@@ -613,7 +596,7 @@
                     clearInterval(timerInterval);
                     document.getElementById("countdownTimer").innerText = "ئێکسپایەر بووە";
                     if (player) player.pause();
-                    document.getElementById("statusMsg").innerText = "ئابوونەکەت بەسەرچوو! تکایە نوێی بکەرەوە.";
+                    document.getElementById("statusMsg").innerText = "ئابوونەکەت بەسەرچوو!";
                     document.getElementById("authOverlay").style.display = "flex";
                     return;
                 }
@@ -632,7 +615,6 @@
 
         function startTrialTimer() {
             document.getElementById("trialBadge").style.display = "flex";
-            
             const now = new Date().getTime();
             let trialEnd = localStorage.getItem("ara_trial_end_time");
 
@@ -653,12 +635,10 @@
                     clearInterval(trialInterval);
                     document.getElementById("trialBadge").style.display = "none";
                     if (player) player.pause();
-                    
                     localStorage.removeItem("ara_trial_end_time");
                     
                     const cooldownEnd = new Date().getTime() + (5 * 60 * 1000);
                     localStorage.setItem("ara_trial_cooldown", cooldownEnd);
-                    
                     showCooldownOverlay(cooldownEnd);
                 } else {
                     let mins = Math.floor(trialSecondsLeft / 60);
@@ -711,16 +691,23 @@
 
         async function checkActivation(isManualCheck = false) {
             const statusMsg = document.getElementById("statusMsg");
+            if (isManualCheck) statusMsg.innerText = "لە پشکنیندایە...";
+
             let allowedDevices = [];
 
             try {
-                const targetUrl = GOOGLE_SHEET_MAC_CSV_URL + "&t=" + new Date().getTime();
+                // هێنانەوەی MAC ئادرێسەکان لە Google Sheet لەڕێی Proxy یان بەشێوەی ڕاستەوخۆ
+                const targetUrl = GOOGLE_SHEET_MAC_CSV_URL + "&cache=" + Date.now();
                 const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(targetUrl);
-                
-                let response = await fetch(proxyUrl);
-                if (!response.ok) response = await fetch(targetUrl);
 
-                if (response.ok) {
+                let response;
+                try {
+                    response = await fetch(proxyUrl);
+                } catch(e) {
+                    response = await fetch(targetUrl);
+                }
+
+                if (response && response.ok) {
                     const csvText = await response.text();
                     const lines = csvText.split("\n");
                     lines.forEach((line, index) => {
@@ -735,7 +722,7 @@
                     });
                 }
             } catch (e) {
-                console.error("Error loading MACs:", e);
+                console.error("Error loading MACs from Google Sheets:", e);
             }
 
             const now = new Date().getTime();
@@ -743,7 +730,7 @@
 
             if (!foundDevice) {
                 if (isManualCheck) {
-                    statusMsg.innerText = "ئەم ماک ئادرێسە هێشتا ئەکتیڤ نەکراوە!";
+                    statusMsg.innerText = "ئەم ماک ئادرێسە لە شیتەکەدا نەدۆزرایەوە!";
                     statusMsg.style.color = "#ef4444";
                 } else {
                     const storedCooldown = localStorage.getItem("ara_trial_cooldown");
@@ -811,21 +798,8 @@
             const overlay = document.getElementById('streamStatusOverlay');
             if (isWaiting) {
                 overlay.style.display = 'flex';
-                if (activeChannelElement) {
-                    let tag = activeChannelElement.querySelector('.channel-status-tag');
-                    if (!tag) {
-                        tag = document.createElement('span');
-                        tag.className = 'channel-status-tag';
-                        activeChannelElement.appendChild(tag);
-                    }
-                    tag.innerText = 'چاوەڕوانبە...';
-                }
             } else {
                 overlay.style.display = 'none';
-                if (activeChannelElement) {
-                    const tag = activeChannelElement.querySelector('.channel-status-tag');
-                    if (tag) tag.remove();
-                }
             }
         }
 
@@ -866,14 +840,11 @@
 
         async function loadGitHubPlaylist() {
             try {
-                const response = await fetch(GITHUB_PLAYLIST_URL + '?t=' + new Date().getTime());
-                if (!response.ok) {
-                    throw new Error("HTTP error " + response.status);
-                }
-                
+                const response = await fetch(GITHUB_PLAYLIST_URL + '?t=' + Date.now());
+                if (!response.ok) throw new Error("فایلەکە لە GitHub نەدۆزرایەوە!");
+
                 const m3uText = await response.text();
                 parsedCategorizedChannels = parseM3U(m3uText);
-
                 renderTabs();
             } catch (error) {
                 console.error("Error fetching playlist:", error);
@@ -933,11 +904,7 @@
         function playChannel(url, element) {
             if (element) {
                 const items = document.querySelectorAll('.playlist-item');
-                items.forEach(item => {
-                    item.classList.remove('active');
-                    const tag = item.querySelector('.channel-status-tag');
-                    if (tag) tag.remove();
-                });
+                items.forEach(item => item.classList.remove('active'));
                 element.classList.add('active');
                 activeChannelElement = element;
             }
@@ -967,7 +934,6 @@
                             src: proxiedUrl,
                             type: 'application/x-mpegURL'
                         });
-                        
                         player.muted(true);
                         player.play().catch(e => {
                             showStreamWaiting(true);
