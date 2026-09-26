@@ -46,5 +46,9 @@
   {
     "mac": "گشتی",
     "expire": "https://hlspackager.akamaized.net/live/DB/KURDSAT_HD/HLS/KURDSAT_HD-avc1_2500000=10002.m3u8"
+  },
+  {
+    "mac": "هەواڵ",
+    "expire": "https://live.host247.net/gk/gksat/chunklist_w1358946070.m3u8"
   }
 ]
