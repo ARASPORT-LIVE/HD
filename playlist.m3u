@@ -1,25 +1,68 @@
 #EXTM3U
 
-#EXTINF:-1 tvg-id="" tvg-name="DAZN 1" tvg-logo="" group-title="Sports", Dazn1
-https://footfytv.pro/proxy/direct?url=http%3A%2F%2F50.7.120.34%3A8080%2FDAZN1%2Ftracks-v1a1%2Fmono.m3u8
+# ==========================================
+# ⚽ وەرزشی (Sports)
+# ==========================================
 
-#EXTINF:-1 tvg-id="" tvg-name="DAZN 2" tvg-logo="" group-title="Sports", Dazn2
-https://footfytv.pro/proxy/direct?url=http%3A%2F%2F23.237.104.106%3A8080%2FDAZN_2%2Ftracks-v1a1%2Fmono.m3u8
+#EXTINF:-1 tvg-id="" tvg-name="bein1" tvg-logo="" group-title="وەرزشی",bein1
+https://kurdtv.org/api/public/hls?u=https%3A%2F%2Fpr.footballii.ir%2Fhls2%2Fbein1.m3u8
 
-#EXTINF:-1 tvg-id="" tvg-name="DAZN 3" tvg-logo="" group-title="Sports", Dazn3
-https://footfytv.pro/proxy/direct?url=http%3A%2F%2F23.237.104.106%3A8080%2FDAZN_3%2Ftracks-v1a1%2Fmono.m3u8
+#EXTINF:-1 tvg-id="" tvg-name="bein2" tvg-logo="" group-title="وەرزشی",bein2
+https://kurdtv.org/api/public/hls?u=https%3A%2F%2Fladyboy.yedektv.cfd%2F%2Fbein2%2Ftracks-v1a1%2Fmono.m3u8
 
-#EXTINF:-1 tvg-id="" tvg-name="DAZN 4" tvg-logo="" group-title="Sports", Dazn4
-https://footfytv.pro/proxy/direct?url=http%3A%2F%2F23.237.104.106%3A8080%2FDAZN_4%2Ftracks-v1a1%2Fmono.m3u8
+#EXTINF:-1 tvg-id="" tvg-name="bein3" tvg-logo="" group-title="وەرزشی",bein3
+https://kurdtv.org/api/public/hls?u=https%3A%2F%2Fladyboy.yedektv.cfd%2F%2Fbein3%2Ftracks-v1a1%2Fmono.m3u8
 
-#EXTINF:-1 tvg-id="" tvg-name="beIN Sports 1" tvg-logo="" group-title="Sports", bein1
-https://footfytv.pro/proxy/direct?url=https%3A%2F%2Fpr.footballii.ir%2Fhls2%2Fbein1.m3u8
+#EXTINF:-1 tvg-id="" tvg-name="bein4" tvg-logo="" group-title="وەرزشی",bein4
+https://kurdtv.org/api/public/hls?u=https%3A%2F%2Fladyboy.yedektv.cfd%2F%2Fbein4%2Ftracks-v1a1%2Fmono.m3u8
 
-#EXTINF:-1 tvg-id="" tvg-name="beIN Sports 2" tvg-logo="" group-title="Sports", bein2
-https://footfytv.pro/proxy/direct?url=https%3A%2F%2Fladyboy.yedektv.cfd%2F%2Fbein2%2Ftracks-v1a1%2Fmono.m3u8
+#EXTINF:-1 tvg-id="" tvg-name="bein1 Turk" tvg-logo="" group-title="وەرزشی",bein1 Turk
+https://kurdtv.org/api/public/hls?u=https%3A%2F%2Fladyboy.yedektv.cfd%2F%2Fhls%2Fbein1.m3u8
 
-#EXTINF:-1 tvg-id="" tvg-name="beIN Sports 3" tvg-logo="" group-title="Sports", bein3
-https://footfytv.pro/proxy/direct?url=https%3A%2F%2Fladyboy.yedektv.cfd%2F%2Fbein3%2Ftracks-v1a1%2Fmono.m3u8
+#EXTINF:-1 tvg-id="" tvg-name="Alwan1" tvg-logo="" group-title="وەرزشی",Alwan1
+https://kurdtv.org/api/public/hls?u=https://prod-fastly-us-west-1.video.pscp.tv/Transcoding/v1/hls/C_YZ4LkNeYnxcDUTCLdzJJg1HgznTyXiwlPTw6NXkppWlI2IIxpKHd4gE-TkWcm3cn70Vt9ZuYp5mI4AOe6omg/transcode/us-west-1/periscope-replay-direct-prod-us-west-1-public/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsInZlcnNpb24iOiIyIn0.eyJFbmNvZGVyU2V0dGluZyI6ImVuY29kZXJfc2V0dGluZ183MjBwMzBfMTAiLCJIZWlnaHQiOjcyMCwiS2JwcyI6Mjc1MCwiV2lkdGgiOjEyODB9.ldktM4fCFRfkP4ZEBfZPKtlAUNAcTPkoz994YJAzWpE/dynamic_playlist.m3u8?type=live
 
-#EXTINF:-1 tvg-id="" tvg-name="beIN Sports 4" tvg-logo="" group-title="Sports", bein4
-https://footfytv.pro/proxy/direct?url=https%3A%2F%2Fladyboy.yedektv.cfd%2F%2Fbein4%2Ftracks-v1a1%2Fmono.m3u8
+# ==========================================
+# 👶 منداڵان (Kids)
+# ==========================================
+
+#EXTINF:-1 tvg-id="" tvg-name="AFARIN TV" tvg-logo="" group-title="منداڵان",AFARIN TV
+https://65f16f0fdfc51.streamlock.net/afarinTV/livestream/chunklist_w1054217716.m3u8
+
+#EXTINF:-1 tvg-id="" tvg-name="AFARIN BAXCHA" tvg-logo="" group-title="منداڵان",AFARIN BAXCHA
+https://5dcabf026b188.streamlock.net/afarinTV/d1/livestream/chunklist_w2044871186.m3u8
+
+# ==========================================
+# 🕌 ئاینی (Islamic)
+# ==========================================
+
+#EXTINF:-1 tvg-id="" tvg-name="AMOZHGARY" tvg-logo="" group-title="ئاینی",AMOZHGARY
+https://app-live.org/live/3268334b/index.m3u8
+
+#EXTINF:-1 tvg-id="" tvg-name="PAYAM" tvg-logo="" group-title="ئاینی",PAYAM
+https://media2.streambrothers.com:1936/8218/8218/chunklist_w1270017071.m3u8
+
+#EXTINF:-1 tvg-id="" tvg-name="IMK" tvg-logo="" group-title="ئاینی",IMK
+https://ndlive.host247.net/live/imkhd/playlist.m3u8
+
+# ==========================================
+# 📺 هەمەجۆر (General & News)
+# ==========================================
+
+#EXTINF:-1 tvg-id="" tvg-name="RUDAW" tvg-logo="" group-title="هەمەجۆر",RUDAW
+https://live.rudaw.net/hls/rudaw-tv/stream_1080p.m3u8
+
+#EXTINF:-1 tvg-id="" tvg-name="KURDSAT" tvg-logo="" group-title="هەمەجۆر",KURDSAT
+https://hlspackager.akamaized.net/live/DB/KURDSAT_HD/HLS/KURDSAT_HD-avc1_2500000=10002.m3u8
+
+#EXTINF:-1 tvg-id="" tvg-name="KURDSAT NEWS" tvg-logo="" group-title="هەمەجۆر",KURDSAT NEWS
+https://hlspackager.akamaized.net/live/DB/KURDSAT_NEWS/HLS/KURDSAT_NEWS.m3u8
+
+#EXTINF:-1 tvg-id="" tvg-name="NRT" tvg-logo="" group-title="هەمەجۆر",NRT
+https://hlspackager.akamaized.net/live/DB/NRT_HD/HLS/NRT_HD-avc1_2500000=10002,mp4a_128000=20000.m3u8
+
+#EXTINF:-1 tvg-id="" tvg-name="GK" tvg-logo="" group-title="هەمەجۆر",GK
+https://live.host247.net/gk/gksat/chunklist_w1358946070.m3u8
+
+#EXTINF:-1 tvg-id="" tvg-name="UTV HAWLER" tvg-logo="" group-title="هەمەجۆر",UTV HAWLER
+https://vsd115.okcdn.ru/hls/3527542770279.m3u8/sig/SNhwgB0w7cc/expires/1790538008446/srcIp/62.201.244.135/urls/95.163.35.54/clientType/0/srcAg/CHROME/mid/4728653618791/3527542770279_medium/index.m3u8
