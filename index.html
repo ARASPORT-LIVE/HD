@@ -684,6 +684,26 @@
             }, 1000);
         }
 
+        // CSV Parser بۆ جیاکردنەوەی دروستی ستوونەکان
+        function parseCSVLine(text) {
+            let result = [];
+            let cell = '';
+            let inQuotes = false;
+            for (let i = 0; i < text.length; i++) {
+                let c = text[i];
+                if (c === '"') {
+                    inQuotes = !inQuotes;
+                } else if (c === ',' && !inQuotes) {
+                    result.push(cell.trim());
+                    cell = '';
+                } else {
+                    cell += c;
+                }
+            }
+            result.push(cell.trim());
+            return result;
+        }
+
         async function checkActivation(isManualCheck = false) {
             const statusMsg = document.getElementById("statusMsg");
             if (isManualCheck) statusMsg.innerText = "چاوەڕوانبە... لە پشکنیندایە";
@@ -702,11 +722,11 @@
                     const lines = csvText.split("\n");
                     lines.forEach((line, index) => {
                         if (index === 0 || !line.trim()) return;
-                        const cols = line.split(",");
+                        const cols = parseCSVLine(line);
                         if (cols.length >= 3) {
                             allowedDevices.push({
-                                mac: cols[0].replace(/"/g, '').trim().toUpperCase(),
-                                expire: cols[2].replace(/"/g, '').trim()
+                                mac: cols[0].replace(/^"|"$/g, '').trim().toUpperCase(),
+                                expire: cols[2].replace(/^"|"$/g, '').trim()
                             });
                         }
                     });
@@ -795,7 +815,7 @@
 
         function normalizeCategoryName(catName) {
             if (!catName) return 'گشتی';
-            let clean = catName.replace(/"/g, '').trim();
+            let clean = catName.replace(/^"|"$/g, '').trim();
             if (clean === 'مناڵان' || clean === 'منداڵان') {
                 return 'منداڵان';
             }
@@ -824,11 +844,11 @@
                 lines.forEach((line, index) => {
                     if (index === 0 || !line.trim()) return;
 
-                    const columns = line.split(',');
+                    const columns = parseCSVLine(line);
                     if (columns.length >= 3) {
                         let group = normalizeCategoryName(columns[0]);
-                        const name = columns[1].replace(/"/g, '').trim();
-                        const url = columns[2].replace(/"/g, '').trim();
+                        const name = columns[1].replace(/^"|"$/g, '').trim();
+                        const url = columns[2].replace(/^"|"$/g, '').trim();
 
                         if (name && url) {
                             if (!parsedCategorizedChannels[group]) {
