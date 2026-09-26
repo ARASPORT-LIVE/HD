@@ -244,15 +244,6 @@
             color: #fff;
         }
 
-        .channel-status-tag {
-            font-size: 11px;
-            padding: 2px 6px;
-            border-radius: 4px;
-            background: #f59e0b;
-            color: #000;
-            font-weight: bold;
-        }
-
         .ticker-bar {
             background: #0284c7;
             color: #ffffff;
@@ -522,7 +513,6 @@
     <!-- Video.js JS -->
     <script src="https://vjs.zencdn.net/7.20.3/video.js"></script>
     <script>
-        // لینکەکان بۆ Sheet1 و Sheet2
         const GOOGLE_SHEET_MAC_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRgvWrahp_pwJWRnX4QCE4KmuhUb6gl5Rk_rDpjA2ODuCNH1nyLUcD-L0g0I6PrD45F0hb7odKi_zbW/pub?gid=0&single=true&output=csv"; 
         const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRgvWrahp_pwJWRnX4QCE4KmuhUb6gl5Rk_rDpjA2ODuCNH1nyLUcD-L0g0I6PrD45F0hb7odKi_zbW/pub?gid=250464113&single=true&output=csv";
 
@@ -701,7 +691,12 @@
             let allowedDevices = [];
             
             try {
-                const res = await fetch(GOOGLE_SHEET_MAC_CSV_URL + "&cache=" + Date.now());
+                const targetUrl = GOOGLE_SHEET_MAC_CSV_URL + "&cache=" + Date.now();
+                const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(targetUrl);
+                
+                let res = await fetch(proxyUrl);
+                if (!res.ok) res = await fetch(targetUrl);
+
                 if (res.ok) {
                     const csvText = await res.text();
                     const lines = csvText.split("\n");
@@ -808,11 +803,21 @@
         }
 
         async function loadGoogleSheetsPlaylist() {
-            try {
-                const res = await fetch(GOOGLE_SHEET_CSV_URL + '&cache=' + Date.now());
-                if (!res.ok) throw new Error();
-                const csvData = await res.text();
+            const playlistContainer = document.getElementById('playlist-items');
+            playlistContainer.innerHTML = '<div class="playlist-item">باردەکرێت...</div>';
 
+            const targetUrl = GOOGLE_SHEET_CSV_URL + '&cache=' + Date.now();
+            const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(targetUrl);
+
+            try {
+                let res = await fetch(proxyUrl);
+                if (!res.ok) {
+                    res = await fetch(targetUrl);
+                }
+
+                if (!res.ok) throw new Error("سێرڤەر وەڵامی نەدایەوە");
+
+                const csvData = await res.text();
                 const lines = csvData.split('\n');
                 parsedCategorizedChannels = {};
 
@@ -836,7 +841,8 @@
 
                 renderTabs();
             } catch (error) {
-                document.getElementById('playlist-items').innerHTML = '<div class="playlist-item">کێشەیەک لە خوێندنەوەی گۆگڵ شیت هەیە</div>';
+                console.error("Error loading playlist:", error);
+                playlistContainer.innerHTML = '<div class="playlist-item" style="color: #ef4444;">کێشەیەک لە خوێندنەوەی گۆگڵ شیت هەیە!</div>';
             }
         }
 
