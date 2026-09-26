@@ -437,6 +437,7 @@
 </head>
 <body>
 
+    <!-- شاشەی ئەکتیڤکردن -->
     <div id="authOverlay" class="auth-overlay" style="display: none;">
         <div class="auth-card">
             <h2>ئەکتیڤکردنی ئامێرەکەت</h2>
@@ -522,9 +523,11 @@
     <!-- Video.js JS -->
     <script src="https://vjs.zencdn.net/7.20.3/video.js"></script>
     <script>
-        const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRgvWrahp_pwJWRnX4QCE4KmuhUb6gl5Rk_rDpjA2ODuCNH1nyLUcD-L0g0I6PrD45F0hb7odKi_zbW/pub?gid=250464113&single=true&output=csv";
+        // *** بەستەری RAW ی گەیتهەب بۆ فایلی کەناڵەکان ***
+        // تکایە لینکی Raw ی فایلی channels.json یان channels.csv ی گەیتهەبەکەت لێرە دابنێ:
+        const GITHUB_PLAYLIST_URL = "https://raw.githubusercontent.com/USERNAME/REPOSITORY/main/channels.json";
         
-        // لینکی Sheet1 (ماک ئادرێسەکان)
+        // لینکی ماک ئادرێسەکان لەرێگەی GitHub یان Google Sheets
         const GOOGLE_SHEET_MAC_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRgvWrahp_pwJWRnX4QCE4KmuhUb6gl5Rk_rDpjA2ODuCNH1nyLUcD-L0g0I6PrD45F0hb7odKi_zbW/pub?gid=0&single=true&output=csv"; 
 
         function getDeviceMac() {
@@ -560,34 +563,10 @@
 
         let timerInterval;
 
-        function parseDateString(dateStr) {
-            if (!dateStr) return null;
-            dateStr = dateStr.trim();
-            
-            // ئەگەر بە شێوازی 27/10/2027 بوو، دەیگۆڕێت بۆ 2027-10-27
-            if (dateStr.includes('/')) {
-                const parts = dateStr.split(' ');
-                const dateParts = parts[0].split('/');
-                if (dateParts.length === 3) {
-                    const day = dateParts[0];
-                    const month = dateParts[1];
-                    const year = dateParts[2];
-                    const timePart = parts[1] || '23:59:59';
-                    dateStr = `${year}-${month}-${day}T${timePart}`;
-                }
-            } else if (dateStr.includes(' ') && !dateStr.includes('T')) {
-                dateStr = dateStr.replace(' ', 'T');
-            }
-            
-            return new Date(dateStr);
-        }
-
         function startCountdown(expireDateStr) {
             document.getElementById("trialBadge").style.display = "none";
             document.getElementById("countdownBox").style.display = "flex";
-            
-            const expireDateObj = parseDateString(expireDateStr);
-            const expireTime = expireDateObj ? expireDateObj.getTime() : 0;
+            const expireTime = new Date(expireDateStr).getTime();
 
             if (timerInterval) clearInterval(timerInterval);
 
@@ -595,11 +574,11 @@
                 const now = new Date().getTime();
                 const distance = expireTime - now;
 
-                if (distance < 0 || isNaN(distance)) {
+                if (distance < 0) {
                     clearInterval(timerInterval);
                     document.getElementById("countdownTimer").innerText = "ئێکسپایەر بووە";
                     if (player) player.pause();
-                    document.getElementById("statusMsg").innerText = "ئابوونەکەت بەسەرچوو! تکایە نوێی بکەرەوە.";
+                    document.getElementById("statusMsg").innerText = "سیستمەکەت بەسەرچوو! تکایە نوێی بکەرەوە.";
                     document.getElementById("authOverlay").style.display = "flex";
                     return;
                 }
@@ -695,18 +674,16 @@
                     lines.forEach((line, index) => {
                         if (index === 0 || !line.trim()) return;
                         const cols = line.split(",");
-                        
-                        // خوێندنەوەی MAC (ستوونی A) و ExpireDate (ستوونی C)
-                        if (cols.length >= 3) {
+                        if (cols.length >= 2) {
                             allowedDevices.push({
                                 mac: cols[0].trim().toUpperCase(),
-                                expire: cols[2].trim()
+                                expire: cols[1].trim()
                             });
                         }
                     });
                 }
             } catch (e) {
-                console.log("Error loading MACs from Google Sheets:", e);
+                console.log("Error loading MACs:", e);
             }
 
             const now = new Date().getTime();
@@ -728,11 +705,10 @@
                 return false;
             }
 
-            const expireDateObj = parseDateString(foundDevice.expire);
-            const expireTime = expireDateObj ? expireDateObj.getTime() : 0;
+            const expireTime = new Date(foundDevice.expire).getTime();
 
             if (now > expireTime) {
-                statusMsg.innerText = "ئابوونەکەت بەسەرچوو!";
+                statusMsg.innerText = "سیستمەکەت بەسەرچوو!";
                 statusMsg.style.color = "#f59e0b";
                 document.getElementById("authOverlay").style.display = "flex";
                 return false;
@@ -774,7 +750,7 @@
                     showStreamWaiting(false);
                 });
 
-                loadGoogleSheetsPlaylist();
+                loadGitHubPlaylist();
             }
         }
 
@@ -800,35 +776,42 @@
             }
         }
 
-        async function loadGoogleSheetsPlaylist() {
+        // *** خوێندنەوەی پلەی لیست لە GitHub ***
+        async function loadGitHubPlaylist() {
             try {
-                const response = await fetch(GOOGLE_SHEET_CSV_URL + '&t=' + new Date().getTime());
-                const csvData = await response.text();
+                const response = await fetch(GITHUB_PLAYLIST_URL + '?t=' + new Date().getTime());
+                
+                // ئەگەر فایلی JSON بوو:
+                if (GITHUB_PLAYLIST_URL.endsWith('.json')) {
+                    parsedCategorizedChannels = await response.json();
+                } else {
+                    // ئەگەر فایلی CSV بوو:
+                    const csvData = await response.text();
+                    const lines = csvData.split('\n');
+                    parsedCategorizedChannels = {};
 
-                const lines = csvData.split('\n');
-                parsedCategorizedChannels = {};
+                    lines.forEach((line, index) => {
+                        if (index === 0 || !line.trim()) return;
+                        const columns = line.split(',');
+                        if (columns.length >= 3) {
+                            const group = columns[0].trim() || 'گشتی';
+                            const name = columns[1].trim();
+                            const url = columns[2].trim();
 
-                lines.forEach((line, index) => {
-                    if (index === 0 || !line.trim()) return;
-
-                    const columns = line.split(',');
-                    if (columns.length >= 3) {
-                        const group = columns[0].trim() || 'گشتی';
-                        const name = columns[1].trim();
-                        const url = columns[2].trim();
-
-                        if (name && url) {
-                            if (!parsedCategorizedChannels[group]) {
-                                parsedCategorizedChannels[group] = [];
+                            if (name && url) {
+                                if (!parsedCategorizedChannels[group]) {
+                                    parsedCategorizedChannels[group] = [];
+                                }
+                                parsedCategorizedChannels[group].push({ name, url });
                             }
-                            parsedCategorizedChannels[group].push({ name, url });
                         }
-                    }
-                });
+                    });
+                }
 
                 renderTabs();
             } catch (error) {
-                document.getElementById('playlist-items').innerHTML = '<div class="playlist-item">کێشەیەک لە خوێندنەوەی گۆگڵ شیت هەیە</div>';
+                console.error(error);
+                document.getElementById('playlist-items').innerHTML = '<div class="playlist-item">کێشەیەک لە خوێندنەوەی فایلی GitHub هەیە</div>';
             }
         }
 
