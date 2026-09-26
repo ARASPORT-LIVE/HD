@@ -6,5 +6,9 @@
   {
     "mac": "هەواڵ",
     "expire": "https://hlspackager.akamaized.net/live/DB/KURDSAT_NEWS/HLS/KURDSAT_NEWS.m3u8"
+  },
+  {
+    "mac": "گشتی",
+    "expire": "https://ndlive.host247.net/live/imkhd/playlist.m3u8"
   }
 ]
