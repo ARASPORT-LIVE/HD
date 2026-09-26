@@ -70,5 +70,9 @@
   {
     "mac": "وەرزشی",
     "expire": "https://kurdtv.org/api/public/hls?u=https%3A%2F%2Fpartneta.cdn.mgmlcdn.com%3A443%2Fomsport%2Fsmil%3Aomsport.stream.smil%2Fchunklist_b4500000.m3u8"
+  },
+  {
+    "mac": "وەرزشی",
+    "expire": "https://ameditv.ai.studio/api/proxy?url=http%3A%2F%2F50.7.120.34%3A8080%2FDAZN1%2Ftracks-v1a1%2Fmono.m3u8"
   }
 ]
