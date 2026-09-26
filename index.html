@@ -514,9 +514,9 @@
     <!-- Video.js JS -->
     <script src="https://vjs.zencdn.net/7.20.3/video.js"></script>
     <script>
-        // بەستەرەکانی GitHub
-        const GITHUB_PLAYLIST_URL = "https://raw.githubusercontent.com/arasport-live/arasport-live.github.io/main/playlist.m3u";
-        const GITHUB_MAC_URL = "https://raw.githubusercontent.com/arasport-live/arasport-live.github.io/main/allowed.json";
+        // بەکارھێنانی ڕێڕەوی خێرا تا کێشەی 404 دروست نەبێت
+        const GITHUB_PLAYLIST_URL = "playlist.m3u";
+        const GITHUB_MAC_URL = "allowed.json";
 
         function getDeviceMac() {
             let mac = localStorage.getItem("ara_device_mac");
@@ -550,12 +550,10 @@
 
         let timerInterval;
 
-        // فەنکشنی پەرەپێدراو بۆ خوێندنەوەی هەموو جۆرە بەروارەکان (لەوانەش بەروارە درێژەکانی GitHub)
         function parseFlexibleDate(dateStr) {
             if (!dateStr) return null;
             dateStr = dateStr.trim().replace(/"/g, '');
 
-            // ئەگەر بەرواری ستاندارد یان درێژی GMT / JavaScript Date string بێت
             let parsedDate = new Date(dateStr);
             if (!isNaN(parsedDate.getTime())) {
                 return parsedDate;
@@ -702,7 +700,7 @@
 
             if (!foundDevice) {
                 if (isManualCheck) {
-                    statusMsg.innerText = "ئەم ماک ئادرێسە لە فایلی GitHub نەدۆزرایەوە!";
+                    statusMsg.innerText = "ئەم ماک ئادرێسە نەدۆزرایەوە!";
                     statusMsg.style.color = "#ef4444";
                 } else {
                     const storedCooldown = localStorage.getItem("ara_trial_cooldown");
@@ -813,14 +811,14 @@
         async function loadGitHubPlaylist() {
             try {
                 const response = await fetch(GITHUB_PLAYLIST_URL + '?t=' + Date.now());
-                if (!response.ok) throw new Error("فایلەکە لە GitHub نەدۆزرایەوە!");
+                if (!response.ok) throw new Error("فایلی playlist نەدۆزرایەوە!");
 
                 const m3uText = await response.text();
                 parsedCategorizedChannels = parseM3U(m3uText);
                 renderTabs();
             } catch (error) {
                 console.error("Error fetching playlist:", error);
-                document.getElementById('playlist-items').innerHTML = '<div class="playlist-item" style="color: #ef4444;">کێشەیەک لە خوێندنەوەی فایلی GitHub هەیە</div>';
+                document.getElementById('playlist-items').innerHTML = '<div class="playlist-item" style="color: #ef4444;">کێشەیەک لە خوێندنەوەی فایلی playlist هەیە</div>';
             }
         }
 
