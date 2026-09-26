@@ -4,39 +4,39 @@
     "expire": "https://app-live.org/live/3268334b/index.m3u8"
   },
   {
-    "mac": "NEWS",
+    "mac": "هەواڵ",
     "expire": "https://hlspackager.akamaized.net/live/DB/KURDSAT_NEWS/HLS/KURDSAT_NEWS.m3u8"
   },
   {
-    "mac": "Genral",
+    "mac": "گشتی",
     "expire": "https://ndlive.host247.net/live/imkhd/playlist.m3u8"
   },
   {
-    "mac": "SPORT",
+    "mac": "وەرزشی",
     "expire": "https://kurdtv.org/api/public/hls?u=https%3A%2F%2Fpr.footballii.ir%2Fhls2%2Fbein1.m3u8"
   },
   {
-    "mac": "SPORT",
+    "mac": "وەرزشی",
     "expire": "https://kurdtv.org/api/public/hls?u=https%3A%2F%2Fladyboy.yedektv.cfd%2F%2Fbein2%2Ftracks-v1a1%2Fmono.m3u8"
   },
   {
-    "mac": "SPORT",
+    "mac": "وەرزشی",
     "expire": "https://kurdtv.org/api/public/hls?u=https%3A%2F%2Fladyboy.yedektv.cfd%2F%2Fbein3%2Ftracks-v1a1%2Fmono.m3u8"
   },
   {
-    "mac": "SPORT",
+    "mac": "وەرزشی",
     "expire": "https://kurdtv.org/api/public/hls?u=https%3A%2F%2Fladyboy.yedektv.cfd%2F%2Fbein4%2Ftracks-v1a1%2Fmono.m3u8"
   },
   {
-    "mac": "SPORT",
+    "mac": "وەرزشی",
     "expire": "https://kurdtv.org/api/public/hls?u=https%3A%2F%2Fladyboy.yedektv.cfd%2F%2Fhls%2Fbein1.m3u8"
   },
   {
-    "mac": "SPORT",
+    "mac": "وەرزشی",
     "expire": "https://kurdtv.org/api/public/hls?u=https://prod-fastly-us-west-1.video.pscp.tv/Transcoding/v1/hls/C_YZ4LkNeYnxcDUTCLdzJJg1HgznTyXiwlPTw6NXkppWlI2IIxpKHd4gE-TkWcm3cn70Vt9ZuYp5mI4AOe6omg/transcode/us-west-1/periscope-replay-direct-prod-us-west-1-public/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsInZlcnNpb24iOiIyIn0.eyJFbmNvZGVyU2V0dGluZyI6ImVuY29kZXJfc2V0dGluZ183MjBwMzBfMTAiLCJIZWlnaHQiOjcyMCwiS2JwcyI6Mjc1MCwiV2lkdGgiOjEyODB9.ldktM4fCFRfkP4ZEBfZPKtlAUNAcTPkoz994YJAzWpE/dynamic_playlist.m3u8?type=live"
   },
   {
-    "mac": "NEWS",
+    "mac": "هەواڵ",
     "expire": "https://live.rudaw.net/hls/rudaw-tv/stream_1080p.m3u8"
   }
 ]
