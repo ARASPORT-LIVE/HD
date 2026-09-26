@@ -1,4 +1,4 @@
-ل<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ku" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -750,20 +750,26 @@
             }
 
             if (player) {
-                // بەکارهێنانی پروکسی بۆ تێپەڕاندنی بلۆکی CORS / HTTP لە وێبگەڕدا
-                const proxiedUrl = 'https://corsproxy.io/?' + encodeURIComponent(url);
-
+                // ١. تاقیکردنەوەی ڕاستەوخۆ
                 player.src({
-                    src: proxiedUrl,
+                    src: url,
                     type: 'application/x-mpegURL'
                 });
 
                 var promise = player.play();
                 if (promise !== undefined) {
                     promise.catch(function(error) {
-                        console.log("Autoplay failed, playing muted:", error);
+                        console.log("Direct play failed, trying proxied stream...", error);
+                        
+                        // ٢. هەوڵدان لە ڕێگەی پروکسی لە کاتی بوونی کێشەی CORS
+                        const proxiedUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
+                        player.src({
+                            src: proxiedUrl,
+                            type: 'application/x-mpegURL'
+                        });
+                        
                         player.muted(true);
-                        player.play();
+                        player.play().catch(e => console.log("Proxied play also failed:", e));
                     });
                 }
             }
