@@ -56,7 +56,7 @@
         .brand-title { font-size: 20px; font-weight: bold; color: #38bdf8; white-space: nowrap; }
         .header-right { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
 
-        .expire-countdown-badge, .trial-badge {
+        .expire-countdown-badge {
             background: rgba(30, 41, 59, 0.9);
             border: 1px solid #38bdf8;
             color: #38bdf8;
@@ -70,7 +70,6 @@
             direction: ltr;
         }
 
-        .trial-badge { background-color: #f59e0b; color: white; border: none; }
         .live-badge { background-color: #ef4444; color: white; padding: 4px 12px; border-radius: 20px; font-size: 13px; }
 
         .content-area { display: flex; flex-direction: row; width: 100%; }
@@ -83,16 +82,6 @@
             justify-content: center; align-items: center; z-index: 1001;
             font-size: 22px; font-weight: bold; color: #f59e0b;
         }
-
-        .video-js .vjs-watermark-logo {
-            position: absolute !important; top: 15px !important; right: 15px !important;
-            z-index: 1000 !important; display: none; align-items: center;
-            background: rgba(15, 23, 42, 0.75); padding: 6px 14px; border-radius: 6px;
-            border: 1px solid rgba(56, 189, 248, 0.5);
-        }
-
-        .vjs-watermark-text { color: #ffffff; font-weight: bold; font-size: 14px; }
-        .vjs-watermark-text span { color: #38bdf8; }
 
         .playlist-sidebar { width: 320px; background: #0f172a; border-right: 1px solid #334155; display: flex; flex-direction: column; max-height: 480px; }
         .category-tabs { display: flex; background: #1e293b; overflow-x: auto; border-bottom: 1px solid #334155; }
@@ -242,31 +231,118 @@
             return result;
         }
 
+        // بۆ خوێندنەوەی بەروار بە هەردوو فۆرماتی (DD/MM/YYYY) و (YYYY-MM-DD)
+        function parseFlexibleDate(dateStr) {
+            if (!dateStr) return null;
+            dateStr = dateStr.trim().replace(/"/g, '');
+
+            let parts = dateStr.split(' ');
+            let datePart = parts[0];
+            let timePart = parts[1] || '23:59:59';
+
+            let year, month, day;
+
+            if (datePart.includes('/')) {
+                let dSplit = datePart.split('/');
+                if (dSplit[0].length === 4) {
+                    year = dSplit[0]; month = dSplit[1]; day = dSplit[2];
+                } else {
+                    day = dSplit[0]; month = dSplit[1]; year = dSplit[2];
+                }
+            } else if (datePart.includes('-')) {
+                let dSplit = datePart.split('-');
+                if (dSplit[0].length === 4) {
+                    year = dSplit[0]; month = dSplit[1]; day = dSplit[2];
+                } else {
+                    day = dSplit[0]; month = dSplit[1]; year = dSplit[2];
+                }
+            } else {
+                return new Date(dateStr);
+            }
+
+            if (month && month.length === 1) month = '0' + month;
+            if (day && day.length === 1) day = '0' + day;
+
+            return new Date(`${year}-${month}-${day}T${timePart}`);
+        }
+
+        let timerInterval;
+        function startCountdown(expireDateStr) {
+            document.getElementById("countdownBox").style.display = "flex";
+            const expireDateObj = parseFlexibleDate(expireDateStr);
+            const expireTime = (expireDateObj && !isNaN(expireDateObj.getTime())) ? expireDateObj.getTime() : 0;
+
+            if (timerInterval) clearInterval(timerInterval);
+
+            timerInterval = setInterval(function() {
+                const now = new Date().getTime();
+                const distance = expireTime - now;
+
+                if (distance <= 0 || isNaN(distance)) {
+                    clearInterval(timerInterval);
+                    document.getElementById("countdownTimer").innerText = "ئێکسپایەر بووە";
+                    if (player) player.pause();
+                    document.getElementById("statusMsg").innerText = "ئابوونەکەت بەسەرچوو!";
+                    document.getElementById("authOverlay").style.display = "flex";
+                    return;
+                }
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                document.getElementById("countdownTimer").innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+            }, 1000);
+        }
+
         async function checkActivation(isManual = false) {
             const statusMsg = document.getElementById("statusMsg");
             if (isManual) statusMsg.innerText = "لە پشکنیندایە...";
 
             try {
-                const res = await fetch(GOOGLE_SHEET_MAC_CSV_URL);
+                // بەکارهێنانی Proxy بۆ ڕێگریکردن لە کێشەی CORS
+                const targetUrl = GOOGLE_SHEET_MAC_CSV_URL + "&cache=" + Date.now();
+                const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(targetUrl);
+                
+                let res = await fetch(proxyUrl);
+                if (!res.ok) res = await fetch(targetUrl);
+
                 if (res.ok) {
                     const csvText = await res.text();
                     const lines = csvText.split("\n");
+
                     for (let i = 1; i < lines.length; i++) {
                         const cols = parseCSVLine(lines[i]);
                         if (cols.length >= 3) {
                             const mac = cols[0].replace(/^"|"$/g, '').trim().toUpperCase();
+                            const expireStr = cols[2].replace(/^"|"$/g, '').trim();
+
                             if (mac === currentMac) {
+                                const expireDateObj = parseFlexibleDate(expireStr);
+                                const expireTime = (expireDateObj && !isNaN(expireDateObj.getTime())) ? expireDateObj.getTime() : 0;
+                                const now = new Date().getTime();
+
+                                if (now > expireTime) {
+                                    statusMsg.innerText = "ئابوونەکەت بەسەرچوو!";
+                                    document.getElementById("authOverlay").style.display = "flex";
+                                    return false;
+                                }
+
                                 document.getElementById("authOverlay").style.display = "none";
+                                startCountdown(expireStr);
                                 initPlayer();
                                 return true;
                             }
                         }
                     }
                 }
-            } catch (e) { console.log(e); }
+            } catch (e) { 
+                console.log("Error loading activation sheet:", e); 
+            }
 
             document.getElementById("authOverlay").style.display = "flex";
-            if (isManual) statusMsg.innerText = "نەدۆزرایەوە! بەردەوام نەبوو.";
+            if (isManual) statusMsg.innerText = "ئەم ئامێرە لە شیتەکەدا ئەکتیڤ نەکراوە!";
             return false;
         }
 
@@ -283,7 +359,6 @@
         async function loadGoogleSheetsPlaylist() {
             const playlistContainer = document.getElementById('playlist-items');
             
-            // خوێندنەوەی خێرا لە Cache ئەگەر پێشتر خەزن کرابێت
             const cachedData = localStorage.getItem("cached_channels");
             if (cachedData) {
                 parsedCategorizedChannels = JSON.parse(cachedData);
@@ -291,7 +366,12 @@
             }
 
             try {
-                const res = await fetch(GOOGLE_SHEET_CSV_URL);
+                const targetUrl = GOOGLE_SHEET_CSV_URL + "&cache=" + Date.now();
+                const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(targetUrl);
+
+                let res = await fetch(proxyUrl);
+                if (!res.ok) res = await fetch(targetUrl);
+
                 if (res.ok) {
                     const csvData = await res.text();
                     const lines = csvData.split('\n');
@@ -312,11 +392,11 @@
                     });
 
                     parsedCategorizedChannels = tempChannels;
-                    localStorage.setItem("cached_channels", JSON.stringify(tempChannels)); // خەزنکردن بۆ خێراکردنەوە
+                    localStorage.setItem("cached_channels", JSON.stringify(tempChannels));
                     renderTabs();
                 }
             } catch (error) {
-                if (!cachedData) playlistContainer.innerHTML = '<div class="playlist-item" style="color: #ef4444;">کێشە لە بەستەردا هەیە!</div>';
+                if (!cachedData) playlistContainer.innerHTML = '<div class="playlist-item" style="color: #ef4444;">کێشە لە خوێندنەوەی کەناڵەکان هەیە!</div>';
             }
         }
 
