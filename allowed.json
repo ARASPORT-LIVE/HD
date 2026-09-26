@@ -14,5 +14,9 @@
   {
     "mac": "وەرزشی",
     "expire": "https://kurdtv.org/api/public/hls?u=https%3A%2F%2Fpr.footballii.ir%2Fhls2%2Fbein1.m3u8"
+  },
+  {
+    "mac": "خێزانی",
+    "expire": "https://kurdtv.org/api/public/hls?u=https%3A%2F%2Fladyboy.yedektv.cfd%2F%2Fbein2%2Ftracks-v1a1%2Fmono.m3u8"
   }
 ]
