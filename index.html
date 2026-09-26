@@ -523,12 +523,11 @@
     <!-- Video.js JS -->
     <script src="https://vjs.zencdn.net/7.20.3/video.js"></script>
     <script>
-        // *** لینکی RAW ی GitHub بۆ کەناڵەکان ***
-        // دڵنیابەرەوە لە کۆتایی لینکی Raw کەت بێت
-        const GITHUB_PLAYLIST_URL = "https://raw.githubusercontent.com/arasport-live/arasport-live.github.io/main/channels.json";
+        // بەستەری ڕاستی RAW بۆ playlist.m3u
+        const GITHUB_PLAYLIST_URL = "https://raw.githubusercontent.com/arasport-live/arasport-live.github.io/main/playlist.m3u";
         
-        // *** لینکی چاککراوی Google Sheets بۆ پشکنینی MAC Address ***
-        const GOOGLE_SHEET_MAC_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRgvWrahp_pwJWRnX4QCE4KmuhUb6gl5Rk_rDpjA2ODuCNH1nyLUcD-L0g0I6PrD45F0hb7odKi_zbW/pub?gid=250464113&single=true&output=csv"; 
+        // لینکی Google Sheets بۆ MAC Address
+        const GOOGLE_SHEET_MAC_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRgvWrahp_pwJWRnX4QCE4KmuhUb6gl5Rk_rDpjA2ODuCNH1nyLUcD-L0g0I6PrD45F0hb7odKi_zbW/pub?gid=0&single=true&output=csv"; 
 
         function getDeviceMac() {
             let mac = localStorage.getItem("ara_device_mac");
@@ -563,10 +562,46 @@
 
         let timerInterval;
 
+        function parseFlexibleDate(dateStr) {
+            if (!dateStr) return null;
+            dateStr = dateStr.trim().replace(/"/g, '');
+
+            let parts = dateStr.split(' ');
+            let datePart = parts[0];
+            let timePart = parts[1] || '23:59:59';
+
+            let year, month, day;
+
+            if (datePart.includes('/')) {
+                let dSplit = datePart.split('/');
+                if (dSplit[0].length === 4) {
+                    year = dSplit[0]; month = dSplit[1]; day = dSplit[2];
+                } else {
+                    day = dSplit[0]; month = dSplit[1]; year = dSplit[2];
+                }
+            } else if (datePart.includes('-')) {
+                let dSplit = datePart.split('-');
+                if (dSplit[0].length === 4) {
+                    year = dSplit[0]; month = dSplit[1]; day = dSplit[2];
+                } else {
+                    day = dSplit[0]; month = dSplit[1]; year = dSplit[2];
+                }
+            } else {
+                return new Date(dateStr);
+            }
+
+            if (month && month.length === 1) month = '0' + month;
+            if (day && day.length === 1) day = '0' + day;
+
+            return new Date(`${year}-${month}-${day}T${timePart}`);
+        }
+
         function startCountdown(expireDateStr) {
             document.getElementById("trialBadge").style.display = "none";
             document.getElementById("countdownBox").style.display = "flex";
-            const expireTime = new Date(expireDateStr).getTime();
+            
+            const expireDateObj = parseFlexibleDate(expireDateStr);
+            const expireTime = (expireDateObj && !isNaN(expireDateObj.getTime())) ? expireDateObj.getTime() : 0;
 
             if (timerInterval) clearInterval(timerInterval);
 
@@ -574,7 +609,7 @@
                 const now = new Date().getTime();
                 const distance = expireTime - now;
 
-                if (distance < 0) {
+                if (distance <= 0 || isNaN(distance)) {
                     clearInterval(timerInterval);
                     document.getElementById("countdownTimer").innerText = "ئێکسپایەر بووە";
                     if (player) player.pause();
@@ -662,27 +697,42 @@
             }, 1000);
         }
 
+        function parseCSVLine(text) {
+            let result = [], cell = '', inQuotes = false;
+            for (let i = 0; i < text.length; i++) {
+                let c = text[i];
+                if (c === '"') inQuotes = !inQuotes;
+                else if (c === ',' && !inQuotes) { result.push(cell.trim()); cell = ''; }
+                else cell += c;
+            }
+            result.push(cell.trim());
+            return result;
+        }
+
         async function checkActivation(isManualCheck = false) {
             const statusMsg = document.getElementById("statusMsg");
             let allowedDevices = [];
 
             try {
-                const response = await fetch(GOOGLE_SHEET_MAC_CSV_URL + "&t=" + new Date().getTime());
+                const targetUrl = GOOGLE_SHEET_MAC_CSV_URL + "&t=" + new Date().getTime();
+                const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(targetUrl);
+                
+                let response = await fetch(proxyUrl);
+                if (!response.ok) response = await fetch(targetUrl);
+
                 if (response.ok) {
                     const csvText = await response.text();
                     const lines = csvText.split("\n");
                     lines.forEach((line, index) => {
                         if (index === 0 || !line.trim()) return;
-                        const cols = line.split(",");
-                        if (cols.length >= 2) {
+                        const cols = parseCSVLine(line);
+                        if (cols.length >= 3) {
                             allowedDevices.push({
-                                mac: cols[0].trim().toUpperCase(),
-                                expire: cols[1].trim()
+                                mac: cols[0].replace(/^"|"$/g, '').trim().toUpperCase(),
+                                expire: cols[2].replace(/^"|"$/g, '').trim()
                             });
                         }
                     });
-                } else {
-                    console.error("Error fetching sheet status:", response.status);
                 }
             } catch (e) {
                 console.error("Error loading MACs:", e);
@@ -707,7 +757,8 @@
                 return false;
             }
 
-            const expireTime = new Date(foundDevice.expire).getTime();
+            const expireDateObj = parseFlexibleDate(foundDevice.expire);
+            const expireTime = (expireDateObj && !isNaN(expireDateObj.getTime())) ? expireDateObj.getTime() : 0;
 
             if (now > expireTime) {
                 statusMsg.innerText = "ئابوونەکەت بەسەرچوو!";
@@ -778,6 +829,41 @@
             }
         }
 
+        function parseM3U(m3uContent) {
+            const lines = m3uContent.split('\n');
+            const categories = {};
+            let currentGroup = "گشتی";
+            let currentName = "";
+
+            lines.forEach(line => {
+                line = line.trim();
+                if (line.startsWith('#EXTINF:')) {
+                    const groupMatch = line.match(/group-title="([^"]+)"/);
+                    if (groupMatch) {
+                        currentGroup = groupMatch[1].trim();
+                        if (currentGroup === 'مناڵان') currentGroup = 'منداڵان';
+                    } else {
+                        currentGroup = "گشتی";
+                    }
+
+                    const nameParts = line.split(',');
+                    if (nameParts.length > 1) {
+                        currentName = nameParts[nameParts.length - 1].trim();
+                    }
+                } else if (line && !line.startsWith('#')) {
+                    if (!categories[currentGroup]) {
+                        categories[currentGroup] = [];
+                    }
+                    if (currentName) {
+                        categories[currentGroup].push({ name: currentName, url: line });
+                        currentName = "";
+                    }
+                }
+            });
+
+            return categories;
+        }
+
         async function loadGitHubPlaylist() {
             try {
                 const response = await fetch(GITHUB_PLAYLIST_URL + '?t=' + new Date().getTime());
@@ -785,30 +871,8 @@
                     throw new Error("HTTP error " + response.status);
                 }
                 
-                if (GITHUB_PLAYLIST_URL.endsWith('.json')) {
-                    parsedCategorizedChannels = await response.json();
-                } else {
-                    const csvData = await response.text();
-                    const lines = csvData.split('\n');
-                    parsedCategorizedChannels = {};
-
-                    lines.forEach((line, index) => {
-                        if (index === 0 || !line.trim()) return;
-                        const columns = line.split(',');
-                        if (columns.length >= 3) {
-                            const group = columns[0].trim() || 'گشتی';
-                            const name = columns[1].trim();
-                            const url = columns[2].trim();
-
-                            if (name && url) {
-                                if (!parsedCategorizedChannels[group]) {
-                                    parsedCategorizedChannels[group] = [];
-                                }
-                                parsedCategorizedChannels[group].push({ name, url });
-                            }
-                        }
-                    });
-                }
+                const m3uText = await response.text();
+                parsedCategorizedChannels = parseM3U(m3uText);
 
                 renderTabs();
             } catch (error) {
