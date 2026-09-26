@@ -82,5 +82,9 @@
   {
     "mac": "وەرزشی",
     "expire": "https://ameditv.ai.studio/api/proxy?url=http%3A%2F%2F23.237.104.106%3A8080%2FDAZN_3%2Ftracks-v1a1%2Fmono.m3u8"
+  },
+  {
+    "mac": "وەرزشی",
+    "expire": "https://ameditv.ai.studio/api/proxy?url=http%3A%2F%2F23.237.104.106%3A8080%2FDAZN_4%2Ftracks-v1a1%2Fmono.m3u8"
   }
 ]
