@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ARA SPORT LIVE - Web Player</title>
     
-    <!-- Video.js CSS + Font -->
+    <!-- Video.js CSS -->
     <link href="https://vjs.zencdn.net/7.20.3/video-js.css" rel="stylesheet" />
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -21,6 +21,7 @@
 
         * {
             box-sizing: border-box;
+            font-family: 'GoranFontRegular-Regular', Tahoma, Arial, sans-serif !important;
             margin: 0;
             padding: 0;
         }
@@ -28,7 +29,6 @@
         body {
             background-color: #0f172a;
             color: #ffffff;
-            font-family: 'GoranFontRegular-Regular', Tahoma, Arial, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -124,29 +124,30 @@
             background: #000;
         }
 
-        /* دڵنیابوونەوە لە نیشاندانی ئایکۆنەکانی Video.js */
         .video-js {
             width: 100%;
             height: 480px;
-            font-family: Arial, Helvetica, sans-serif !important;
         }
 
-        /* لۆگۆی ARA SPORT HD لەسەر پلەیەرەکە */
+        /* چاککردنی داپۆشینی ئایکۆنی پلەی ڕاستەقینەی Video.js */
+        .video-js .vjs-big-play-button {
+            z-index: 5 !important;
+        }
+
         .vjs-watermark-logo {
             position: absolute;
             top: 15px;
             right: 15px;
-            z-index: 10;
+            z-index: 4;
             pointer-events: none;
             display: flex;
             align-items: center;
             gap: 6px;
-            background: rgba(15, 23, 42, 0.75);
-            padding: 6px 14px;
+            background: rgba(15, 23, 42, 0.65);
+            padding: 6px 12px;
             border-radius: 6px;
-            border: 1px solid rgba(56, 189, 248, 0.5);
+            border: 1px solid rgba(56, 189, 248, 0.4);
             backdrop-filter: blur(4px);
-            font-family: 'GoranFontRegular-Regular', Tahoma, sans-serif !important;
         }
 
         .vjs-watermark-text {
@@ -240,7 +241,7 @@
             border-radius: 12px;
             border: 1px solid #334155;
             text-align: center;
-            max-width: 460px;
+            max-width: 440px;
             width: 90%;
             box-shadow: 0 10px 25px rgba(0,0,0,0.5);
         }
@@ -280,23 +281,17 @@
 
         .send-actions {
             display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 15px;
-        }
-
-        .send-row {
-            display: flex;
             gap: 10px;
+            margin-bottom: 15px;
         }
 
         .send-btn {
             flex: 1;
-            padding: 9px;
+            padding: 10px;
             border: none;
             border-radius: 6px;
             color: white;
-            font-size: 12px;
+            font-size: 13px;
             cursor: pointer;
             font-weight: bold;
             display: flex;
@@ -374,6 +369,7 @@
                 تایمەری ترایەڵ تەواو بوو! تکایە <span id="cooldownTimer" style="font-weight: bold; color: #fff;">05:00</span> چاوەڕێ بکە بۆ ترایەڵی داهاتوو.
             </div>
 
+            <!-- گۆڕینی دەقەکە بەپێی داواکارییەکەت -->
             <p id="overlayIntroMsg">بۆ بینینی بەردەوامی پەخشەکە، تەواوی ماک ئادرێسەکەت بۆ ئەدمین بنێرە:</p>
             
             <div class="mac-box">
@@ -381,21 +377,13 @@
                 <button class="copy-btn" onclick="copyMac()">کۆپی</button>
             </div>
 
-            <!-- دوگمەکانی واتسئاپ بۆ هەردوو ژمارەکە -->
             <div class="send-actions">
-                <div class="send-row">
-                    <a id="waLink1" href="#" target="_blank" class="send-btn whatsapp-btn">
-                        <i class="fab fa-whatsapp"></i> واتسئاپ 1
-                    </a>
-                    <a id="waLink2" href="#" target="_blank" class="send-btn whatsapp-btn" style="background: #15803d;">
-                        <i class="fab fa-whatsapp"></i> واتسئاپ 2
-                    </a>
-                </div>
-                <div class="send-row">
-                    <a id="smsLink" href="#" class="send-btn sms-btn">
-                        <i class="fas fa-comment-alt"></i> بە نامە (SMS)
-                    </a>
-                </div>
+                <a id="waLink" href="#" target="_blank" class="send-btn whatsapp-btn">
+                    <i class="fab fa-whatsapp"></i> واتسئاپ
+                </a>
+                <a id="smsLink" href="#" class="send-btn sms-btn">
+                    <i class="fas fa-comment-alt"></i> نامە (SMS)
+                </a>
             </div>
 
             <button onclick="checkActivation(true)" class="auth-btn">پشکنینی ئەکتیڤبوون</button>
@@ -466,14 +454,10 @@
         const currentMac = getDeviceMac();
         document.getElementById("deviceMac").innerText = currentMac;
 
-        // ڕێکخستنی واتسئاپ بۆ هەردوو ژمارەکە
-        const phone1 = "9647501224994";
-        const phone2 = "9647748134314";
+        const targetPhone = "9647501224994";
         const msgText = encodeURIComponent(`سڵاو، تکایە ئابوونەی ئەم ئامێرە ئەکتیڤ بکە:\nMAC Address: ${currentMac}`);
-        
-        document.getElementById("waLink1").href = `https://wa.me/${phone1}?text=${msgText}`;
-        document.getElementById("waLink2").href = `https://wa.me/${phone2}?text=${msgText}`;
-        document.getElementById("smsLink").href = `sms:${phone1}?body=${msgText}`;
+        document.getElementById("waLink").href = `https://wa.me/${targetPhone}?text=${msgText}`;
+        document.getElementById("smsLink").href = `sms:${targetPhone}?body=${msgText}`;
 
         function copyMac() {
             navigator.clipboard.writeText(currentMac);
@@ -511,6 +495,7 @@
             }, 1000);
         }
 
+        // --- ڕێکخستنی کاتی ترایەڵ بۆ ئەوەی لە ڕیفریشدا بەردەوام بێت ---
         let trialInterval;
         let cooldownInterval;
 
@@ -521,6 +506,7 @@
             let trialEnd = localStorage.getItem("ara_trial_end_time");
 
             if (!trialEnd) {
+                // ئەگەر یەکەم جار بێت، کاتی کۆتایی هاتنی ٦٠ چڕکە تۆمار بکە
                 trialEnd = now + (60 * 1000);
                 localStorage.setItem("ara_trial_end_time", trialEnd);
             } else {
@@ -640,7 +626,6 @@
                 player = videojs('ara-sport-player');
 
                 player.ready(function() {
-                    // زامنکردنی لۆگۆی ARA SPORT HD لەسەر هەموو کەناڵەکان
                     var watermark = document.createElement('div');
                     watermark.className = 'vjs-watermark-logo';
                     watermark.innerHTML = `<div class="vjs-watermark-text">ARA SPORT <span>HD</span></div>`;
