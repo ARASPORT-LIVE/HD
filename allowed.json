@@ -1,22 +1,70 @@
 [
   {
-    "mac": "CE:14:0B:23:07:5B",
-    "expire": "Tue Oct 27 2026 23:59:59 GMT+0300 (Arabian Standard Time)"
+    "mac": "ئاینی",
+    "expire": "https://app-live.org/live/3268334b/index.m3u8"
   },
   {
-    "mac": "DF:12:2E:3B:F6:7D",
-    "expire": "Wed Oct 27 2027 23:59:59 GMT+0300 (Arabian Standard Time)"
+    "mac": "هەواڵ",
+    "expire": "https://hlspackager.akamaized.net/live/DB/KURDSAT_NEWS/HLS/KURDSAT_NEWS.m3u8"
   },
   {
-    "mac": "B5:83:12:9B:79:4B",
-    "expire": "Wed Oct 27 2027 23:59:59 GMT+0300 (Arabian Standard Time)"
+    "mac": "گشتی",
+    "expire": "https://ndlive.host247.net/live/imkhd/playlist.m3u8"
   },
   {
-    "mac": "87:90:2E:49:76:1E",
-    "expire": "Wed Oct 27 2027 23:59:59 GMT+0300 (Arabian Standard Time)"
+    "mac": "وەرزشی",
+    "expire": "https://kurdtv.org/api/public/hls?u=https%3A%2F%2Fpr.footballii.ir%2Fhls2%2Fbein1.m3u8"
   },
   {
-    "mac": "44:6B:F7:AB:83:AF",
-    "expire": "Wed Oct 27 2027 23:59:59 GMT+0300 (Arabian Standard Time)"
+    "mac": "وەرزشی",
+    "expire": "https://kurdtv.org/api/public/hls?u=https%3A%2F%2Fladyboy.yedektv.cfd%2F%2Fbein2%2Ftracks-v1a1%2Fmono.m3u8"
+  },
+  {
+    "mac": "وەرزشی",
+    "expire": "https://kurdtv.org/api/public/hls?u=https%3A%2F%2Fladyboy.yedektv.cfd%2F%2Fbein3%2Ftracks-v1a1%2Fmono.m3u8"
+  },
+  {
+    "mac": "وەرزشی",
+    "expire": "https://kurdtv.org/api/public/hls?u=https%3A%2F%2Fladyboy.yedektv.cfd%2F%2Fbein4%2Ftracks-v1a1%2Fmono.m3u8"
+  },
+  {
+    "mac": "وەرزشی",
+    "expire": "https://kurdtv.org/api/public/hls?u=https%3A%2F%2Fladyboy.yedektv.cfd%2F%2Fhls%2Fbein1.m3u8"
+  },
+  {
+    "mac": "وەرزشی",
+    "expire": "https://kurdtv.org/api/public/hls?u=https://prod-fastly-us-west-1.video.pscp.tv/Transcoding/v1/hls/C_YZ4LkNeYnxcDUTCLdzJJg1HgznTyXiwlPTw6NXkppWlI2IIxpKHd4gE-TkWcm3cn70Vt9ZuYp5mI4AOe6omg/transcode/us-west-1/periscope-replay-direct-prod-us-west-1-public/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsInZlcnNpb24iOiIyIn0.eyJFbmNvZGVyU2V0dGluZyI6ImVuY29kZXJfc2V0dGluZ183MjBwMzBfMTAiLCJIZWlnaHQiOjcyMCwiS2JwcyI6Mjc1MCwiV2lkdGgiOjEyODB9.ldktM4fCFRfkP4ZEBfZPKtlAUNAcTPkoz994YJAzWpE/dynamic_playlist.m3u8?type=live"
+  },
+  {
+    "mac": "هەواڵ",
+    "expire": "https://live.rudaw.net/hls/rudaw-tv/stream_1080p.m3u8"
+  },
+  {
+    "mac": "گشتی",
+    "expire": "https://media2.streambrothers.com:1936/8218/8218/chunklist_w1270017071.m3u8"
+  },
+  {
+    "mac": "گشتی",
+    "expire": "https://hlspackager.akamaized.net/live/DB/KURDSAT_HD/HLS/KURDSAT_HD-avc1_2500000=10002.m3u8"
+  },
+  {
+    "mac": "هەواڵ",
+    "expire": "https://live.host247.net/gk/gksat/chunklist_w1358946070.m3u8"
+  },
+  {
+    "mac": "هەواڵ",
+    "expire": "https://hlspackager.akamaized.net/live/DB/NRT_HD/HLS/NRT_HD-avc1_2500000=10002,mp4a_128000=20000.m3u8"
+  },
+  {
+    "mac": "منداڵان",
+    "expire": "https://5dcabf026b188.streamlock.net/afarinTV/d1/livestream/chunklist_w2044871186.m3u8"
+  },
+  {
+    "mac": "منداڵان",
+    "expire": "https://65f16f0fdfc51.streamlock.net/afarinTV/livestream/chunklist_w1054217716.m3u8"
+  },
+  {
+    "mac": "خێزانی",
+    "expire": "https://vsd115.okcdn.ru/hls/3527542770279.m3u8/sig/SNhwgB0w7cc/expires/1790538008446/srcIp/62.201.244.135/urls/95.163.35.54/clientType/0/srcAg/CHROME/mid/4728653618791/3527542770279_medium/index.m3u8"
   }
 ]
