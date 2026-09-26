@@ -54,5 +54,9 @@
   {
     "mac": "هەواڵ",
     "expire": "https://hlspackager.akamaized.net/live/DB/NRT_HD/HLS/NRT_HD-avc1_2500000=10002,mp4a_128000=20000.m3u8"
+  },
+  {
+    "mac": "منداڵان",
+    "expire": "https://5dcabf026b188.streamlock.net/afarinTV/d1/livestream/chunklist_w2044871186.m3u8"
   }
 ]
