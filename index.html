@@ -523,12 +523,12 @@
     <!-- Video.js JS -->
     <script src="https://vjs.zencdn.net/7.20.3/video.js"></script>
     <script>
-        // *** بەستەری RAW ی گەیتهەب بۆ فایلی کەناڵەکان ***
-        // تکایە لینکی Raw ی فایلی channels.json یان channels.csv ی گەیتهەبەکەت لێرە دابنێ:
-        const GITHUB_PLAYLIST_URL = "https://raw.githubusercontent.com/USERNAME/REPOSITORY/main/channels.json";
+        // *** لینکی RAW ی GitHub بۆ کەناڵەکان ***
+        // دڵنیابەرەوە لە کۆتایی لینکی Raw کەت بێت
+        const GITHUB_PLAYLIST_URL = "https://raw.githubusercontent.com/arasport-live/arasport-live.github.io/main/channels.json";
         
-        // لینکی ماک ئادرێسەکان لەرێگەی GitHub یان Google Sheets
-        const GOOGLE_SHEET_MAC_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRgvWrahp_pwJWRnX4QCE4KmuhUb6gl5Rk_rDpjA2ODuCNH1nyLUcD-L0g0I6PrD45F0hb7odKi_zbW/pub?gid=0&single=true&output=csv"; 
+        // *** لینکی چاککراوی Google Sheets بۆ پشکنینی MAC Address ***
+        const GOOGLE_SHEET_MAC_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRgvWrahp_pwJWRnX4QCE4KmuhUb6gl5Rk_rDpjA2ODuCNH1nyLUcD-L0g0I6PrD45F0hb7odKi_zbW/pub?gid=250464113&single=true&output=csv"; 
 
         function getDeviceMac() {
             let mac = localStorage.getItem("ara_device_mac");
@@ -578,7 +578,7 @@
                     clearInterval(timerInterval);
                     document.getElementById("countdownTimer").innerText = "ئێکسپایەر بووە";
                     if (player) player.pause();
-                    document.getElementById("statusMsg").innerText = "سیستمەکەت بەسەرچوو! تکایە نوێی بکەرەوە.";
+                    document.getElementById("statusMsg").innerText = "ئابوونەکەت بەسەرچوو! تکایە نوێی بکەرەوە.";
                     document.getElementById("authOverlay").style.display = "flex";
                     return;
                 }
@@ -681,9 +681,11 @@
                             });
                         }
                     });
+                } else {
+                    console.error("Error fetching sheet status:", response.status);
                 }
             } catch (e) {
-                console.log("Error loading MACs:", e);
+                console.error("Error loading MACs:", e);
             }
 
             const now = new Date().getTime();
@@ -708,7 +710,7 @@
             const expireTime = new Date(foundDevice.expire).getTime();
 
             if (now > expireTime) {
-                statusMsg.innerText = "سیستمەکەت بەسەرچوو!";
+                statusMsg.innerText = "ئابوونەکەت بەسەرچوو!";
                 statusMsg.style.color = "#f59e0b";
                 document.getElementById("authOverlay").style.display = "flex";
                 return false;
@@ -776,16 +778,16 @@
             }
         }
 
-        // *** خوێندنەوەی پلەی لیست لە GitHub ***
         async function loadGitHubPlaylist() {
             try {
                 const response = await fetch(GITHUB_PLAYLIST_URL + '?t=' + new Date().getTime());
+                if (!response.ok) {
+                    throw new Error("HTTP error " + response.status);
+                }
                 
-                // ئەگەر فایلی JSON بوو:
                 if (GITHUB_PLAYLIST_URL.endsWith('.json')) {
                     parsedCategorizedChannels = await response.json();
                 } else {
-                    // ئەگەر فایلی CSV بوو:
                     const csvData = await response.text();
                     const lines = csvData.split('\n');
                     parsedCategorizedChannels = {};
@@ -810,8 +812,8 @@
 
                 renderTabs();
             } catch (error) {
-                console.error(error);
-                document.getElementById('playlist-items').innerHTML = '<div class="playlist-item">کێشەیەک لە خوێندنەوەی فایلی GitHub هەیە</div>';
+                console.error("Error fetching playlist:", error);
+                document.getElementById('playlist-items').innerHTML = '<div class="playlist-item" style="color: #ef4444;">کێشەیەک لە خوێندنەوەی فایلی GitHub هەیە</div>';
             }
         }
 
