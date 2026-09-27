@@ -15,420 +15,175 @@
             font-family: 'GoranFontRegular-Regular';
             src: url('GoranFontRegular-Regular.ttf') format('truetype'),
                  url('GoranFontRegular-Regular.woff') format('woff');
-            font-weight: normal;
-            font-style: normal;
+            font-weight: normal; font-style: normal;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            background-color: #0f172a;
-            color: #ffffff;
+            background-color: #0f172a; color: #ffffff;
             font-family: 'GoranFontRegular-Regular', Tahoma, Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; padding: 20px;
         }
 
         .main-wrapper {
-            width: 100%;
-            max-width: 1100px;
-            background: #1e293b;
-            border-radius: 12px;
-            overflow: hidden;
+            width: 100%; max-width: 1100px; background: #1e293b;
+            border-radius: 12px; overflow: hidden;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-            border: 1px solid #334155;
-            display: flex;
-            flex-direction: column;
-            position: relative;
+            border: 1px solid #334155; display: flex; flex-direction: column; position: relative;
         }
 
         .player-header {
-            background: #0f172a;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid #2563eb;
-            gap: 8px;
-            flex-wrap: nowrap;
+            background: #0f172a; padding: 15px 20px; display: flex;
+            justify-content: space-between; align-items: center;
+            border-bottom: 2px solid #2563eb; gap: 8px; flex-wrap: nowrap;
         }
 
-        .brand-title {
-            font-size: 20px;
-            font-weight: bold;
-            color: #38bdf8;
-            white-space: nowrap;
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            white-space: nowrap;
-        }
+        .brand-title { font-size: 20px; font-weight: bold; color: #38bdf8; white-space: nowrap; }
+        .header-right { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
 
         .expire-countdown-badge {
-            background: rgba(30, 41, 59, 0.9);
-            border: 1px solid #38bdf8;
-            color: #38bdf8;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            direction: ltr;
+            background: rgba(30, 41, 59, 0.9); border: 1px solid #38bdf8; color: #38bdf8;
+            padding: 5px 12px; border-radius: 20px; font-size: 13px; font-weight: bold;
+            display: flex; align-items: center; gap: 6px; direction: ltr;
         }
 
         .trial-badge {
-            background-color: #f59e0b;
-            color: white;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            direction: ltr;
+            background-color: #f59e0b; color: white; padding: 5px 12px; border-radius: 20px;
+            font-size: 13px; font-weight: bold; display: flex; align-items: center; gap: 6px; direction: ltr;
         }
 
         .live-badge {
-            background-color: #ef4444;
-            color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 13px;
-            animation: pulse 1.5s infinite;
+            background-color: #ef4444; color: white; padding: 4px 12px; border-radius: 20px;
+            font-size: 13px; animation: pulse 1.5s infinite;
         }
 
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
-        }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
-        .content-area {
-            display: flex;
-            flex-direction: row;
-            width: 100%;
-        }
-
-        .video-container {
-            flex: 1;
-            position: relative;
-            background: #000;
-        }
-
-        .video-js {
-            width: 100%;
-            height: 480px;
-            font-family: Arial, Helvetica, sans-serif !important;
-        }
+        .content-area { display: flex; flex-direction: row; width: 100%; }
+        .video-container { flex: 1; position: relative; background: #000; }
+        .video-js { width: 100%; height: 480px; font-family: Arial, sans-serif !important; }
 
         .stream-status-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(15, 23, 42, 0.85);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1001;
-            font-size: 22px;
-            font-weight: bold;
-            color: #f59e0b;
-            backdrop-filter: blur(4px);
-            pointer-events: none;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.85); display: flex; justify-content: center;
+            align-items: center; z-index: 1001; font-size: 22px; font-weight: bold;
+            color: #f59e0b; backdrop-filter: blur(4px); pointer-events: none;
         }
 
         .video-js .vjs-watermark-logo {
-            position: absolute !important;
-            top: 15px !important;
-            right: 15px !important;
-            z-index: 1000 !important;
-            pointer-events: none;
-            display: none;
-            align-items: center;
-            gap: 6px;
-            background: rgba(15, 23, 42, 0.75);
-            padding: 6px 14px;
-            border-radius: 6px;
-            border: 1px solid rgba(56, 189, 248, 0.5);
-            backdrop-filter: blur(4px);
-            font-family: 'GoranFontRegular-Regular', Tahoma, sans-serif !important;
+            position: absolute !important; top: 15px !important; right: 15px !important;
+            z-index: 1000 !important; pointer-events: none; display: none; align-items: center; gap: 6px;
+            background: rgba(15, 23, 42, 0.75); padding: 6px 14px; border-radius: 6px;
+            border: 1px solid rgba(56, 189, 248, 0.5); backdrop-filter: blur(4px);
         }
 
-        .vjs-watermark-text {
-            color: #ffffff;
-            font-weight: bold;
-            font-size: 14px;
-            letter-spacing: 0.5px;
-        }
-
-        .vjs-watermark-text span {
-            color: #38bdf8;
-        }
+        .vjs-watermark-text { color: #ffffff; font-weight: bold; font-size: 14px; }
+        .vjs-watermark-text span { color: #38bdf8; }
 
         .playlist-sidebar {
-            width: 320px;
-            background: #0f172a;
-            border-right: 1px solid #334155;
-            display: flex;
-            flex-direction: column;
-            max-height: 480px;
+            width: 320px; background: #0f172a; border-right: 1px solid #334155;
+            display: flex; flex-direction: column; max-height: 480px;
         }
 
         .category-tabs {
-            display: flex;
-            background: #1e293b;
-            overflow-x: auto;
-            border-bottom: 1px solid #334155;
-            scrollbar-width: thin;
+            display: flex; background: #1e293b; overflow-x: auto;
+            border-bottom: 1px solid #334155; scrollbar-width: thin;
         }
 
         .category-tab {
-            padding: 10px 14px;
-            font-size: 13px;
-            font-weight: bold;
-            color: #94a3b8;
-            cursor: pointer;
-            white-space: nowrap;
-            transition: all 0.2s;
-            border-bottom: 2px solid transparent;
+            padding: 10px 14px; font-size: 13px; font-weight: bold; color: #94a3b8;
+            cursor: pointer; white-space: nowrap; transition: all 0.2s; border-bottom: 2px solid transparent;
         }
 
-        .category-tab:hover {
-            color: #38bdf8;
-        }
+        .category-tab:hover { color: #38bdf8; }
+        .category-tab.active { color: #38bdf8; border-bottom: 2px solid #38bdf8; background: #0f172a; }
 
-        .category-tab.active {
-            color: #38bdf8;
-            border-bottom: 2px solid #38bdf8;
-            background: #0f172a;
-        }
-
-        .playlist-items-wrapper {
-            flex: 1;
-            overflow-y: auto;
-        }
-
+        .playlist-items-wrapper { flex: 1; overflow-y: auto; }
         .playlist-item {
-            padding: 12px 15px;
-            border-bottom: 1px solid #1e293b;
-            cursor: pointer;
-            transition: background 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            font-size: 14px;
+            padding: 12px 15px; border-bottom: 1px solid #1e293b; cursor: pointer;
+            transition: background 0.2s; display: flex; align-items: center;
+            justify-content: space-between; gap: 10px; font-size: 14px;
         }
 
-        .playlist-item:hover {
-            background: #1e293b;
-        }
-
-        .playlist-item.active {
-            background: #2563eb;
-            color: #fff;
-        }
+        .playlist-item:hover { background: #1e293b; }
+        .playlist-item.active { background: #2563eb; color: #fff; }
 
         .ticker-bar {
-            background: #0284c7;
-            color: #ffffff;
-            padding: 4px 0;
-            overflow: hidden;
-            white-space: nowrap;
-            display: flex;
-            align-items: center;
+            background: #0284c7; color: #ffffff; padding: 4px 0;
+            overflow: hidden; white-space: nowrap; display: flex; align-items: center;
         }
 
         .ticker-text {
-            display: inline-block;
-            padding-right: 100%;
-            animation: ticker 25s linear infinite;
-            font-size: 13px;
-            line-height: 1.2;
+            display: inline-block; padding-right: 100%;
+            animation: ticker 25s linear infinite; font-size: 13px; line-height: 1.2;
         }
 
-        @keyframes ticker {
-            0% { transform: translate3d(0, 0, 0); }
-            100% { transform: translate3d(100%, 0, 0); }
-        }
+        @keyframes ticker { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(100%, 0, 0); } }
 
         .auth-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(15, 23, 42, 0.96);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            backdrop-filter: blur(8px);
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.96); display: flex; justify-content: center;
+            align-items: center; z-index: 9999; backdrop-filter: blur(8px);
         }
 
         .auth-card {
-            background: #1e293b;
-            padding: 25px;
-            border-radius: 12px;
-            border: 1px solid #334155;
-            text-align: center;
-            max-width: 460px;
-            width: 90%;
+            background: #1e293b; padding: 25px; border-radius: 12px;
+            border: 1px solid #334155; text-align: center; max-width: 460px; width: 90%;
             box-shadow: 0 10px 25px rgba(0,0,0,0.5);
         }
 
-        .auth-card h2 {
-            color: #38bdf8;
-            margin-bottom: 12px;
-            font-size: 20px;
-        }
+        .auth-card h2 { color: #38bdf8; margin-bottom: 12px; font-size: 20px; }
 
         .mac-box {
-            background: #0f172a;
-            border: 1px dashed #38bdf8;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            color: #ef4444;
-            letter-spacing: 1px;
-            margin-bottom: 15px;
-            user-select: all;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            direction: ltr;
+            background: #0f172a; border: 1px dashed #38bdf8; padding: 12px;
+            border-radius: 8px; font-size: 16px; font-weight: bold; color: #ef4444;
+            letter-spacing: 1px; margin-bottom: 15px; user-select: all;
+            display: flex; justify-content: space-between; align-items: center; direction: ltr;
         }
 
         .copy-btn {
-            background: #2563eb;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
+            background: #2563eb; color: white; border: none; padding: 6px 12px;
+            border-radius: 4px; cursor: pointer; font-size: 12px;
         }
 
-        .send-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 15px;
-        }
-
-        .send-row {
-            display: flex;
-            gap: 10px;
-        }
+        .send-actions { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; }
+        .send-row { display: flex; gap: 10px; }
 
         .send-btn {
-            flex: 1;
-            padding: 9px;
-            border: none;
-            border-radius: 6px;
-            color: white;
-            font-size: 12px;
-            cursor: pointer;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            text-decoration: none;
+            flex: 1; padding: 9px; border: none; border-radius: 6px; color: white;
+            font-size: 12px; cursor: pointer; font-weight: bold; display: flex;
+            align-items: center; justify-content: center; gap: 6px; text-decoration: none;
         }
 
         .whatsapp-btn { background: #16a34a; }
         .sms-btn { background: #0284c7; }
 
         .auth-btn {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 6px;
-            background: #059669;
-            color: #fff;
-            font-size: 15px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background 0.2s;
+            width: 100%; padding: 12px; border: none; border-radius: 6px;
+            background: #059669; color: #fff; font-size: 15px; cursor: pointer; font-weight: bold;
         }
 
-        .status-msg {
-            font-size: 13px;
-            margin-top: 12px;
-            color: #ef4444;
-            line-height: 1.5;
-        }
-
-        .contact-box {
-            margin-top: 18px;
-            padding-top: 15px;
-            border-top: 1px solid #334155;
-            font-size: 13px;
-            color: #cbd5e1;
-            line-height: 1.6;
-        }
-
-        .contact-phones {
-            margin-top: 6px;
-            font-weight: bold;
-            color: #38bdf8;
-            direction: ltr;
-            font-size: 14px;
-        }
+        .status-msg { font-size: 13px; margin-top: 12px; color: #ef4444; line-height: 1.5; }
+        .contact-box { margin-top: 18px; padding-top: 15px; border-top: 1px solid #334155; font-size: 13px; color: #cbd5e1; }
+        .contact-phones { margin-top: 6px; font-weight: bold; color: #38bdf8; direction: ltr; font-size: 14px; }
 
         .cooldown-box {
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid #ef4444;
-            color: #fca5a5;
-            padding: 10px;
-            border-radius: 6px;
-            font-size: 13px;
-            margin-bottom: 15px;
+            background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #fca5a5;
+            padding: 10px; border-radius: 6px; font-size: 13px; margin-bottom: 15px;
         }
 
         @media (max-width: 768px) {
             body { padding: 10px; }
-            .player-header { padding: 10px 12px; gap: 6px; }
-            .brand-title { font-size: 13px; }
-            .header-right { gap: 5px; }
-            .expire-countdown-badge, .trial-badge, .live-badge {
-                padding: 3px 7px;
-                font-size: 10px;
-                border-radius: 12px;
-            }
             .content-area { flex-direction: column; }
             .playlist-sidebar { width: 100%; max-height: 250px; }
             .video-js { height: 260px; }
-            .ticker-text { font-size: 12px; }
-            .ticker-bar { padding: 3px 0; }
-        }
-
-        @media (max-width: 400px) {
-            .brand-title { font-size: 11px; }
-            .expire-countdown-badge, .trial-badge { font-size: 9px; padding: 2px 5px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- شاشەی ئەکتیڤکردن -->
     <div id="authOverlay" class="auth-overlay" style="display: none;">
         <div class="auth-card">
             <h2>ئەکتیڤکردنی ئامێرەکەت</h2>
@@ -446,17 +201,11 @@
 
             <div class="send-actions">
                 <div class="send-row">
-                    <a id="waLink1" href="#" target="_blank" class="send-btn whatsapp-btn">
-                        <i class="fab fa-whatsapp"></i> واتسئاپ 1
-                    </a>
-                    <a id="waLink2" href="#" target="_blank" class="send-btn whatsapp-btn" style="background: #15803d;">
-                        <i class="fab fa-whatsapp"></i> واتسئاپ 2
-                    </a>
+                    <a id="waLink1" href="#" target="_blank" class="send-btn whatsapp-btn"><i class="fab fa-whatsapp"></i> واتسئاپ 1</a>
+                    <a id="waLink2" href="#" target="_blank" class="send-btn whatsapp-btn" style="background: #15803d;"><i class="fab fa-whatsapp"></i> واتسئاپ 2</a>
                 </div>
                 <div class="send-row">
-                    <a id="smsLink" href="#" class="send-btn sms-btn">
-                        <i class="fas fa-comment-alt"></i> بە نامە (SMS)
-                    </a>
+                    <a id="smsLink" href="#" class="send-btn sms-btn"><i class="fas fa-comment-alt"></i> بە نامە (SMS)</a>
                 </div>
             </div>
 
@@ -465,9 +214,7 @@
 
             <div class="contact-box">
                 بۆ زانیاری زیاتر یان نوێکردنەوەی سیستمەکە پەیوەندی بکەن بە:
-                <div class="contact-phones">
-                    07501224994 &nbsp;|&nbsp; 07748134314
-                </div>
+                <div class="contact-phones">07501224994 &nbsp;|&nbsp; 07748134314</div>
             </div>
         </div>
     </div>
@@ -511,12 +258,15 @@
         </div>
     </div>
 
-    <!-- Video.js JS -->
     <script src="https://vjs.zencdn.net/7.20.3/video.js"></script>
+    
+    <!-- لێرەوە JavaScriptـەکە دابنێ -->
     <script>
-        // بەکارھێنانی ڕێڕەوی خێرا تا کێشەی 404 دروست نەبێت
-        const GITHUB_PLAYLIST_URL = "playlist.m3u";
-        const GITHUB_MAC_URL = "allowed.json";
+        // 1. بەستەری Google Sheets بۆ کەناڵەکان (Sheet2 - gid=250464113)
+        const GOOGLE_SHEETS_CHANNELS_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRgvWrahp_pwJWRnX4QCE4KmuhUb6gl5Rk_rDpjA2ODuCNH1nyLUcD-L0g0I6PrD45F0hb7odKi_zbW/pub?gid=250464113&single=true&output=csv";
+
+        // 2. بەستەری Google Sheets بۆ ماک ئادرێسەکان (Sheet1 - gid=0)
+        const GOOGLE_SHEETS_MACS_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRgvWrahp_pwJWRnX4QCE4KmuhUb6gl5Rk_rDpjA2ODuCNH1nyLUcD-L0g0I6PrD45F0hb7odKi_zbW/pub?gid=0&single=true&output=csv";
 
         function getDeviceMac() {
             let mac = localStorage.getItem("ara_device_mac");
@@ -680,6 +430,19 @@
             }, 1000);
         }
 
+        function parseCSVLine(text) {
+            let result = [], cell = '', inQuotes = false;
+            for (let i = 0; i < text.length; i++) {
+                let c = text[i];
+                if (c === '"') inQuotes = !inQuotes;
+                else if (c === ',' && !inQuotes) { result.push(cell.trim()); cell = ''; }
+                else cell += c;
+            }
+            result.push(cell.trim());
+            return result;
+        }
+
+        // پشکنینی MAC Address لە Sheet1
         async function checkActivation(isManualCheck = false) {
             const statusMsg = document.getElementById("statusMsg");
             if (isManualCheck) statusMsg.innerText = "لە پشکنیندایە...";
@@ -687,20 +450,40 @@
             let allowedDevices = [];
 
             try {
-                const response = await fetch(GITHUB_MAC_URL + "?t=" + Date.now());
-                if (response.ok) {
-                    allowedDevices = await response.json();
+                const targetUrl = GOOGLE_SHEETS_MACS_URL + "&t=" + Date.now();
+                const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(targetUrl);
+
+                let response;
+                try {
+                    response = await fetch(proxyUrl);
+                } catch(e) {
+                    response = await fetch(targetUrl);
+                }
+
+                if (response && response.ok) {
+                    const csvText = await response.text();
+                    const lines = csvText.split("\n");
+                    lines.forEach((line, index) => {
+                        if (index === 0 || !line.trim()) return;
+                        const cols = parseCSVLine(line);
+                        if (cols.length >= 3) {
+                            allowedDevices.push({
+                                mac: cols[0].replace(/^"|"$/g, '').trim().toUpperCase(),
+                                expire: cols[2].replace(/^"|"$/g, '').trim()
+                            });
+                        }
+                    });
                 }
             } catch (e) {
-                console.error("Error loading allowed.json:", e);
+                console.error("Error loading MACs from Google Sheets:", e);
             }
 
             const now = new Date().getTime();
-            const foundDevice = allowedDevices.find(item => item.mac && item.mac.toUpperCase().trim() === currentMac);
+            const foundDevice = allowedDevices.find(item => item.mac === currentMac);
 
             if (!foundDevice) {
                 if (isManualCheck) {
-                    statusMsg.innerText = "ئەم ماک ئادرێسە نەدۆزرایەوە!";
+                    statusMsg.innerText = "ئەم ماک ئادرێسە لە شیتەکەدا نەدۆزرایەوە!";
                     statusMsg.style.color = "#ef4444";
                 } else {
                     const storedCooldown = localStorage.getItem("ara_trial_cooldown");
@@ -760,7 +543,7 @@
                     showStreamWaiting(false);
                 });
 
-                loadGitHubPlaylist();
+                loadGoogleSheetsPlaylist();
             }
         }
 
@@ -773,52 +556,47 @@
             }
         }
 
-        function parseM3U(m3uContent) {
-            const lines = m3uContent.split('\n');
-            const categories = {};
-            let currentGroup = "گشتی";
-            let currentName = "";
+        // خوێندنەوەی کەناڵەکان لە Sheet2
+        async function loadGoogleSheetsPlaylist() {
+            const playlistContainer = document.getElementById('playlist-items');
 
-            lines.forEach(line => {
-                line = line.trim();
-                if (line.startsWith('#EXTINF:')) {
-                    const groupMatch = line.match(/group-title="([^"]+)"/);
-                    if (groupMatch) {
-                        currentGroup = groupMatch[1].trim();
-                        if (currentGroup === 'مناڵان') currentGroup = 'منداڵان';
-                    } else {
-                        currentGroup = "گشتی";
-                    }
-
-                    const nameParts = line.split(',');
-                    if (nameParts.length > 1) {
-                        currentName = nameParts[nameParts.length - 1].trim();
-                    }
-                } else if (line && !line.startsWith('#')) {
-                    if (!categories[currentGroup]) {
-                        categories[currentGroup] = [];
-                    }
-                    if (currentName) {
-                        categories[currentGroup].push({ name: currentName, url: line });
-                        currentName = "";
-                    }
-                }
-            });
-
-            return categories;
-        }
-
-        async function loadGitHubPlaylist() {
             try {
-                const response = await fetch(GITHUB_PLAYLIST_URL + '?t=' + Date.now());
-                if (!response.ok) throw new Error("فایلی playlist نەدۆزرایەوە!");
+                const targetUrl = GOOGLE_SHEETS_CHANNELS_URL + "&t=" + Date.now();
+                const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(targetUrl);
 
-                const m3uText = await response.text();
-                parsedCategorizedChannels = parseM3U(m3uText);
-                renderTabs();
+                let response;
+                try {
+                    response = await fetch(proxyUrl);
+                } catch(e) {
+                    response = await fetch(targetUrl);
+                }
+
+                if (response && response.ok) {
+                    const csvData = await response.text();
+                    const lines = csvData.split('\n');
+                    let tempChannels = {};
+
+                    lines.forEach((line, index) => {
+                        if (index === 0 || !line.trim()) return;
+                        const columns = parseCSVLine(line);
+                        if (columns.length >= 3) {
+                            let group = columns[0].replace(/^"|"$/g, '').trim() || 'گشتی';
+                            const name = columns[1].replace(/^"|"$/g, '').trim();
+                            const url = columns[2].replace(/^"|"$/g, '').trim();
+
+                            if (name && url) {
+                                if (!tempChannels[group]) tempChannels[group] = [];
+                                tempChannels[group].push({ name, url });
+                            }
+                        }
+                    });
+
+                    parsedCategorizedChannels = tempChannels;
+                    renderTabs();
+                }
             } catch (error) {
-                console.error("Error fetching playlist:", error);
-                document.getElementById('playlist-items').innerHTML = '<div class="playlist-item" style="color: #ef4444;">کێشەیەک لە خوێندنەوەی فایلی playlist هەیە</div>';
+                console.error("Error loading channels from Google Sheets:", error);
+                playlistContainer.innerHTML = '<div class="playlist-item" style="color: #ef4444;">کێشەیەک لە خوێندنەوەی کەناڵەکان هەیە!</div>';
             }
         }
 
