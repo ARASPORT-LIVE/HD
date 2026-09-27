@@ -71,44 +71,50 @@
         .video-container {
             flex: 1; position: relative; background: #000;
             display: flex; align-items: center; justify-content: center;
+            overflow: hidden;
         }
 
         .video-js { width: 100% !important; height: 100% !important; font-family: Arial, sans-serif !important; }
-
-        /* دوگمەی ڕیکۆرد لەناو پەڕەی پلەیەرەکە */
-        .player-tools-bar {
-            position: absolute;
-            bottom: 60px;
-            left: 15px;
-            z-index: 1000;
-            display: flex;
-            gap: 10px;
-        }
-
-        .tool-btn {
-            background: rgba(15, 23, 42, 0.85);
-            border: 1px solid #38bdf8;
-            color: white;
-            padding: 8px 14px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            backdrop-filter: blur(4px);
-            transition: all 0.2s;
-        }
-
-        .tool-btn:hover { background: #2563eb; }
-        .tool-btn.recording { background: #ef4444; border-color: #ef4444; animation: pulse 1s infinite; }
 
         .stream-status-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(15, 23, 42, 0.85); display: flex; justify-content: center;
             align-items: center; z-index: 1001; font-size: 22px; font-weight: bold;
             color: #f59e0b; backdrop-filter: blur(4px); pointer-events: none;
+        }
+
+        /* ---------------------------------------------------- */
+        /* لۆگۆی ARA SPORT HD لە لای ڕاستی سەرەوەی ڤیدیۆکە      */
+        /* ---------------------------------------------------- */
+        .video-js .vjs-watermark-logo {
+            position: absolute !important;
+            top: 20px !important;
+            right: 20px !important;
+            z-index: 1000 !important;
+            pointer-events: none;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            background: rgba(15, 23, 42, 0.8);
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1px solid rgba(56, 189, 248, 0.6);
+            backdrop-filter: blur(6px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .vjs-watermark-text {
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 15px;
+            letter-spacing: 0.5px;
+            font-family: Arial, sans-serif;
+        }
+
+        .vjs-watermark-text span {
+            color: #38bdf8;
+            font-weight: 800;
         }
 
         .playlist-sidebar {
@@ -130,13 +136,69 @@
         .category-tab.active { color: #38bdf8; border-bottom: 3px solid #38bdf8; background: #0f172a; }
 
         .playlist-items-wrapper { flex: 1; overflow-y: auto; }
+        
         .playlist-item {
-            padding: 14px 18px; border-bottom: 1px solid #1e293b; cursor: pointer;
-            transition: background 0.2s; display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 15px;
+            padding: 12px 16px;
+            border-bottom: 1px solid #1e293b;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 15px;
         }
 
         .playlist-item:hover { background: #1e293b; }
         .playlist-item.active { background: #2563eb; color: #fff; }
+
+        .channel-action-icons {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .icon-btn {
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            cursor: pointer;
+            font-size: 15px;
+            transition: transform 0.2s, color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+
+        .icon-btn:hover {
+            transform: scale(1.2);
+        }
+
+        .cast-svg-icon {
+            width: 20px;
+            height: 20px;
+            fill: #ffffff;
+            transition: fill 0.2s;
+        }
+
+        .icon-btn:hover .cast-svg-icon {
+            fill: #38bdf8;
+        }
+
+        .record-dot-icon {
+            color: #ef4444;
+            font-size: 14px;
+        }
+
+        .record-dot-icon.recording {
+            animation: pulse-red 0.8s infinite;
+        }
+
+        @keyframes pulse-red {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.3); opacity: 0.4; }
+            100% { transform: scale(1); opacity: 1; }
+        }
 
         .ticker-bar {
             background: #0284c7; color: #ffffff; padding: 6px 0;
@@ -197,6 +259,11 @@
         .contact-box { margin-top: 18px; padding-top: 15px; border-top: 1px solid #334155; font-size: 13px; color: #cbd5e1; }
         .contact-phones { margin-top: 6px; font-weight: bold; color: #38bdf8; direction: ltr; font-size: 14px; }
 
+        .cooldown-box {
+            background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #fca5a5;
+            padding: 10px; border-radius: 6px; font-size: 13px; margin-bottom: 15px;
+        }
+
         @media (max-width: 900px) {
             body { padding: 0; }
             .main-wrapper { height: 100vh; border-radius: 0; border: none; }
@@ -205,7 +272,15 @@
             .playlist-sidebar { width: 100%; flex: 1; border-right: none; border-top: 1px solid #334155; max-height: none; overflow: hidden; }
             .category-tabs { position: sticky; top: 0; z-index: 10; background: #1e293b; }
             .playlist-items-wrapper { height: calc(62vh - 90px); overflow-y: auto; }
-            .player-tools-bar { bottom: 40px; left: 10px; }
+            
+            .video-js .vjs-watermark-logo {
+                top: 12px !important;
+                right: 12px !important;
+                padding: 5px 10px;
+            }
+            .vjs-watermark-text {
+                font-size: 12px;
+            }
         }
     </style>
 </head>
@@ -257,17 +332,6 @@
         <div class="content-area">
             <div class="video-container">
                 <video id="ara-sport-player" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="auto" crossorigin="anonymous"></video>
-                
-                <!-- دوگمەکانی تۆمارکردن و کاستکردن -->
-                <div class="player-tools-bar">
-                    <button id="recordBtn" class="tool-btn" onclick="toggleRecord()">
-                        <i class="fas fa-circle"></i> <span id="recordText">تۆمارکردن</span>
-                    </button>
-                    <button class="tool-btn" onclick="castStream()">
-                        <i class="fas fa-tv"></i> کاست بۆ تیڤی
-                    </button>
-                </div>
-
                 <div id="streamStatusOverlay" class="stream-status-overlay" style="display: none;">
                     <i class="fas fa-spinner fa-spin" style="margin-left: 10px;"></i> چاوەڕوانبە...
                 </div>
@@ -479,11 +543,8 @@
                 const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(targetUrl);
 
                 let response;
-                try {
-                    response = await fetch(proxyUrl);
-                } catch(e) {
-                    response = await fetch(targetUrl);
-                }
+                try { response = await fetch(proxyUrl); } 
+                catch(e) { response = await fetch(targetUrl); }
 
                 if (response && response.ok) {
                     const csvText = await response.text();
@@ -661,8 +722,21 @@
             channels.forEach((channel, index) => {
                 const div = document.createElement('div');
                 div.className = `playlist-item ${index === 0 ? 'active' : ''}`;
-                div.innerHTML = `<span>📺 ${channel.name}</span>`;
-                div.onclick = function() {
+                
+                div.innerHTML = `
+                    <span>📺 ${channel.name}</span>
+                    <div class="channel-action-icons" style="display: ${index === 0 ? 'flex' : 'none'};">
+                        <button class="icon-btn record-dot-icon" onclick="toggleRecord(event)" title="تۆمارکردن">🔴</button>
+                        <button class="icon-btn" onclick="castStream(event)" title="کاست بۆ تیڤی">
+                            <svg class="cast-svg-icon" viewBox="0 0 24 24">
+                                <path d="M1 18v3h3c0-1.66-1.34-3-3-3zm0-4v2c2.76 0 5 2.24 5 5h2c0-3.87-3.13-7-7-7zm0-4v2c4.97 0 9 4.03 9 9h2c0-6.08-4.92-11-11-11zm20-7H3c-1.1 0-2 .9-2 2v3h2V5h18v14h-7v2h7c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>
+                            </svg>
+                        </button>
+                    </div>
+                `;
+
+                div.onclick = function(e) {
+                    if (e.target.tagName === 'BUTTON' || e.target.closest('button')) return;
                     playChannel(channel.url, this);
                 };
                 container.appendChild(div);
@@ -676,8 +750,16 @@
         function playChannel(url, element) {
             if (element) {
                 const items = document.querySelectorAll('.playlist-item');
-                items.forEach(item => item.classList.remove('active'));
+                items.forEach(item => {
+                    item.classList.remove('active');
+                    const iconsBox = item.querySelector('.channel-action-icons');
+                    if (iconsBox) iconsBox.style.display = 'none';
+                });
+
                 element.classList.add('active');
+                const currentIcons = element.querySelector('.channel-action-icons');
+                if (currentIcons) currentIcons.style.display = 'flex';
+
                 activeChannelElement = element;
             }
 
@@ -716,9 +798,10 @@
         let recordedChunks = [];
         let isRecording = false;
 
-        function toggleRecord() {
-            const recordBtn = document.getElementById('recordBtn');
-            const recordText = document.getElementById('recordText');
+        function toggleRecord(event) {
+            if (event) event.stopPropagation();
+            
+            const recordBtn = event ? event.currentTarget : document.querySelector('.record-dot-icon');
             const videoElement = document.querySelector('video');
 
             if (!isRecording) {
@@ -743,30 +826,30 @@
 
                     mediaRecorder.start();
                     isRecording = true;
-                    recordBtn.classList.add('recording');
-                    recordText.innerText = "ڕاگرتنی ڕیکۆرد";
+                    if (recordBtn) recordBtn.classList.add('recording');
                 } catch (e) {
-                    alert("ڕیکۆردکردن لەسەر ئەم وێبگەڕە پشکنینی پڕاوپڕی بۆ نەکراوە یان ڕێگەی پێنەدراوە.");
+                    alert("ڕیکۆردکردن لەسەر ئەم وێبگەڕە پشتگیری ناکرێت.");
                 }
             } else {
                 mediaRecorder.stop();
                 isRecording = false;
-                recordBtn.classList.remove('recording');
-                recordText.innerText = "تۆمارکردن";
+                if (recordBtn) recordBtn.classList.remove('recording');
             }
         }
 
         // -----------------------------------------------------------
         // فەنکشنی کاستکردن بۆ تیڤی (Chromecast / Smart TV)
         // -----------------------------------------------------------
-        function castStream() {
+        function castStream(event) {
+            if (event) event.stopPropagation();
+            
             const videoElement = document.querySelector('video');
             if (videoElement.remote && videoElement.remote.state !== 'disconnected') {
                 videoElement.remote.prompt().catch(e => {
-                    alert("هیچ ئامێرێکی کاستکردن (Smart TV) لە هەمان شوێنەوار/Wi-Fi نەدۆزرایەوە.");
+                    alert("هیچ ئامێرێکی Smart TV لە هەمان شێوەی Wi-Fi نەدۆزرایەوە.");
                 });
             } else {
-                alert("تایبەتمەندی Casting بەردەستە لە وێبگەڕەکانی Chrome و Edge بڕوانە دوگمەی Cast ی وێبگەڕەکەت.");
+                alert("تایبەتمەندی Casting بەردەستە لە وێبگەڕەکانی Chrome و Edge.");
             }
         }
 
