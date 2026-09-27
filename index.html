@@ -83,10 +83,10 @@
             backdrop-filter: blur(2px); pointer-events: none;
         }
 
-        /* شوێنی وردی لۆگۆ لە کۆمپیوتەر بۆ ئەوەی ڕێک لەسەر لۆگۆی بین سپۆرت دابنیشێت */
+        /* ڕێکخستنی نوێ بۆ ئەوەی بە تەواوی بێتە خوارەوە و لۆگۆی بين سپۆرت بشارێتەوە */
         .video-js .vjs-watermark-logo {
             position: absolute !important;
-            top: 18px !important;
+            top: 35px !important;
             right: 25px !important;
             z-index: 1000 !important;
             pointer-events: none;
@@ -94,7 +94,7 @@
             align-items: center;
             justify-content: center;
             background: rgba(15, 23, 42, 0.95);
-            padding: 3px 8px;
+            padding: 4px 10px;
             border-radius: 4px;
             border: 1px solid rgba(56, 189, 248, 0.8);
             backdrop-filter: blur(6px);
@@ -104,7 +104,7 @@
         .vjs-watermark-text {
             color: #ffffff;
             font-weight: 900;
-            font-size: 14px;
+            font-size: 15px;
             letter-spacing: 0.6px;
             font-family: Arial, sans-serif;
             line-height: 1;
@@ -912,7 +912,7 @@
                         let boxWidth = isSportsCategory ? 150 : 130;
                         let boxHeight = 35;
                         let boxX = canvas.width - boxWidth - 25;
-                        let boxY = 18;
+                        let boxY = 35;
                         
                         ctx.beginPath();
                         ctx.roundRect(boxX, boxY, boxWidth, boxHeight, 4);
