@@ -83,9 +83,6 @@
             color: #f59e0b; backdrop-filter: blur(4px); pointer-events: none;
         }
 
-        /* ---------------------------------------------------- */
-        /* لۆگۆی ARA SPORT HD لە لای ڕاستی سەرەوەی ڤیدیۆکە      */
-        /* ---------------------------------------------------- */
         .video-js .vjs-watermark-logo {
             position: absolute !important;
             top: 20px !important;
@@ -154,7 +151,7 @@
         .channel-action-icons {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
 
         .icon-btn {
@@ -171,7 +168,19 @@
         }
 
         .icon-btn:hover {
-            transform: scale(1.2);
+            transform: scale(1.15);
+        }
+
+        .rec-timer-badge {
+            font-size: 11px;
+            font-weight: bold;
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.15);
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            font-family: monospace;
+            direction: ltr;
         }
 
         .cast-svg-icon {
@@ -726,6 +735,7 @@
                 div.innerHTML = `
                     <span>📺 ${channel.name}</span>
                     <div class="channel-action-icons" style="display: ${index === 0 ? 'flex' : 'none'};">
+                        <span class="rec-timer-badge" id="recTimer" style="display: none;">00:00</span>
                         <button class="icon-btn record-dot-icon" onclick="toggleRecord(event)" title="تۆمارکردن">🔴</button>
                         <button class="icon-btn" onclick="castStream(event)" title="کاست بۆ تیڤی">
                             <svg class="cast-svg-icon" viewBox="0 0 24 24">
@@ -792,22 +802,38 @@
         }
 
         // -----------------------------------------------------------
-        // فەنکشنی ڕیکۆردکردنی کەناڵ (Record Stream)
+        // فەنکشنی ڕیکۆردکردنی کەناڵ (Record MP4 Stream with Timer)
         // -----------------------------------------------------------
         let mediaRecorder;
         let recordedChunks = [];
         let isRecording = false;
+        let recTimerInterval;
+        let recSeconds = 0;
 
         function toggleRecord(event) {
             if (event) event.stopPropagation();
             
             const recordBtn = event ? event.currentTarget : document.querySelector('.record-dot-icon');
+            const recTimerEl = document.getElementById('recTimer');
             const videoElement = document.querySelector('video');
 
             if (!isRecording) {
                 try {
                     let stream = videoElement.captureStream ? videoElement.captureStream() : videoElement.mozCaptureStream();
-                    mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+                    
+                    // دیاریکردنی جۆری MP4 یان زۆرترین هاوشێوەی MP4 لە سەر وێبگەڕەکان
+                    let mimeType = 'video/mp4';
+                    if (!MediaRecorder.isTypeSupported(mimeType)) {
+                        if (MediaRecorder.isTypeSupported('video/mp4;codecs=avc1.42E01E,mp4a.40.2')) {
+                            mimeType = 'video/mp4;codecs=avc1.42E01E,mp4a.40.2';
+                        } else if (MediaRecorder.isTypeSupported('video/webm;codecs=h264')) {
+                            mimeType = 'video/webm;codecs=h264';
+                        } else {
+                            mimeType = 'video/webm';
+                        }
+                    }
+
+                    mediaRecorder = new MediaRecorder(stream, { mimeType: mimeType });
 
                     recordedChunks = [];
                     mediaRecorder.ondataavailable = function(e) {
@@ -815,18 +841,40 @@
                     };
 
                     mediaRecorder.onstop = function() {
-                        let blob = new Blob(recordedChunks, { type: 'video/webm' });
+                        let extension = mimeType.includes('mp4') ? 'mp4' : 'webm';
+                        let blob = new Blob(recordedChunks, { type: mimeType });
                         let url = URL.createObjectURL(blob);
                         let a = document.createElement('a');
                         a.href = url;
-                        a.download = `ARA_TV_Record_${Date.now()}.webm`;
+                        a.download = `ARA_TV_Record_${Date.now()}.${extension}`;
                         a.click();
                         URL.revokeObjectURL(url);
+
+                        // وەستاندنی تایمەرەکەی ڕیکۆرد
+                        clearInterval(recTimerInterval);
+                        recSeconds = 0;
+                        if (recTimerEl) recTimerEl.style.display = 'none';
                     };
 
                     mediaRecorder.start();
                     isRecording = true;
                     if (recordBtn) recordBtn.classList.add('recording');
+
+                    // ڕێکخستن و دەستپێکردنی تایمەری ڕیکۆرد
+                    if (recTimerEl) {
+                        recSeconds = 0;
+                        recTimerEl.innerText = "00:00";
+                        recTimerEl.style.display = "inline-block";
+                        
+                        recTimerInterval = setInterval(() => {
+                            recSeconds++;
+                            let mins = Math.floor(recSeconds / 60);
+                            let secs = recSeconds % 60;
+                            recTimerEl.innerText = 
+                                (mins < 10 ? "0" + mins : mins) + ":" + (secs < 10 ? "0" + secs : secs);
+                        }, 1000);
+                    }
+
                 } catch (e) {
                     alert("ڕیکۆردکردن لەسەر ئەم وێبگەڕە پشتگیری ناکرێت.");
                 }
