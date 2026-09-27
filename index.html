@@ -83,11 +83,11 @@
             backdrop-filter: blur(2px); pointer-events: none;
         }
 
-        /* ڕێکخستنی نوێ بۆ ئەوەی بە تەواوی بێتە خوارەوە و لۆگۆی بين سپۆرت بشارێتەوە */
+        /* شوێنی نوێ و ڕاستکراوەی لۆگۆ بۆ ئەوەی ڕێک لەسەر لۆگۆی بين سپۆرت دابنیشێت */
         .video-js .vjs-watermark-logo {
             position: absolute !important;
-            top: 35px !important;
-            right: 25px !important;
+            top: 42px !important;
+            right: 18px !important;
             z-index: 1000 !important;
             pointer-events: none;
             display: none;
@@ -911,8 +911,8 @@
                         
                         let boxWidth = isSportsCategory ? 150 : 130;
                         let boxHeight = 35;
-                        let boxX = canvas.width - boxWidth - 25;
-                        let boxY = 35;
+                        let boxX = canvas.width - boxWidth - 18;
+                        let boxY = 42;
                         
                         ctx.beginPath();
                         ctx.roundRect(boxX, boxY, boxWidth, boxHeight, 4);
