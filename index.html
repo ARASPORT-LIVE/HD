@@ -83,11 +83,10 @@
             color: #f59e0b; backdrop-filter: blur(4px); pointer-events: none;
         }
 
-        /* لۆگۆی سەر پەخش (گەڕێنراوەوە) */
         .video-js .vjs-watermark-logo {
             position: absolute !important;
-            top: 40px !important;
-            right: 65px !important;
+            top: 70px !important;
+            right: 140px !important;
             z-index: 1000 !important;
             pointer-events: none;
             display: flex !important;
@@ -204,7 +203,6 @@
             padding: 0;
         }
 
-        /* تایمەری ڕیکۆرد و دوگمەی کاست (گەڕێنراوەوە) */
         .rec-timer-badge {
             font-size: 12px;
             font-weight: 900;
@@ -350,7 +348,7 @@
 
         <div class="content-area">
             <div class="video-container">
-                <video id="ara-sport-player" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="auto" crossorigin="anonymous"></video>
+                <video id="ara-sport-player" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="auto" crossorigin="anonymous" playsinline></video>
                 <div id="streamStatusOverlay" class="stream-status-overlay" style="display: none;">
                     <i class="fas fa-spinner fa-spin" style="margin-left: 10px;"></i> چاوەڕوانبە...
                 </div>
@@ -818,17 +816,111 @@
             container.appendChild(fragment);
         }
 
-        // کۆنتڕۆڵی تۆمارکردن (Record) و تایمەرەکەی
+        // چارەسەرکردنی تەواوی ڕیکۆردکردنی دەنگ و ڤیدیۆ بێکێشە لە مۆبایل و کۆمپیوتەر
         let activeRecordings = {};
 
-        function toggleRecord(index, btnElement, event) {
+        async function toggleRecord(index, btnElement, event) {
             if (event) event.stopPropagation();
             const badge = document.getElementById(`rec-badge-${index}`);
             const icon = btnElement.querySelector('i');
 
             if (!activeRecordings[index]) {
-                // دەستپێکردنی ڕیکۆرد
-                activeRecordings[index] = { seconds: 0, timer: null };
+                let videoElement = document.querySelector('#ara-sport-player_html5_api');
+                if (!videoElement) {
+                    alert("تکایە چاوەڕێ بکە تا پەخشەکە دەست پێدەکات.");
+                    return;
+                }
+
+                let stream;
+                try {
+                    // وەرگرتنی ستریمی ڤیدیۆ و دەنگ پێکەوە ڕاستەوخۆ لە ڤیدیۆ ئەلمێنتەکە
+                    if (videoElement.captureStream) {
+                        stream = videoElement.captureStream();
+                    } else if (videoElement.mozCaptureStream) {
+                        stream = videoElement.mozCaptureStream();
+                    } else {
+                        alert("ئامێرەکەت پشتگیری ڕیکۆردکردن ناکات.");
+                        return;
+                    }
+
+                    // دڵنیابوونەوە لەوەی ئەگەر ڤیدیۆکە دەنگی ناوەکی تێدا نەبوو یان پێویستی بە تێکەڵکردن هەبوو، سیستمی وێب ئۆدیۆ چالاک بکەین
+                    if (!stream.getAudioTracks().length && window.AudioContext) {
+                        let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                        if (audioCtx.state === 'suspended') {
+                            await audioCtx.resume();
+                        }
+                        let sourceNode = audioCtx.createMediaElementSource(videoElement);
+                        let destination = audioCtx.createMediaStreamDestination();
+                        sourceNode.connect(destination);
+                        sourceNode.connect(audioCtx.destination);
+                        
+                        let audioTrack = destination.stream.getAudioTracks()[0];
+                        if (audioTrack) {
+                            stream.addTrack(audioTrack);
+                        }
+                    }
+                } catch (e) {
+                    console.error("Recording stream error:", e);
+                    alert("هەڵە لە ڕیکۆردکردنی دەنگ و ڤیدیۆی پەخشەکە.");
+                    return;
+                }
+
+                // دیاریکردنی باشترین فۆرمات بۆ ئەوەی بە MP4 دابەزێت و لە هەموو مۆبایل و کۆمپیوتەرێک کاربکات
+                let options = { mimeType: 'video/mp4;codecs=h264,aac' };
+                if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+                    options = { mimeType: 'video/webm;codecs=h264,opus' };
+                    if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+                        options = { mimeType: 'video/webm' };
+                    }
+                }
+
+                let mediaRecorder;
+                try {
+                    mediaRecorder = new MediaRecorder(stream, options);
+                } catch (err) {
+                    try {
+                        mediaRecorder = new MediaRecorder(stream);
+                    } catch (e2) {
+                        alert("مایکرۆفۆن یان سیستمی تۆمارکردن لەم ئامێرەدا ڕێگەپێدراو نییە.");
+                        return;
+                    }
+                }
+
+                let recordedChunks = [];
+                mediaRecorder.ondataavailable = function(e) {
+                    if (e.data && e.data.size > 0) {
+                        recordedChunks.push(e.data);
+                    }
+                };
+
+                mediaRecorder.onstop = function() {
+                    let blob = new Blob(recordedChunks, { type: 'video/mp4' });
+                    let url = URL.createObjectURL(blob);
+                    let a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = `ARA_SPORT_REC_${Date.now()}.mp4`;
+                    document.body.appendChild(a);
+                    a.click();
+                    setTimeout(() => {
+                        document.body.removeChild(a);
+                        window.URL.revokeObjectURL(url);
+                    }, 100);
+                };
+
+                mediaRecorder.start(1000);
+
+                activeRecordings[index] = {
+                    mediaRecorder: mediaRecorder,
+                    seconds: 0,
+                    timer: setInterval(() => {
+                        activeRecordings[index].seconds++;
+                        let mins = Math.floor(activeRecordings[index].seconds / 60);
+                        let secs = activeRecordings[index].seconds % 60;
+                        badge.innerText = `REC ${mins < 10 ? "0" + mins : mins}:${secs < 10 ? "0" + secs : secs}`;
+                    }, 1000)
+                };
+
                 badge.style.display = 'block';
                 badge.innerText = "REC 00:00";
                 icon.style.color = '#ffffff';
@@ -836,25 +928,19 @@
                 btnElement.style.padding = '4px 8px';
                 btnElement.style.borderRadius = '4px';
 
-                activeRecordings[index].timer = setInterval(() => {
-                    activeRecordings[index].seconds++;
-                    let mins = Math.floor(activeRecordings[index].seconds / 60);
-                    let secs = activeRecordings[index].seconds % 60;
-                    badge.innerText = `REC ${mins < 10 ? "0" + mins : mins}:${secs < 10 ? "0" + secs : secs}`;
-                }, 1000);
             } else {
-                // وەستاندنی ڕیکۆرد
                 clearInterval(activeRecordings[index].timer);
+                activeRecordings[index].mediaRecorder.stop();
                 delete activeRecordings[index];
+
                 badge.style.display = 'none';
                 icon.style.color = '#ef4444';
                 btnElement.style.background = 'transparent';
                 btnElement.style.padding = '0';
-                alert("تۆمارکردن (Record) وستێنراوە و پاشەکەوت کرا.");
+                alert("تۆمارکردنەکە بە سەرکەوتوویی کۆتایی هات و فایلی MP4 (بە دەنگ و ڤیدیۆوە) دابەزی.");
             }
         }
 
-        // فەمانی کاست (Cast)
         function triggerCast(url, event) {
             if (event) event.stopPropagation();
             if (window.chrome && window.chrome.cast && window.chrome.cast.isAvailable) {
