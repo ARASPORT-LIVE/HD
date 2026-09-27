@@ -83,7 +83,7 @@
             color: #f59e0b; backdrop-filter: blur(4px); pointer-events: none;
         }
 
-        /* شوێنی لۆگۆ لە کۆمپیوتەر (بەهێندەی نیوەی بەرزییەکەی بەرزتر و بەقەد بەرزییەکەی چۆتە ڕاست) */
+        /* شوێنی لۆگۆ لە کۆمپیوتەر (بە نیوەی بەرزی بەرزتر و بە قەد بەرزی چۆتە ڕاست) */
         .video-js .vjs-watermark-logo {
             position: absolute !important;
             top: calc(70px - (100% * 0.25)) !important;
@@ -290,7 +290,7 @@
             .category-tabs-wrapper { position: sticky; top: 0; z-index: 10; }
             .playlist-items-wrapper { height: calc(62vh - 90px); overflow-y: auto; }
             
-            /* شوێنی لۆگۆ لە مۆبایل (وەک خۆی کە زۆر شاز بوو) */
+            /* شوێنی لۆگۆ لە مۆبایل */
             .video-js .vjs-watermark-logo {
                 top: 60px !important;
                 right: 10px !important;
@@ -669,7 +669,7 @@
         function updateWatermarkVisibility() {
             const watermark = document.getElementById('playerWatermark');
             if (watermark) {
-                // تەنها ئەگەر تەبەکە وەرزشی بێت لۆگۆکە پیشان دەدات لە پریڤیودا
+                // لۆگۆ تەنها لەسەر تابە وەرزشییەکان دەردەکەوێت
                 if (isSportsCategory) {
                     watermark.style.display = 'flex';
                 } else {
@@ -745,7 +745,7 @@
                     document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
                     this.classList.add('active');
                     currentCategory = cat;
-                    // پشکنینی ئەوەی ئایا ناوی تابەکە وشەی وەرزشی تێدایە یان نا
+                    // پشکنینی ناوەڕۆکی تابەکە بۆ زانینی ئایا وەرزشییە یان نا
                     isSportsCategory = cat.toLowerCase().includes('وەرزش') || cat.toLowerCase().includes('sport') || cat.toLowerCase().includes('رزش');
                     updateWatermarkVisibility();
                     renderPlaylist(parsedCategorizedChannels[cat]);
@@ -849,13 +849,11 @@
 
             if (!activeRecordings[index]) {
                 let videoElement = document.querySelector('#ara-sport-player_html5_api');
-                let playerContainer = document.querySelector('.video-container');
                 if (!videoElement) {
                     alert("تکایە چاوەڕێ بکە تا پەخشەکە دەست پێدەکات.");
                     return;
                 }
 
-                // دروستکردنی کەنڤاسێک بۆ زیادکردنی لۆگۆ بۆ ناو فایلی ڕیکۆردکراو ئەگەر کەناڵەکە غەیرە وەرزشی بێت یان وەرزشی بێت
                 let canvas = document.createElement('canvas');
                 let ctx = canvas.getContext('2d');
                 canvas.width = videoElement.videoWidth || 1280;
@@ -873,7 +871,6 @@
                         stream = canvasStream;
                     }
 
-                    // تێکەڵکردنی دەنگی ڕەسەن
                     if (window.AudioContext) {
                         let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                         if (audioCtx.state === 'suspended') {
@@ -890,7 +887,7 @@
                                 stream.addTrack(audioTrack);
                             }
                         } catch(err) {
-                            console.log("Audio node already connected or restricted");
+                            console.log("Audio node already connected");
                         }
                     }
                 } catch (e) {
@@ -899,23 +896,21 @@
                     return;
                 }
 
-                // وێنەکێشانی ڕاستەخۆی ڤیدیۆ و لۆگۆ لە پشت پەردەوە بۆ ناو فایلی ڕیکۆردکراوەکە بەبێ ئەوەی لە پریڤیودا دەردەکەوێت
+                // زیادکردنی لۆگۆ تەنها بۆ ناو فایلی ڕیکۆردکراو بەپێی جۆری کەناڵەکە (وەرزشی یان تر)
                 let drawInterval = setInterval(() => {
                     if (videoElement.readyState >= 2) {
                         ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
                         
-                        // دیاریکردنی جۆری لۆگۆکە بۆ ڕیکۆرد: ئەگەر وەرزشی بێت ARA SPORT HD، ئەگەرنا ARA TV
                         ctx.save();
                         ctx.fillStyle = "rgba(15, 23, 42, 0.85)";
                         ctx.strokeStyle = "rgba(56, 189, 248, 0.8)";
                         ctx.lineWidth = 2;
                         
-                        let boxWidth = 200;
+                        let boxWidth = isSportsCategory ? 200 : 160;
                         let boxHeight = 45;
                         let boxX = canvas.width - boxWidth - 40;
                         let boxY = 40;
                         
-                        // دروستکردنی بۆکس بۆ لۆگۆی ناو ڕیکۆرد
                         ctx.beginPath();
                         ctx.roundRect(boxX, boxY, boxWidth, boxHeight, 8);
                         ctx.fill();
@@ -938,7 +933,6 @@
                     }
                 }, 33);
 
-                // تێکەڵکردنی ڤیدیۆی کەنڤاس لەگەڵ دەنگی ڕەسەن بۆ ناو مێدیا ڕیکۆردەر
                 let finalStream = new MediaStream();
                 canvasStream.getVideoTracks().forEach(track => finalStream.addTrack(track));
                 stream.getAudioTracks().forEach(track => finalStream.addTrack(track));
@@ -959,7 +953,7 @@
                         mediaRecorder = new MediaRecorder(finalStream);
                     } catch (e2) {
                         clearInterval(drawInterval);
-                        alert("مایکرۆفۆن یان سیستمی تۆمارکردن لەم ئامێرەدا ڕێگەپێدراو نییە.");
+                        alert("تۆمارکردن لەم ئامێرەدا ڕێگەپێدراو نییە.");
                         return;
                     }
                 }
@@ -1018,22 +1012,17 @@
                 icon.style.color = '#ef4444';
                 btnElement.style.background = 'transparent';
                 btnElement.style.padding = '0';
-                alert("تۆمارکردنەکە بە سەرکەوتوویی کۆتایی هات و فایلی MP4 (بە دەنگ و ڤیدیۆوە) دابەزی.");
+                alert("تۆمارکردنەکە کۆتایی هات و فایلی MP4 دابەزی.");
             }
         }
 
         function triggerCast(url, event) {
             if (event) event.stopPropagation();
-            if (window.chrome && window.chrome.cast && window.chrome.cast.isAvailable) {
-                alert("سیستمی کاست (Chromecast) چالاکە.");
-            } else {
-                alert("لینکەکە کۆپی کرا بۆ بەکارهێنان لە ئامێری دەرەکی یان ئەپی کاست: \n" + url);
-            }
+            alert("لینکەکە کۆپی کرا: \n" + url);
         }
 
         function playChannel(url, element, event) {
             if (event) event.stopPropagation();
-
             showStreamWaiting(true);
 
             if (activeChannelElement) activeChannelElement.classList.remove('active');
@@ -1054,7 +1043,6 @@
                 player.play().then(() => {
                     showStreamWaiting(false);
                 }).catch(e => {
-                    console.log("Autoplay error:", e);
                     showStreamWaiting(false);
                 });
             }
