@@ -76,14 +76,15 @@
 
         .video-js { width: 100% !important; height: 100% !important; font-family: Arial, sans-serif !important; }
 
+        /* تەنها موشنی لۆدین لە ناوەڕاستی شاشە بەبێ هیچ تێکستێک */
         .stream-status-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.85); display: flex; justify-content: center;
-            align-items: center; z-index: 1001; font-size: 22px; font-weight: bold;
-            color: #f59e0b; backdrop-filter: blur(4px); pointer-events: none;
+            background: rgba(15, 23, 42, 0.75); display: flex; justify-content: center;
+            align-items: center; z-index: 1001; font-size: 32px; color: #38bdf8;
+            backdrop-filter: blur(2px); pointer-events: none;
         }
 
-        /* شوێنی لۆگۆ لە کۆمپیوتەر (بە نیوەی بەرزی بەرزتر و بە قەد بەرزی چۆتە ڕاست) */
+        /* شوێنی لۆگۆ لە کۆمپیوتەر */
         .video-js .vjs-watermark-logo {
             position: absolute !important;
             top: calc(70px - (100% * 0.25)) !important;
@@ -290,7 +291,7 @@
             .category-tabs-wrapper { position: sticky; top: 0; z-index: 10; }
             .playlist-items-wrapper { height: calc(62vh - 90px); overflow-y: auto; }
             
-            /* شوێنی لۆگۆ لە مۆبایل */
+            /* شوێنی لۆگۆ لە مۆبایل (تەنها بۆ وەرزشی) */
             .video-js .vjs-watermark-logo {
                 top: 60px !important;
                 right: 10px !important;
@@ -339,7 +340,7 @@
             <div class="brand-title">ARA TV</div>
             <div class="header-right">
                 <div id="trialBadge" class="trial-badge" style="display: none;">
-                    ⏱️ <span id="trialTimer">01:00</span>
+                    ⏱️ <span id="trialTimer">03:00</span>
                 </div>
                 <div id="countdownBox" class="expire-countdown-badge" style="display: none;">
                     ⏳ <span id="countdownTimer">00d 00h 00m</span>
@@ -351,8 +352,9 @@
         <div class="content-area">
             <div class="video-container">
                 <video id="ara-sport-player" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="auto" crossorigin="anonymous" playsinline></video>
+                <!-- تەنها موشنی لۆدین لە ناوەڕاستی شاشە -->
                 <div id="streamStatusOverlay" class="stream-status-overlay">
-                    <i class="fas fa-spinner fa-spin" style="margin-left: 10px;"></i> چاوەڕوانبە، لۆد دەبێت...
+                    <i class="fas fa-spinner fa-spin"></i>
                 </div>
             </div>
 
@@ -486,7 +488,8 @@
             let trialEnd = localStorage.getItem("ara_trial_end_time");
 
             if (!trialEnd) {
-                trialEnd = now + (60 * 1000);
+                // ٣ دەقیقە (٣ * ٦٠ * ١٠٠٠ ملیوەرد)
+                trialEnd = now + (3 * 60 * 1000);
                 localStorage.setItem("ara_trial_end_time", trialEnd);
             } else {
                 trialEnd = parseInt(trialEnd);
@@ -519,7 +522,7 @@
         function showCooldownOverlay(cooldownEnd) {
             document.getElementById("authOverlay").style.display = "flex";
             document.getElementById("cooldownNotice").style.display = "block";
-            document.getElementById("statusMsg").innerText = "کاتی ترایەڵی ١ خولەکی تەواو بوو!";
+            document.getElementById("statusMsg").innerText = "کاتی ترایەڵی ٣ دەقیقەیی تەواو بوو!";
 
             if (cooldownInterval) clearInterval(cooldownInterval);
 
@@ -669,7 +672,7 @@
         function updateWatermarkVisibility() {
             const watermark = document.getElementById('playerWatermark');
             if (watermark) {
-                // لۆگۆ تەنها لەسەر تابە وەرزشییەکان دەردەکەوێت
+                // لۆگۆ تەنها لەسەر کەناڵە وەرزشییەکان دەردەکەوێت
                 if (isSportsCategory) {
                     watermark.style.display = 'flex';
                 } else {
@@ -745,7 +748,6 @@
                     document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
                     this.classList.add('active');
                     currentCategory = cat;
-                    // پشکنینی ناوەڕۆکی تابەکە بۆ زانینی ئایا وەرزشییە یان نا
                     isSportsCategory = cat.toLowerCase().includes('وەرزش') || cat.toLowerCase().includes('sport') || cat.toLowerCase().includes('رزش');
                     updateWatermarkVisibility();
                     renderPlaylist(parsedCategorizedChannels[cat]);
@@ -896,7 +898,6 @@
                     return;
                 }
 
-                // زیادکردنی لۆگۆ تەنها بۆ ناو فایلی ڕیکۆردکراو بەپێی جۆری کەناڵەکە (وەرزشی یان تر)
                 let drawInterval = setInterval(() => {
                     if (videoElement.readyState >= 2) {
                         ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
