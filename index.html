@@ -83,6 +83,7 @@
             color: #f59e0b; backdrop-filter: blur(4px); pointer-events: none;
         }
 
+        /* لۆگۆی گەورەکراو لەناو ڕێکتانگڵەکەی خۆیدا */
         .video-js .vjs-watermark-logo {
             position: absolute !important;
             top: 20px !important;
@@ -93,25 +94,26 @@
             align-items: center;
             justify-content: center;
             gap: 6px;
-            background: rgba(15, 23, 42, 0.8);
-            padding: 8px 16px;
-            border-radius: 8px;
-            border: 1px solid rgba(56, 189, 248, 0.6);
+            background: rgba(15, 23, 42, 0.85);
+            padding: 6px 14px;
+            border-radius: 6px;
+            border: 1px solid rgba(56, 189, 248, 0.8);
             backdrop-filter: blur(6px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
         }
 
         .vjs-watermark-text {
             color: #ffffff;
-            font-weight: bold;
-            font-size: 15px;
-            letter-spacing: 0.5px;
+            font-weight: 900;
+            font-size: 20px; /* گەورەکردنی فۆنتەکە */
+            letter-spacing: 0.8px;
             font-family: Arial, sans-serif;
+            line-height: 1;
         }
 
         .vjs-watermark-text span {
             color: #38bdf8;
-            font-weight: 800;
+            font-weight: 900;
         }
 
         .playlist-sidebar {
@@ -171,16 +173,18 @@
             transform: scale(1.15);
         }
 
+        /* تایمەری ڕیکۆرد: لاکێشەی سپی و ڕەقەمی سوور */
         .rec-timer-badge {
-            font-size: 11px;
-            font-weight: bold;
-            color: #ef4444;
-            background: rgba(239, 68, 68, 0.15);
-            padding: 2px 6px;
+            font-size: 12px;
+            font-weight: 900;
+            color: #dc2626; /* ڕەنگی سووری گەش */
+            background: #ffffff; /* لاکێشەی سپی */
+            padding: 3px 8px;
             border-radius: 4px;
-            border: 1px solid rgba(239, 68, 68, 0.4);
+            border: 1px solid #ef4444;
             font-family: monospace;
             direction: ltr;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
         }
 
         .cast-svg-icon {
@@ -283,12 +287,12 @@
             .playlist-items-wrapper { height: calc(62vh - 90px); overflow-y: auto; }
             
             .video-js .vjs-watermark-logo {
-                top: 12px !important;
-                right: 12px !important;
-                padding: 5px 10px;
+                top: 10px !important;
+                right: 10px !important;
+                padding: 4px 10px;
             }
             .vjs-watermark-text {
-                font-size: 12px;
+                font-size: 15px;
             }
         }
     </style>
@@ -802,7 +806,7 @@
         }
 
         // -----------------------------------------------------------
-        // فەنکشنی ڕیکۆردکردنی کەناڵ (Record MP4 Stream with Timer)
+        // فەنکشنی ڕیکۆردکردنی کەناڵ (Record MP4 Stream with Audio & Timer)
         // -----------------------------------------------------------
         let mediaRecorder;
         let recordedChunks = [];
@@ -819,21 +823,25 @@
 
             if (!isRecording) {
                 try {
+                    // دڵنیاوبوونەوە لە چوونەدەرەوەی دەنگ و ڕەنگی ستریمەکە بە یەکەوە
                     let stream = videoElement.captureStream ? videoElement.captureStream() : videoElement.mozCaptureStream();
-                    
-                    // دیاریکردنی جۆری MP4 یان زۆرترین هاوشێوەی MP4 لە سەر وێبگەڕەکان
+
                     let mimeType = 'video/mp4';
                     if (!MediaRecorder.isTypeSupported(mimeType)) {
                         if (MediaRecorder.isTypeSupported('video/mp4;codecs=avc1.42E01E,mp4a.40.2')) {
                             mimeType = 'video/mp4;codecs=avc1.42E01E,mp4a.40.2';
-                        } else if (MediaRecorder.isTypeSupported('video/webm;codecs=h264')) {
-                            mimeType = 'video/webm;codecs=h264';
+                        } else if (MediaRecorder.isTypeSupported('video/webm;codecs=h264,opus')) {
+                            mimeType = 'video/webm;codecs=h264,opus';
                         } else {
                             mimeType = 'video/webm';
                         }
                     }
 
-                    mediaRecorder = new MediaRecorder(stream, { mimeType: mimeType });
+                    mediaRecorder = new MediaRecorder(stream, { 
+                        mimeType: mimeType,
+                        audioBitsPerSecond: 128000,
+                        videoBitsPerSecond: 2500000 
+                    });
 
                     recordedChunks = [];
                     mediaRecorder.ondataavailable = function(e) {
@@ -876,7 +884,7 @@
                     }
 
                 } catch (e) {
-                    alert("ڕیکۆردکردن لەسەر ئەم وێبگەڕە پشتگیری ناکرێت.");
+                    alert("تۆمارکردن لەسەر ئەم وێبگەڕە پشتگیری ناکرێت.");
                 }
             } else {
                 mediaRecorder.stop();
