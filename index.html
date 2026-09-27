@@ -83,19 +83,19 @@
             backdrop-filter: blur(2px); pointer-events: none;
         }
 
-        /* شوێنی لۆگۆ لە کۆمپیوتەر - ڕێک لەو ناوچە سورەی ناو وێنەکەت */
+        /* شوێنی وردی لۆگۆ لە کۆمپیوتەر بۆ ئەوەی ڕێک لەسەر لۆگۆی بین سپۆرت دابنیشێت */
         .video-js .vjs-watermark-logo {
             position: absolute !important;
-            top: 25px !important;
-            right: 45px !important;
+            top: 18px !important;
+            right: 25px !important;
             z-index: 1000 !important;
             pointer-events: none;
             display: none;
             align-items: center;
             justify-content: center;
-            background: rgba(15, 23, 42, 0.85);
-            padding: 4px 10px;
-            border-radius: 6px;
+            background: rgba(15, 23, 42, 0.95);
+            padding: 3px 8px;
+            border-radius: 4px;
             border: 1px solid rgba(56, 189, 248, 0.8);
             backdrop-filter: blur(6px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
@@ -104,8 +104,8 @@
         .vjs-watermark-text {
             color: #ffffff;
             font-weight: 900;
-            font-size: 15px;
-            letter-spacing: 0.8px;
+            font-size: 14px;
+            letter-spacing: 0.6px;
             font-family: Arial, sans-serif;
             line-height: 1;
         }
@@ -658,7 +658,6 @@
                 player.on(['waiting', 'stalled'], function() { showStreamWaiting(true); });
                 player.on(['playing', 'canplay'], function() { showStreamWaiting(false); });
 
-                // خێراکردنی لۆدکردن بەپێی کەیچ (Cache) ئەگەر هەبێت
                 const cachedData = localStorage.getItem("cached_sheets_channels");
                 if (cachedData) {
                     parsedCategorizedChannels = JSON.parse(cachedData);
@@ -906,29 +905,29 @@
                         ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
                         
                         ctx.save();
-                        ctx.fillStyle = "rgba(15, 23, 42, 0.85)";
+                        ctx.fillStyle = "rgba(15, 23, 42, 0.95)";
                         ctx.strokeStyle = "rgba(56, 189, 248, 0.8)";
                         ctx.lineWidth = 2;
                         
-                        let boxWidth = isSportsCategory ? 200 : 160;
-                        let boxHeight = 45;
-                        let boxX = canvas.width - boxWidth - 40;
-                        let boxY = 40;
+                        let boxWidth = isSportsCategory ? 150 : 130;
+                        let boxHeight = 35;
+                        let boxX = canvas.width - boxWidth - 25;
+                        let boxY = 18;
                         
                         ctx.beginPath();
-                        ctx.roundRect(boxX, boxY, boxWidth, boxHeight, 8);
+                        ctx.roundRect(boxX, boxY, boxWidth, boxHeight, 4);
                         ctx.fill();
                         ctx.stroke();
                         
-                        ctx.font = "bold 20px Arial";
+                        ctx.font = "bold 14px Arial";
                         ctx.fillStyle = "#ffffff";
                         ctx.textAlign = "center";
                         ctx.textBaseline = "middle";
                         
                         if (isSportsCategory) {
-                            ctx.fillText("ARA SPORT ", boxX + (boxWidth/2) - 15, boxY + (boxHeight/2));
+                            ctx.fillText("ARA SPORT ", boxX + (boxWidth/2) - 12, boxY + (boxHeight/2));
                             ctx.fillStyle = "#38bdf8";
-                            ctx.fillText("HD", boxX + (boxWidth/2) + 65, boxY + (boxHeight/2));
+                            ctx.fillText("HD", boxX + (boxWidth/2) + 50, boxY + (boxHeight/2));
                         } else {
                             ctx.fillStyle = "#38bdf8";
                             ctx.fillText("ARA TV", boxX + (boxWidth/2), boxY + (boxHeight/2));
