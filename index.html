@@ -15,322 +15,165 @@
             font-family: 'GoranFontRegular-Regular';
             src: url('GoranFontRegular-Regular.ttf') format('truetype'),
                  url('GoranFontRegular-Regular.woff') format('woff');
-            font-weight: normal;
-            font-style: normal;
+            font-weight: normal; font-style: normal;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         html, body {
-            width: 100%;
-            height: 100%;
-            background-color: #0f172a;
-            color: #ffffff;
+            width: 100%; height: 100%;
+            background-color: #0f172a; color: #ffffff;
             font-family: 'GoranFontRegular-Regular', Tahoma, Arial, sans-serif;
             overflow-x: hidden;
         }
 
         body {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 10px;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center; padding: 10px;
         }
 
-        /* بەربڵاوکردنی شاشەکە لە کۆمپیوتەردا */
         .main-wrapper {
-            width: 100%;
-            height: 96vh;
-            max-width: 100%;
-            background: #1e293b;
-            border-radius: 12px;
-            overflow: hidden;
+            width: 100%; height: 96vh; max-width: 100%;
+            background: #1e293b; border-radius: 12px; overflow: hidden;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-            border: 1px solid #334155;
-            display: flex;
-            flex-direction: column;
-            position: relative;
+            border: 1px solid #334155; display: flex; flex-direction: column; position: relative;
         }
 
         .player-header {
-            background: #0f172a;
-            padding: 12px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid #2563eb;
-            gap: 8px;
-            flex-shrink: 0;
+            background: #0f172a; padding: 12px 20px; display: flex;
+            justify-content: space-between; align-items: center;
+            border-bottom: 2px solid #2563eb; gap: 8px; flex-shrink: 0;
         }
 
-        .brand-title {
-            font-size: 22px;
-            font-weight: bold;
-            color: #38bdf8;
-            white-space: nowrap;
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            white-space: nowrap;
-        }
+        .brand-title { font-size: 22px; font-weight: bold; color: #38bdf8; white-space: nowrap; }
+        .header-right { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
 
         .expire-countdown-badge {
-            background: rgba(30, 41, 59, 0.9);
-            border: 1px solid #38bdf8;
-            color: #38bdf8;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            direction: ltr;
+            background: rgba(30, 41, 59, 0.9); border: 1px solid #38bdf8; color: #38bdf8;
+            padding: 5px 12px; border-radius: 20px; font-size: 13px; font-weight: bold;
+            display: flex; align-items: center; gap: 6px; direction: ltr;
         }
 
         .trial-badge {
-            background-color: #f59e0b;
-            color: white;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            direction: ltr;
+            background-color: #f59e0b; color: white; padding: 5px 12px; border-radius: 20px;
+            font-size: 13px; font-weight: bold; display: flex; align-items: center; gap: 6px; direction: ltr;
         }
 
         .live-badge {
-            background-color: #ef4444;
-            color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 13px;
-            animation: pulse 1.5s infinite;
+            background-color: #ef4444; color: white; padding: 4px 12px; border-radius: 20px;
+            font-size: 13px; animation: pulse 1.5s infinite;
         }
 
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
-        }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
-        .content-area {
-            display: flex;
-            flex-direction: row;
-            width: 100%;
-            flex: 1;
-            min-height: 0;
-        }
+        .content-area { display: flex; flex-direction: row; width: 100%; flex: 1; min-height: 0; }
 
         .video-container {
-            flex: 1;
-            position: relative;
-            background: #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            flex: 1; position: relative; background: #000;
+            display: flex; align-items: center; justify-content: center;
         }
 
-        .video-js {
-            width: 100% !important;
-            height: 100% !important;
-            font-family: Arial, Helvetica, sans-serif !important;
-        }
+        .video-js { width: 100% !important; height: 100% !important; font-family: Arial, sans-serif !important; }
 
-        .stream-status-overlay {
+        /* دوگمەی ڕیکۆرد لەناو پەڕەی پلەیەرەکە */
+        .player-tools-bar {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(15, 23, 42, 0.85);
+            bottom: 60px;
+            left: 15px;
+            z-index: 1000;
             display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1001;
-            font-size: 22px;
-            font-weight: bold;
-            color: #f59e0b;
-            backdrop-filter: blur(4px);
-            pointer-events: none;
+            gap: 10px;
         }
 
-        .video-js .vjs-watermark-logo {
-            position: absolute !important;
-            top: 15px !important;
-            right: 15px !important;
-            z-index: 1000 !important;
-            pointer-events: none;
-            display: none;
+        .tool-btn {
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid #38bdf8;
+            color: white;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            display: flex;
             align-items: center;
             gap: 6px;
-            background: rgba(15, 23, 42, 0.75);
-            padding: 6px 14px;
-            border-radius: 6px;
-            border: 1px solid rgba(56, 189, 248, 0.5);
             backdrop-filter: blur(4px);
+            transition: all 0.2s;
         }
 
-        .vjs-watermark-text {
-            color: #ffffff;
-            font-weight: bold;
-            font-size: 14px;
-        }
+        .tool-btn:hover { background: #2563eb; }
+        .tool-btn.recording { background: #ef4444; border-color: #ef4444; animation: pulse 1s infinite; }
 
-        .vjs-watermark-text span {
-            color: #38bdf8;
+        .stream-status-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.85); display: flex; justify-content: center;
+            align-items: center; z-index: 1001; font-size: 22px; font-weight: bold;
+            color: #f59e0b; backdrop-filter: blur(4px); pointer-events: none;
         }
 
         .playlist-sidebar {
-            width: 360px;
-            background: #0f172a;
-            border-right: 1px solid #334155;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
+            width: 360px; background: #0f172a; border-right: 1px solid #334155;
+            display: flex; flex-direction: column; height: 100%;
         }
 
         .category-tabs {
-            display: flex;
-            background: #1e293b;
-            overflow-x: auto;
-            border-bottom: 1px solid #334155;
-            scrollbar-width: thin;
-            flex-shrink: 0;
+            display: flex; background: #1e293b; overflow-x: auto;
+            border-bottom: 1px solid #334155; scrollbar-width: thin; flex-shrink: 0;
         }
 
         .category-tab {
-            padding: 12px 16px;
-            font-size: 14px;
-            font-weight: bold;
-            color: #94a3b8;
-            cursor: pointer;
-            white-space: nowrap;
-            transition: all 0.2s;
-            border-bottom: 3px solid transparent;
+            padding: 12px 16px; font-size: 14px; font-weight: bold; color: #94a3b8;
+            cursor: pointer; white-space: nowrap; transition: all 0.2s; border-bottom: 3px solid transparent;
         }
 
-        .category-tab:hover {
-            color: #38bdf8;
-        }
+        .category-tab:hover { color: #38bdf8; }
+        .category-tab.active { color: #38bdf8; border-bottom: 3px solid #38bdf8; background: #0f172a; }
 
-        .category-tab.active {
-            color: #38bdf8;
-            border-bottom: 3px solid #38bdf8;
-            background: #0f172a;
-        }
-
-        .playlist-items-wrapper {
-            flex: 1;
-            overflow-y: auto;
-        }
-
+        .playlist-items-wrapper { flex: 1; overflow-y: auto; }
         .playlist-item {
-            padding: 14px 18px;
-            border-bottom: 1px solid #1e293b;
-            cursor: pointer;
-            transition: background 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            font-size: 15px;
+            padding: 14px 18px; border-bottom: 1px solid #1e293b; cursor: pointer;
+            transition: background 0.2s; display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 15px;
         }
 
-        .playlist-item:hover {
-            background: #1e293b;
-        }
-
-        .playlist-item.active {
-            background: #2563eb;
-            color: #fff;
-        }
+        .playlist-item:hover { background: #1e293b; }
+        .playlist-item.active { background: #2563eb; color: #fff; }
 
         .ticker-bar {
-            background: #0284c7;
-            color: #ffffff;
-            padding: 6px 0;
-            overflow: hidden;
-            white-space: nowrap;
-            display: flex;
-            align-items: center;
-            flex-shrink: 0;
+            background: #0284c7; color: #ffffff; padding: 6px 0;
+            overflow: hidden; white-space: nowrap; display: flex; align-items: center; flex-shrink: 0;
         }
 
         .ticker-text {
-            display: inline-block;
-            padding-right: 100%;
-            animation: ticker 25s linear infinite;
-            font-size: 13px;
+            display: inline-block; padding-right: 100%;
+            animation: ticker 25s linear infinite; font-size: 13px;
         }
 
-        @keyframes ticker {
-            0% { transform: translate3d(0, 0, 0); }
-            100% { transform: translate3d(100%, 0, 0); }
-        }
+        @keyframes ticker { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(100%, 0, 0); } }
 
         .auth-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(15, 23, 42, 0.96);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            backdrop-filter: blur(8px);
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.96); display: flex; justify-content: center;
+            align-items: center; z-index: 9999; backdrop-filter: blur(8px);
         }
 
         .auth-card {
-            background: #1e293b;
-            padding: 25px;
-            border-radius: 12px;
-            border: 1px solid #334155;
-            text-align: center;
-            max-width: 460px;
-            width: 90%;
+            background: #1e293b; padding: 25px; border-radius: 12px;
+            border: 1px solid #334155; text-align: center; max-width: 460px; width: 90%;
             box-shadow: 0 10px 25px rgba(0,0,0,0.5);
         }
 
         .auth-card h2 { color: #38bdf8; margin-bottom: 12px; font-size: 20px; }
 
         .mac-box {
-            background: #0f172a;
-            border: 1px dashed #38bdf8;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            color: #ef4444;
-            letter-spacing: 1px;
-            margin-bottom: 15px;
-            user-select: all;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            direction: ltr;
+            background: #0f172a; border: 1px dashed #38bdf8; padding: 12px;
+            border-radius: 8px; font-size: 16px; font-weight: bold; color: #ef4444;
+            letter-spacing: 1px; margin-bottom: 15px; user-select: all;
+            display: flex; justify-content: space-between; align-items: center; direction: ltr;
         }
 
         .copy-btn {
-            background: #2563eb;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
+            background: #2563eb; color: white; border: none; padding: 6px 12px;
+            border-radius: 4px; cursor: pointer; font-size: 12px;
         }
 
         .send-actions { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; }
@@ -354,47 +197,15 @@
         .contact-box { margin-top: 18px; padding-top: 15px; border-top: 1px solid #334155; font-size: 13px; color: #cbd5e1; }
         .contact-phones { margin-top: 6px; font-weight: bold; color: #38bdf8; direction: ltr; font-size: 14px; }
 
-        .cooldown-box {
-            background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #fca5a5;
-            padding: 10px; border-radius: 6px; font-size: 13px; margin-bottom: 15px;
-        }
-
-        /* ---------------------------------------------------- */
-        /* تایبەتمەندی و ڕێکخستنی شاشەی مۆبایل                   */
-        /* ---------------------------------------------------- */
         @media (max-width: 900px) {
             body { padding: 0; }
-            .main-wrapper {
-                height: 100vh;
-                border-radius: 0;
-                border: none;
-            }
-            .content-area {
-                flex-direction: column;
-            }
-            .video-container {
-                width: 100%;
-                height: 38vh;
-                flex: none;
-            }
-            .playlist-sidebar {
-                width: 100%;
-                flex: 1;
-                border-right: none;
-                border-top: 1px solid #334155;
-                max-height: none;
-                overflow: hidden;
-            }
-            .category-tabs {
-                position: sticky;
-                top: 0;
-                z-index: 10;
-                background: #1e293b;
-            }
-            .playlist-items-wrapper {
-                height: calc(62vh - 90px);
-                overflow-y: auto;
-            }
+            .main-wrapper { height: 100vh; border-radius: 0; border: none; }
+            .content-area { flex-direction: column; }
+            .video-container { width: 100%; height: 38vh; flex: none; }
+            .playlist-sidebar { width: 100%; flex: 1; border-right: none; border-top: 1px solid #334155; max-height: none; overflow: hidden; }
+            .category-tabs { position: sticky; top: 0; z-index: 10; background: #1e293b; }
+            .playlist-items-wrapper { height: calc(62vh - 90px); overflow-y: auto; }
+            .player-tools-bar { bottom: 40px; left: 10px; }
         }
     </style>
 </head>
@@ -403,18 +214,14 @@
     <div id="authOverlay" class="auth-overlay" style="display: none;">
         <div class="auth-card">
             <h2>ئەکتیڤکردنی ئامێرەکەت</h2>
-            
             <div id="cooldownNotice" class="cooldown-box" style="display: none;">
                 تایمەری ترایەڵ تەواو بوو! تکایە <span id="cooldownTimer" style="font-weight: bold; color: #fff;">05:00</span> چاوەڕێ بکە بۆ ترایەڵی داهاتوو.
             </div>
-
             <p id="overlayIntroMsg">بۆ بینینی بەردەوامی پەخشەکە، تەواوی ماک ئادرێسەکەت بۆ ئەدمین بنێرە:</p>
-            
             <div class="mac-box">
                 <span id="deviceMac">باردەکرێت...</span>
                 <button class="copy-btn" onclick="copyMac()">کۆپی</button>
             </div>
-
             <div class="send-actions">
                 <div class="send-row">
                     <a id="waLink1" href="#" target="_blank" class="send-btn whatsapp-btn"><i class="fab fa-whatsapp"></i> واتسئاپ 1</a>
@@ -424,10 +231,8 @@
                     <a id="smsLink" href="#" class="send-btn sms-btn"><i class="fas fa-comment-alt"></i> بە نامە (SMS)</a>
                 </div>
             </div>
-
             <button onclick="checkActivation(true)" class="auth-btn">پشکنینی ئەکتیڤبوون</button>
             <div id="statusMsg" class="status-msg">ئەم ئامێرە ئەکتیڤ نەکراوە!</div>
-
             <div class="contact-box">
                 بۆ زانیاری زیاتر یان نوێکردنەوەی سیستمەکە پەیوەندی بکەن بە:
                 <div class="contact-phones">07501224994 &nbsp;|&nbsp; 07748134314</div>
@@ -451,7 +256,18 @@
 
         <div class="content-area">
             <div class="video-container">
-                <video id="ara-sport-player" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="auto"></video>
+                <video id="ara-sport-player" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="auto" crossorigin="anonymous"></video>
+                
+                <!-- دوگمەکانی تۆمارکردن و کاستکردن -->
+                <div class="player-tools-bar">
+                    <button id="recordBtn" class="tool-btn" onclick="toggleRecord()">
+                        <i class="fas fa-circle"></i> <span id="recordText">تۆمارکردن</span>
+                    </button>
+                    <button class="tool-btn" onclick="castStream()">
+                        <i class="fas fa-tv"></i> کاست بۆ تیڤی
+                    </button>
+                </div>
+
                 <div id="streamStatusOverlay" class="stream-status-overlay" style="display: none;">
                     <i class="fas fa-spinner fa-spin" style="margin-left: 10px;"></i> چاوەڕوانبە...
                 </div>
@@ -737,12 +553,7 @@
                 player = videojs('ara-sport-player', {
                     autoplay: true,
                     controls: true,
-                    preload: 'auto',
-                    html5: {
-                        vjsError: {
-                            autoRetry: true
-                        }
-                    }
+                    preload: 'auto'
                 });
 
                 player.ready(function() {
@@ -753,13 +564,8 @@
                     this.el().appendChild(watermark);
                 });
 
-                player.on(['waiting', 'stalled'], function() {
-                    showStreamWaiting(true);
-                });
-
-                player.on(['playing', 'canplay'], function() {
-                    showStreamWaiting(false);
-                });
+                player.on(['waiting', 'stalled'], function() { showStreamWaiting(true); });
+                player.on(['playing', 'canplay'], function() { showStreamWaiting(false); });
 
                 loadGoogleSheetsPlaylist();
             }
@@ -767,11 +573,8 @@
 
         function showStreamWaiting(isWaiting) {
             const overlay = document.getElementById('streamStatusOverlay');
-            if (isWaiting) {
-                overlay.style.display = 'flex';
-            } else {
-                overlay.style.display = 'none';
-            }
+            if (isWaiting) overlay.style.display = 'flex';
+            else overlay.style.display = 'none';
         }
 
         async function loadGoogleSheetsPlaylist() {
@@ -788,11 +591,8 @@
                 const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(targetUrl);
 
                 let response;
-                try {
-                    response = await fetch(proxyUrl);
-                } catch(e) {
-                    response = await fetch(targetUrl);
-                }
+                try { response = await fetch(proxyUrl); } 
+                catch(e) { response = await fetch(targetUrl); }
 
                 if (response && response.ok) {
                     const csvData = await response.text();
@@ -869,9 +669,7 @@
             });
 
             if (channels.length > 0) {
-                setTimeout(function() {
-                    playChannel(channels[0].url, container.children[0]);
-                }, 100);
+                setTimeout(function() { playChannel(channels[0].url, container.children[0]); }, 100);
             }
         }
 
@@ -885,17 +683,13 @@
 
             const watermarkEl = document.getElementById('playerWatermark');
             if (watermarkEl) {
-                if (currentCategory.trim() === 'وەرزشی') {
-                    watermarkEl.style.display = 'flex';
-                } else {
-                    watermarkEl.style.display = 'none';
-                }
+                if (currentCategory.trim() === 'وەرزشی') watermarkEl.style.display = 'flex';
+                else watermarkEl.style.display = 'none';
             }
 
             if (player) {
                 showStreamWaiting(false);
 
-                // هەوڵدانی ڕاستەوخۆ بۆ خێراکردن بێ بەکارهێنانی سەرەتایی Proxy
                 player.src({
                     src: url,
                     type: 'application/x-mpegURL'
@@ -904,17 +698,75 @@
                 var promise = player.play();
                 if (promise !== undefined) {
                     promise.catch(function(error) {
-                        // تەنها لە کاتی هەڵەی CORS پڕۆکسی AllOrigins بەکاردێت
                         const proxiedUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
                         player.src({
                             src: proxiedUrl,
                             type: 'application/x-mpegURL'
                         });
-                        player.play().catch(e => {
-                            showStreamWaiting(true);
-                        });
+                        player.play().catch(e => { showStreamWaiting(true); });
                     });
                 }
+            }
+        }
+
+        // -----------------------------------------------------------
+        // فەنکشنی ڕیکۆردکردنی کەناڵ (Record Stream)
+        // -----------------------------------------------------------
+        let mediaRecorder;
+        let recordedChunks = [];
+        let isRecording = false;
+
+        function toggleRecord() {
+            const recordBtn = document.getElementById('recordBtn');
+            const recordText = document.getElementById('recordText');
+            const videoElement = document.querySelector('video');
+
+            if (!isRecording) {
+                try {
+                    let stream = videoElement.captureStream ? videoElement.captureStream() : videoElement.mozCaptureStream();
+                    mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+
+                    recordedChunks = [];
+                    mediaRecorder.ondataavailable = function(e) {
+                        if (e.data.size > 0) recordedChunks.push(e.data);
+                    };
+
+                    mediaRecorder.onstop = function() {
+                        let blob = new Blob(recordedChunks, { type: 'video/webm' });
+                        let url = URL.createObjectURL(blob);
+                        let a = document.createElement('a');
+                        a.href = url;
+                        a.download = `ARA_TV_Record_${Date.now()}.webm`;
+                        a.click();
+                        URL.revokeObjectURL(url);
+                    };
+
+                    mediaRecorder.start();
+                    isRecording = true;
+                    recordBtn.classList.add('recording');
+                    recordText.innerText = "ڕاگرتنی ڕیکۆرد";
+                } catch (e) {
+                    alert("ڕیکۆردکردن لەسەر ئەم وێبگەڕە پشکنینی پڕاوپڕی بۆ نەکراوە یان ڕێگەی پێنەدراوە.");
+                }
+            } else {
+                mediaRecorder.stop();
+                isRecording = false;
+                recordBtn.classList.remove('recording');
+                recordText.innerText = "تۆمارکردن";
+            }
+        }
+
+        // -----------------------------------------------------------
+        // فەنکشنی کاستکردن بۆ تیڤی (Chromecast / Smart TV)
+        // -----------------------------------------------------------
+        function castStream() {
+            const videoElement = document.querySelector('video');
+            if (videoElement.remote && videoElement.remote.state !== 'disconnected') {
+                videoElement.remote.prompt().catch(e => {
+                    alert("هیچ ئامێرێکی کاستکردن (Smart TV) لە هەمان شوێنەوار/Wi-Fi نەدۆزرایەوە.");
+                });
+            } else {
+                alert("تایبەتمەندی Casting بەردەستە لە وێبگەڕەکانی Chrome و Edge بڕوانە دوگمەی Cast ی وێبگەڕەکەت.");
             }
         }
 
