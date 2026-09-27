@@ -83,18 +83,18 @@
             backdrop-filter: blur(2px); pointer-events: none;
         }
 
-        /* شوێنی لۆگۆ لە کۆمپیوتەر */
+        /* شوێنی لۆگۆ لە کۆمپیوتەر - ڕێک لەو ناوچە سورەی ناو وێنەکەت */
         .video-js .vjs-watermark-logo {
             position: absolute !important;
-            top: calc(70px - (100% * 0.25)) !important;
-            right: calc(140px + 100% * 0.5) !important;
+            top: 25px !important;
+            right: 45px !important;
             z-index: 1000 !important;
             pointer-events: none;
-            display: none; /* بە بنەڕەت شاراوەیە تاوەکو پشکنینی بۆ دەکرێت */
+            display: none;
             align-items: center;
             justify-content: center;
             background: rgba(15, 23, 42, 0.85);
-            padding: 5px 12px;
+            padding: 4px 10px;
             border-radius: 6px;
             border: 1px solid rgba(56, 189, 248, 0.8);
             backdrop-filter: blur(6px);
@@ -104,7 +104,7 @@
         .vjs-watermark-text {
             color: #ffffff;
             font-weight: 900;
-            font-size: 18px;
+            font-size: 15px;
             letter-spacing: 0.8px;
             font-family: Arial, sans-serif;
             line-height: 1;
@@ -290,7 +290,6 @@
             .category-tabs-wrapper { position: sticky; top: 0; z-index: 10; }
             .playlist-items-wrapper { height: calc(62vh - 90px); overflow-y: auto; }
             
-            /* لۆگۆ لە مۆبایل (تەنها کاتێک وەرزشی بێت پیشان دەدرێت) */
             .video-js .vjs-watermark-logo.show-watermark {
                 display: flex !important;
                 top: 60px !important;
@@ -303,7 +302,6 @@
             }
         }
 
-        /* دەرخستنی لۆگۆ لە کۆمپیوتەر کاتێک کلاسی show-watermarkـی هەبێت */
         .video-js .vjs-watermark-logo.show-watermark {
             display: flex !important;
         }
@@ -660,6 +658,13 @@
                 player.on(['waiting', 'stalled'], function() { showStreamWaiting(true); });
                 player.on(['playing', 'canplay'], function() { showStreamWaiting(false); });
 
+                // خێراکردنی لۆدکردن بەپێی کەیچ (Cache) ئەگەر هەبێت
+                const cachedData = localStorage.getItem("cached_sheets_channels");
+                if (cachedData) {
+                    parsedCategorizedChannels = JSON.parse(cachedData);
+                    renderTabs();
+                }
+                
                 loadGoogleSheetsPlaylist();
             }
         }
@@ -675,7 +680,6 @@
         function updateWatermarkVisibility() {
             const watermark = document.getElementById('playerWatermark');
             if (watermark) {
-                // دڵنیابوونەوە لەوەی کە لۆگۆ تەنها کاتێک دەردەکەوێت کە تابی وەرزشی هەڵبژێردرابێت
                 if (isSportsCategory) {
                     watermark.classList.add('show-watermark');
                 } else {
@@ -685,12 +689,6 @@
         }
 
         async function loadGoogleSheetsPlaylist() {
-            const cachedData = localStorage.getItem("cached_sheets_channels");
-            if (cachedData) {
-                parsedCategorizedChannels = JSON.parse(cachedData);
-                renderTabs();
-            }
-
             try {
                 const targetUrl = GOOGLE_SHEETS_CHANNELS_URL + "&t=" + Date.now();
                 const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(targetUrl);
@@ -761,10 +759,12 @@
 
             tabsContainer.appendChild(fragment);
 
-            currentCategory = categories[0];
+            if (!currentCategory || !parsedCategorizedChannels[currentCategory]) {
+                currentCategory = categories[0];
+            }
             isSportsCategory = currentCategory.toLowerCase().includes('وەرزش') || currentCategory.toLowerCase().includes('sport') || currentCategory.toLowerCase().includes('رزش');
             updateWatermarkVisibility();
-            renderPlaylist(parsedCategorizedChannels[categories[0]]);
+            renderPlaylist(parsedCategorizedChannels[currentCategory]);
             
             setTimeout(checkTabArrows, 200);
         }
@@ -837,7 +837,7 @@
 
                 fragment.appendChild(div);
 
-                if (index === 0 && player) {
+                if (index === 0 && player && !player.currentSrc()) {
                     playChannel(channel.url, div, null);
                 }
             });
