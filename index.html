@@ -83,19 +83,18 @@
             color: #f59e0b; backdrop-filter: blur(4px); pointer-events: none;
         }
 
-        /* لۆگۆی گەورەکراو لەناو ڕێکتانگڵەکەی خۆیدا */
+        /* دیزاین و شوێنی لۆگۆی ARA SPORT HD لەرەسپی کۆمپیوتەر */
         .video-js .vjs-watermark-logo {
             position: absolute !important;
-            top: 20px !important;
-            right: 20px !important;
+            top: 70px !important;  /* هێنراوەتە خوارەوە بۆ سەر شوێنی کەنالەکە */
+            right: 25px !important;
             z-index: 1000 !important;
             pointer-events: none;
             display: none;
             align-items: center;
             justify-content: center;
-            gap: 6px;
             background: rgba(15, 23, 42, 0.85);
-            padding: 6px 14px;
+            padding: 5px 12px;
             border-radius: 6px;
             border: 1px solid rgba(56, 189, 248, 0.8);
             backdrop-filter: blur(6px);
@@ -105,7 +104,7 @@
         .vjs-watermark-text {
             color: #ffffff;
             font-weight: 900;
-            font-size: 20px; /* گەورەکردنی فۆنتەکە */
+            font-size: 18px;
             letter-spacing: 0.8px;
             font-family: Arial, sans-serif;
             line-height: 1;
@@ -124,23 +123,23 @@
         .category-tabs {
             display: flex; background: #1e293b; overflow-x: auto;
             border-bottom: 1px solid #334155; scrollbar-width: thin; flex-shrink: 0;
+            will-change: scroll-position;
         }
 
         .category-tab {
             padding: 12px 16px; font-size: 14px; font-weight: bold; color: #94a3b8;
-            cursor: pointer; white-space: nowrap; transition: all 0.2s; border-bottom: 3px solid transparent;
+            cursor: pointer; white-space: nowrap; transition: color 0.15s ease; border-bottom: 3px solid transparent;
         }
 
         .category-tab:hover { color: #38bdf8; }
         .category-tab.active { color: #38bdf8; border-bottom: 3px solid #38bdf8; background: #0f172a; }
 
-        .playlist-items-wrapper { flex: 1; overflow-y: auto; }
+        .playlist-items-wrapper { flex: 1; overflow-y: auto; contain: content; }
         
         .playlist-item {
             padding: 12px 16px;
             border-bottom: 1px solid #1e293b;
             cursor: pointer;
-            transition: background 0.2s;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -162,23 +161,17 @@
             color: #ffffff;
             cursor: pointer;
             font-size: 15px;
-            transition: transform 0.2s, color 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 0;
         }
 
-        .icon-btn:hover {
-            transform: scale(1.15);
-        }
-
-        /* تایمەری ڕیکۆرد: لاکێشەی سپی و ڕەقەمی سوور */
         .rec-timer-badge {
             font-size: 12px;
             font-weight: 900;
-            color: #dc2626; /* ڕەنگی سووری گەش */
-            background: #ffffff; /* لاکێشەی سپی */
+            color: #dc2626;
+            background: #ffffff;
             padding: 3px 8px;
             border-radius: 4px;
             border: 1px solid #ef4444;
@@ -191,21 +184,10 @@
             width: 20px;
             height: 20px;
             fill: #ffffff;
-            transition: fill 0.2s;
         }
 
-        .icon-btn:hover .cast-svg-icon {
-            fill: #38bdf8;
-        }
-
-        .record-dot-icon {
-            color: #ef4444;
-            font-size: 14px;
-        }
-
-        .record-dot-icon.recording {
-            animation: pulse-red 0.8s infinite;
-        }
+        .record-dot-icon { color: #ef4444; font-size: 14px; }
+        .record-dot-icon.recording { animation: pulse-red 0.8s infinite; }
 
         @keyframes pulse-red {
             0% { transform: scale(1); opacity: 1; }
@@ -277,6 +259,9 @@
             padding: 10px; border-radius: 6px; font-size: 13px; margin-bottom: 15px;
         }
 
+        /* -----------------------------------------------------------
+           گونجاندن بۆ شاشەی مۆبایل (Mobile Responsiveness)
+        ----------------------------------------------------------- */
         @media (max-width: 900px) {
             body { padding: 0; }
             .main-wrapper { height: 100vh; border-radius: 0; border: none; }
@@ -286,13 +271,15 @@
             .category-tabs { position: sticky; top: 0; z-index: 10; background: #1e293b; }
             .playlist-items-wrapper { height: calc(62vh - 90px); overflow-y: auto; }
             
+            /* لۆگۆکە لە مۆبایل کرایە نیوەی سایزی خۆی و هێنراوەتە خوارەوەتر */
             .video-js .vjs-watermark-logo {
-                top: 10px !important;
-                right: 10px !important;
-                padding: 4px 10px;
+                top: 45px !important;  /* زیاتر هێنراوەتە خوارەوە */
+                right: 12px !important;
+                padding: 2px 6px !important;
+                border-radius: 4px;
             }
             .vjs-watermark-text {
-                font-size: 15px;
+                font-size: 10px !important; /* سایزەکەی لە مۆبایل بە نیوە بچووکتر کرایەوە */
             }
         }
     </style>
@@ -652,8 +639,6 @@
         }
 
         async function loadGoogleSheetsPlaylist() {
-            const playlistContainer = document.getElementById('playlist-items');
-
             const cachedData = localStorage.getItem("cached_sheets_channels");
             if (cachedData) {
                 parsedCategorizedChannels = JSON.parse(cachedData);
@@ -673,8 +658,9 @@
                     const lines = csvData.split('\n');
                     let tempChannels = {};
 
-                    lines.forEach((line, index) => {
-                        if (index === 0 || !line.trim()) return;
+                    for (let index = 1; index < lines.length; index++) {
+                        let line = lines[index];
+                        if (!line.trim()) continue;
                         const columns = parseCSVLine(line);
                         if (columns.length >= 3) {
                             let group = columns[0].replace(/^"|"$/g, '').trim() || 'گشتی';
@@ -686,17 +672,14 @@
                                 tempChannels[group].push({ name, url });
                             }
                         }
-                    });
+                    }
 
                     parsedCategorizedChannels = tempChannels;
                     localStorage.setItem("cached_sheets_channels", JSON.stringify(tempChannels));
                     renderTabs();
                 }
             } catch (error) {
-                console.error("Error loading channels from Google Sheets:", error);
-                if (!cachedData) {
-                    playlistContainer.innerHTML = '<div class="playlist-item" style="color: #ef4444;">کێشەیەک لە خوێندنەوەی کەناڵەکان هەیە!</div>';
-                }
+                console.error("Error loading channels:", error);
             }
         }
 
@@ -711,6 +694,8 @@
                 return;
             }
 
+            const fragment = document.createDocumentFragment();
+
             categories.forEach((cat, index) => {
                 const tab = document.createElement('div');
                 tab.className = `category-tab ${index === 0 ? 'active' : ''}`;
@@ -721,8 +706,10 @@
                     currentCategory = cat;
                     renderPlaylist(parsedCategorizedChannels[cat]);
                 };
-                tabsContainer.appendChild(tab);
+                fragment.appendChild(tab);
             });
+
+            tabsContainer.appendChild(fragment);
 
             currentCategory = categories[0];
             renderPlaylist(parsedCategorizedChannels[categories[0]]);
@@ -731,6 +718,8 @@
         function renderPlaylist(channels) {
             const container = document.getElementById('playlist-items');
             container.innerHTML = '';
+
+            const fragment = document.createDocumentFragment();
 
             channels.forEach((channel, index) => {
                 const div = document.createElement('div');
@@ -753,11 +742,13 @@
                     if (e.target.tagName === 'BUTTON' || e.target.closest('button')) return;
                     playChannel(channel.url, this);
                 };
-                container.appendChild(div);
+                fragment.appendChild(div);
             });
 
+            container.appendChild(fragment);
+
             if (channels.length > 0) {
-                setTimeout(function() { playChannel(channels[0].url, container.children[0]); }, 100);
+                setTimeout(function() { playChannel(channels[0].url, container.children[0]); }, 50);
             }
         }
 
@@ -805,9 +796,6 @@
             }
         }
 
-        // -----------------------------------------------------------
-        // فەنکشنی ڕیکۆردکردنی کەناڵ (Record MP4 Stream with Audio & Timer)
-        // -----------------------------------------------------------
         let mediaRecorder;
         let recordedChunks = [];
         let isRecording = false;
@@ -823,7 +811,6 @@
 
             if (!isRecording) {
                 try {
-                    // دڵنیاوبوونەوە لە چوونەدەرەوەی دەنگ و ڕەنگی ستریمەکە بە یەکەوە
                     let stream = videoElement.captureStream ? videoElement.captureStream() : videoElement.mozCaptureStream();
 
                     let mimeType = 'video/mp4';
@@ -858,7 +845,6 @@
                         a.click();
                         URL.revokeObjectURL(url);
 
-                        // وەستاندنی تایمەرەکەی ڕیکۆرد
                         clearInterval(recTimerInterval);
                         recSeconds = 0;
                         if (recTimerEl) recTimerEl.style.display = 'none';
@@ -868,7 +854,6 @@
                     isRecording = true;
                     if (recordBtn) recordBtn.classList.add('recording');
 
-                    // ڕێکخستن و دەستپێکردنی تایمەری ڕیکۆرد
                     if (recTimerEl) {
                         recSeconds = 0;
                         recTimerEl.innerText = "00:00";
@@ -893,9 +878,6 @@
             }
         }
 
-        // -----------------------------------------------------------
-        // فەنکشنی کاستکردن بۆ تیڤی (Chromecast / Smart TV)
-        // -----------------------------------------------------------
         function castStream(event) {
             if (event) event.stopPropagation();
             
