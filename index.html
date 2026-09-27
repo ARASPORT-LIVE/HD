@@ -2,7 +2,7 @@
 <html lang="ku" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ARA TV - Web Player</title>
     
     <!-- Video.js CSS -->
@@ -15,137 +15,322 @@
             font-family: 'GoranFontRegular-Regular';
             src: url('GoranFontRegular-Regular.ttf') format('truetype'),
                  url('GoranFontRegular-Regular.woff') format('woff');
-            font-weight: normal; font-style: normal;
+            font-weight: normal;
+            font-style: normal;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            background-color: #0f172a;
+            color: #ffffff;
+            font-family: 'GoranFontRegular-Regular', Tahoma, Arial, sans-serif;
+            overflow-x: hidden;
+        }
 
         body {
-            background-color: #0f172a; color: #ffffff;
-            font-family: 'GoranFontRegular-Regular', Tahoma, Arial, sans-serif;
-            display: flex; justify-content: center; align-items: center;
-            min-height: 100vh; padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
         }
 
+        /* بەربڵاوکردنی شاشەکە لە کۆمپیوتەردا */
         .main-wrapper {
-            width: 100%; max-width: 1100px; background: #1e293b;
-            border-radius: 12px; overflow: hidden;
+            width: 100%;
+            height: 96vh;
+            max-width: 100%;
+            background: #1e293b;
+            border-radius: 12px;
+            overflow: hidden;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-            border: 1px solid #334155; display: flex; flex-direction: column; position: relative;
+            border: 1px solid #334155;
+            display: flex;
+            flex-direction: column;
+            position: relative;
         }
 
         .player-header {
-            background: #0f172a; padding: 15px 20px; display: flex;
-            justify-content: space-between; align-items: center;
-            border-bottom: 2px solid #2563eb; gap: 8px; flex-wrap: nowrap;
+            background: #0f172a;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #2563eb;
+            gap: 8px;
+            flex-shrink: 0;
         }
 
-        .brand-title { font-size: 20px; font-weight: bold; color: #38bdf8; white-space: nowrap; }
-        .header-right { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
+        .brand-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #38bdf8;
+            white-space: nowrap;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            white-space: nowrap;
+        }
 
         .expire-countdown-badge {
-            background: rgba(30, 41, 59, 0.9); border: 1px solid #38bdf8; color: #38bdf8;
-            padding: 5px 12px; border-radius: 20px; font-size: 13px; font-weight: bold;
-            display: flex; align-items: center; gap: 6px; direction: ltr;
+            background: rgba(30, 41, 59, 0.9);
+            border: 1px solid #38bdf8;
+            color: #38bdf8;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            direction: ltr;
         }
 
         .trial-badge {
-            background-color: #f59e0b; color: white; padding: 5px 12px; border-radius: 20px;
-            font-size: 13px; font-weight: bold; display: flex; align-items: center; gap: 6px; direction: ltr;
+            background-color: #f59e0b;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            direction: ltr;
         }
 
         .live-badge {
-            background-color: #ef4444; color: white; padding: 4px 12px; border-radius: 20px;
-            font-size: 13px; animation: pulse 1.5s infinite;
+            background-color: #ef4444;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            animation: pulse 1.5s infinite;
         }
 
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
 
-        .content-area { display: flex; flex-direction: row; width: 100%; }
-        .video-container { flex: 1; position: relative; background: #000; }
-        .video-js { width: 100%; height: 480px; font-family: Arial, sans-serif !important; }
+        .content-area {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            flex: 1;
+            min-height: 0;
+        }
+
+        .video-container {
+            flex: 1;
+            position: relative;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .video-js {
+            width: 100% !important;
+            height: 100% !important;
+            font-family: Arial, Helvetica, sans-serif !important;
+        }
 
         .stream-status-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.85); display: flex; justify-content: center;
-            align-items: center; z-index: 1001; font-size: 22px; font-weight: bold;
-            color: #f59e0b; backdrop-filter: blur(4px); pointer-events: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1001;
+            font-size: 22px;
+            font-weight: bold;
+            color: #f59e0b;
+            backdrop-filter: blur(4px);
+            pointer-events: none;
         }
 
         .video-js .vjs-watermark-logo {
-            position: absolute !important; top: 15px !important; right: 15px !important;
-            z-index: 1000 !important; pointer-events: none; display: none; align-items: center; gap: 6px;
-            background: rgba(15, 23, 42, 0.75); padding: 6px 14px; border-radius: 6px;
-            border: 1px solid rgba(56, 189, 248, 0.5); backdrop-filter: blur(4px);
+            position: absolute !important;
+            top: 15px !important;
+            right: 15px !important;
+            z-index: 1000 !important;
+            pointer-events: none;
+            display: none;
+            align-items: center;
+            gap: 6px;
+            background: rgba(15, 23, 42, 0.75);
+            padding: 6px 14px;
+            border-radius: 6px;
+            border: 1px solid rgba(56, 189, 248, 0.5);
+            backdrop-filter: blur(4px);
         }
 
-        .vjs-watermark-text { color: #ffffff; font-weight: bold; font-size: 14px; }
-        .vjs-watermark-text span { color: #38bdf8; }
+        .vjs-watermark-text {
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .vjs-watermark-text span {
+            color: #38bdf8;
+        }
 
         .playlist-sidebar {
-            width: 320px; background: #0f172a; border-right: 1px solid #334155;
-            display: flex; flex-direction: column; max-height: 480px;
+            width: 360px;
+            background: #0f172a;
+            border-right: 1px solid #334155;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
 
         .category-tabs {
-            display: flex; background: #1e293b; overflow-x: auto;
-            border-bottom: 1px solid #334155; scrollbar-width: thin;
+            display: flex;
+            background: #1e293b;
+            overflow-x: auto;
+            border-bottom: 1px solid #334155;
+            scrollbar-width: thin;
+            flex-shrink: 0;
         }
 
         .category-tab {
-            padding: 10px 14px; font-size: 13px; font-weight: bold; color: #94a3b8;
-            cursor: pointer; white-space: nowrap; transition: all 0.2s; border-bottom: 2px solid transparent;
+            padding: 12px 16px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #94a3b8;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+            border-bottom: 3px solid transparent;
         }
 
-        .category-tab:hover { color: #38bdf8; }
-        .category-tab.active { color: #38bdf8; border-bottom: 2px solid #38bdf8; background: #0f172a; }
+        .category-tab:hover {
+            color: #38bdf8;
+        }
 
-        .playlist-items-wrapper { flex: 1; overflow-y: auto; }
+        .category-tab.active {
+            color: #38bdf8;
+            border-bottom: 3px solid #38bdf8;
+            background: #0f172a;
+        }
+
+        .playlist-items-wrapper {
+            flex: 1;
+            overflow-y: auto;
+        }
+
         .playlist-item {
-            padding: 12px 15px; border-bottom: 1px solid #1e293b; cursor: pointer;
-            transition: background 0.2s; display: flex; align-items: center;
-            justify-content: space-between; gap: 10px; font-size: 14px;
+            padding: 14px 18px;
+            border-bottom: 1px solid #1e293b;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            font-size: 15px;
         }
 
-        .playlist-item:hover { background: #1e293b; }
-        .playlist-item.active { background: #2563eb; color: #fff; }
+        .playlist-item:hover {
+            background: #1e293b;
+        }
+
+        .playlist-item.active {
+            background: #2563eb;
+            color: #fff;
+        }
 
         .ticker-bar {
-            background: #0284c7; color: #ffffff; padding: 4px 0;
-            overflow: hidden; white-space: nowrap; display: flex; align-items: center;
+            background: #0284c7;
+            color: #ffffff;
+            padding: 6px 0;
+            overflow: hidden;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
         }
 
         .ticker-text {
-            display: inline-block; padding-right: 100%;
-            animation: ticker 25s linear infinite; font-size: 13px; line-height: 1.2;
+            display: inline-block;
+            padding-right: 100%;
+            animation: ticker 25s linear infinite;
+            font-size: 13px;
         }
 
-        @keyframes ticker { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(100%, 0, 0); } }
+        @keyframes ticker {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(100%, 0, 0); }
+        }
 
         .auth-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.96); display: flex; justify-content: center;
-            align-items: center; z-index: 9999; backdrop-filter: blur(8px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.96);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            backdrop-filter: blur(8px);
         }
 
         .auth-card {
-            background: #1e293b; padding: 25px; border-radius: 12px;
-            border: 1px solid #334155; text-align: center; max-width: 460px; width: 90%;
+            background: #1e293b;
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #334155;
+            text-align: center;
+            max-width: 460px;
+            width: 90%;
             box-shadow: 0 10px 25px rgba(0,0,0,0.5);
         }
 
         .auth-card h2 { color: #38bdf8; margin-bottom: 12px; font-size: 20px; }
 
         .mac-box {
-            background: #0f172a; border: 1px dashed #38bdf8; padding: 12px;
-            border-radius: 8px; font-size: 16px; font-weight: bold; color: #ef4444;
-            letter-spacing: 1px; margin-bottom: 15px; user-select: all;
-            display: flex; justify-content: space-between; align-items: center; direction: ltr;
+            background: #0f172a;
+            border: 1px dashed #38bdf8;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #ef4444;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            user-select: all;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            direction: ltr;
         }
 
         .copy-btn {
-            background: #2563eb; color: white; border: none; padding: 6px 12px;
-            border-radius: 4px; cursor: pointer; font-size: 12px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
         }
 
         .send-actions { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; }
@@ -174,11 +359,42 @@
             padding: 10px; border-radius: 6px; font-size: 13px; margin-bottom: 15px;
         }
 
-        @media (max-width: 768px) {
-            body { padding: 10px; }
-            .content-area { flex-direction: column; }
-            .playlist-sidebar { width: 100%; max-height: 250px; }
-            .video-js { height: 260px; }
+        /* ---------------------------------------------------- */
+        /* تایبەتمەندی و ڕێکخستنی شاشەی مۆبایل                   */
+        /* ---------------------------------------------------- */
+        @media (max-width: 900px) {
+            body { padding: 0; }
+            .main-wrapper {
+                height: 100vh;
+                border-radius: 0;
+                border: none;
+            }
+            .content-area {
+                flex-direction: column;
+            }
+            .video-container {
+                width: 100%;
+                height: 38vh;
+                flex: none;
+            }
+            .playlist-sidebar {
+                width: 100%;
+                flex: 1;
+                border-right: none;
+                border-top: 1px solid #334155;
+                max-height: none;
+                overflow: hidden;
+            }
+            .category-tabs {
+                position: sticky;
+                top: 0;
+                z-index: 10;
+                background: #1e293b;
+            }
+            .playlist-items-wrapper {
+                height: calc(62vh - 90px);
+                overflow-y: auto;
+            }
         }
     </style>
 </head>
@@ -260,12 +476,8 @@
 
     <script src="https://vjs.zencdn.net/7.20.3/video.js"></script>
     
-    <!-- لێرەوە JavaScriptـەکە دابنێ -->
     <script>
-        // 1. بەستەری Google Sheets بۆ کەناڵەکان (Sheet2 - gid=250464113)
         const GOOGLE_SHEETS_CHANNELS_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRgvWrahp_pwJWRnX4QCE4KmuhUb6gl5Rk_rDpjA2ODuCNH1nyLUcD-L0g0I6PrD45F0hb7odKi_zbW/pub?gid=250464113&single=true&output=csv";
-
-        // 2. بەستەری Google Sheets بۆ ماک ئادرێسەکان (Sheet1 - gid=0)
         const GOOGLE_SHEETS_MACS_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRgvWrahp_pwJWRnX4QCE4KmuhUb6gl5Rk_rDpjA2ODuCNH1nyLUcD-L0g0I6PrD45F0hb7odKi_zbW/pub?gid=0&single=true&output=csv";
 
         function getDeviceMac() {
@@ -305,9 +517,7 @@
             dateStr = dateStr.trim().replace(/"/g, '');
 
             let parsedDate = new Date(dateStr);
-            if (!isNaN(parsedDate.getTime())) {
-                return parsedDate;
-            }
+            if (!isNaN(parsedDate.getTime())) return parsedDate;
 
             let parts = dateStr.split(' ');
             let datePart = parts[0];
@@ -442,7 +652,6 @@
             return result;
         }
 
-        // پشکنینی MAC Address لە Sheet1
         async function checkActivation(isManualCheck = false) {
             const statusMsg = document.getElementById("statusMsg");
             if (isManualCheck) statusMsg.innerText = "لە پشکنیندایە...";
@@ -525,7 +734,16 @@
 
         function initPlayer() {
             if (!player) {
-                player = videojs('ara-sport-player');
+                player = videojs('ara-sport-player', {
+                    autoplay: true,
+                    controls: true,
+                    preload: 'auto',
+                    html5: {
+                        vjsError: {
+                            autoRetry: true
+                        }
+                    }
+                });
 
                 player.ready(function() {
                     var watermark = document.createElement('div');
@@ -535,7 +753,7 @@
                     this.el().appendChild(watermark);
                 });
 
-                player.on(['waiting', 'stalled', 'error'], function() {
+                player.on(['waiting', 'stalled'], function() {
                     showStreamWaiting(true);
                 });
 
@@ -556,9 +774,14 @@
             }
         }
 
-        // خوێندنەوەی کەناڵەکان لە Sheet2
         async function loadGoogleSheetsPlaylist() {
             const playlistContainer = document.getElementById('playlist-items');
+
+            const cachedData = localStorage.getItem("cached_sheets_channels");
+            if (cachedData) {
+                parsedCategorizedChannels = JSON.parse(cachedData);
+                renderTabs();
+            }
 
             try {
                 const targetUrl = GOOGLE_SHEETS_CHANNELS_URL + "&t=" + Date.now();
@@ -592,11 +815,14 @@
                     });
 
                     parsedCategorizedChannels = tempChannels;
+                    localStorage.setItem("cached_sheets_channels", JSON.stringify(tempChannels));
                     renderTabs();
                 }
             } catch (error) {
                 console.error("Error loading channels from Google Sheets:", error);
-                playlistContainer.innerHTML = '<div class="playlist-item" style="color: #ef4444;">کێشەیەک لە خوێندنەوەی کەناڵەکان هەیە!</div>';
+                if (!cachedData) {
+                    playlistContainer.innerHTML = '<div class="playlist-item" style="color: #ef4444;">کێشەیەک لە خوێندنەوەی کەناڵەکان هەیە!</div>';
+                }
             }
         }
 
@@ -645,7 +871,7 @@
             if (channels.length > 0) {
                 setTimeout(function() {
                     playChannel(channels[0].url, container.children[0]);
-                }, 300);
+                }, 100);
             }
         }
 
@@ -669,6 +895,7 @@
             if (player) {
                 showStreamWaiting(false);
 
+                // هەوڵدانی ڕاستەوخۆ بۆ خێراکردن بێ بەکارهێنانی سەرەتایی Proxy
                 player.src({
                     src: url,
                     type: 'application/x-mpegURL'
@@ -677,12 +904,12 @@
                 var promise = player.play();
                 if (promise !== undefined) {
                     promise.catch(function(error) {
+                        // تەنها لە کاتی هەڵەی CORS پڕۆکسی AllOrigins بەکاردێت
                         const proxiedUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
                         player.src({
                             src: proxiedUrl,
                             type: 'application/x-mpegURL'
                         });
-                        player.muted(true);
                         player.play().catch(e => {
                             showStreamWaiting(true);
                         });
