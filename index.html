@@ -22,45 +22,57 @@
 
         html, body {
             width: 100%; height: 100%;
-            background-color: #0f172a; color: #ffffff;
+            background-color: #0b0f19; color: #ffffff;
             font-family: 'GoranFontRegular-Regular', Tahoma, Arial, sans-serif;
             overflow-x: hidden;
+            /* خێراکردنی ڕوکار و ڕەندەرکردن */
+            -webkit-font-smoothing: antialiased;
         }
 
         body {
             display: flex; flex-direction: column;
             justify-content: center; align-items: center; padding: 10px;
+            background: radial-gradient(circle at 50% 50%, #1e293b 0%, #0f172a 100%);
         }
 
+        /* دیزاینی شوشەیی سەرەکی (Main Glassmorphism Wrapper) */
         .main-wrapper {
             width: 100%; height: 96vh; max-width: 100%;
-            background: #1e293b; border-radius: 12px; overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-            border: 1px solid #334155; display: flex; flex-direction: column; position: relative;
+            background: rgba(30, 41, 59, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 16px; overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex; flex-direction: column; position: relative;
+            transform: translateZ(0); /* هاندانی GPU بۆ خێرایی */
         }
 
         .player-header {
-            background: #0f172a; padding: 12px 20px; display: flex;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(10px);
+            padding: 12px 20px; display: flex;
             justify-content: space-between; align-items: center;
-            border-bottom: 2px solid #2563eb; gap: 8px; flex-shrink: 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            gap: 8px; flex-shrink: 0;
         }
 
-        .brand-title { font-size: 22px; font-weight: bold; color: #38bdf8; white-space: nowrap; }
+        .brand-title { font-size: 22px; font-weight: bold; color: #38bdf8; white-space: nowrap; text-shadow: 0 2px 10px rgba(56,189,248,0.3); }
         .header-right { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
 
         .expire-countdown-badge {
-            background: rgba(30, 41, 59, 0.9); border: 1px solid #38bdf8; color: #38bdf8;
+            background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(56, 189, 248, 0.4); color: #38bdf8;
             padding: 5px 12px; border-radius: 20px; font-size: 13px; font-weight: bold;
             display: flex; align-items: center; gap: 6px; direction: ltr;
         }
 
         .trial-badge {
-            background-color: #f59e0b; color: white; padding: 5px 12px; border-radius: 20px;
+            background-color: rgba(245, 158, 11, 0.85); color: white; padding: 5px 12px; border-radius: 20px;
             font-size: 13px; font-weight: bold; display: flex; align-items: center; gap: 6px; direction: ltr;
         }
 
         .live-badge {
-            background-color: #ef4444; color: white; padding: 4px 12px; border-radius: 20px;
+            background-color: rgba(239, 68, 68, 0.9); color: white; padding: 4px 12px; border-radius: 20px;
             font-size: 13px; animation: pulse 1.5s infinite;
         }
 
@@ -78,12 +90,11 @@
 
         .stream-status-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.75); display: flex; justify-content: center;
+            background: rgba(15, 23, 42, 0.7); display: flex; justify-content: center;
             align-items: center; z-index: 1001; font-size: 32px; color: #38bdf8;
-            backdrop-filter: blur(2px); pointer-events: none;
+            backdrop-filter: blur(4px); pointer-events: none;
         }
 
-        /* شوێنی نوێ و ڕاستکراوەی لۆگۆ بۆ ئەوەی ڕێک لەسەر لۆگۆی بين سپۆرت دابنیشێت */
         .video-js .vjs-watermark-logo {
             position: absolute !important;
             top: 42px !important;
@@ -93,12 +104,12 @@
             display: none;
             align-items: center;
             justify-content: center;
-            background: rgba(15, 23, 42, 0.95);
+            background: rgba(15, 23, 42, 0.85);
             padding: 4px 10px;
-            border-radius: 4px;
-            border: 1px solid rgba(56, 189, 248, 0.8);
+            border-radius: 6px;
+            border: 1px solid rgba(56, 189, 248, 0.4);
             backdrop-filter: blur(6px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
         }
 
         .vjs-watermark-text {
@@ -115,8 +126,12 @@
             font-weight: 900;
         }
 
+        /* بەشی شوشەیی تەنیشت (Sidebar Glass) */
         .playlist-sidebar {
-            width: 360px; background: #0f172a; border-right: 1px solid #334155;
+            width: 360px; background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
             display: flex; flex-direction: column; height: 100%;
             position: relative;
         }
@@ -126,13 +141,15 @@
             width: 100%;
             display: flex;
             align-items: center;
-            background: #1e293b;
-            border-bottom: 1px solid #334155;
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
 
+        /* دیزاینی شوشەیی تابەکان (Glassmorphism Tabs) */
         .category-tabs {
             display: flex; 
-            background: #1e293b; 
+            background: transparent; 
             overflow-x: auto;
             scroll-behavior: smooth;
             scrollbar-width: none;
@@ -147,7 +164,7 @@
             position: absolute;
             top: 0; bottom: 0;
             width: 28px;
-            background: rgba(15, 23, 42, 0.9);
+            background: rgba(15, 23, 42, 0.85);
             color: #38bdf8;
             border: none;
             display: flex;
@@ -159,32 +176,46 @@
             transition: opacity 0.2s ease;
         }
 
-        .scroll-arrow.right { right: 0; border-left: 1px solid #334155; }
-        .scroll-arrow.left { left: 0; border-right: 1px solid #334155; }
+        .scroll-arrow.right { right: 0; border-left: 1px solid rgba(255, 255, 255, 0.08); }
+        .scroll-arrow.left { left: 0; border-right: 1px solid rgba(255, 255, 255, 0.08); }
         .scroll-arrow.hidden { display: none; opacity: 0; pointer-events: none; }
 
         .category-tab {
             padding: 12px 16px; font-size: 14px; font-weight: bold; color: #94a3b8;
-            cursor: pointer; white-space: nowrap; transition: color 0.15s ease; border-bottom: 3px solid transparent;
+            cursor: pointer; white-space: nowrap; transition: all 0.2s ease; 
+            border-bottom: 3px solid transparent;
+            background: rgba(255, 255, 255, 0.02);
         }
 
-        .category-tab:hover { color: #38bdf8; }
-        .category-tab.active { color: #38bdf8; border-bottom: 3px solid #38bdf8; background: #0f172a; }
+        .category-tab:hover { color: #38bdf8; background: rgba(56, 189, 248, 0.05); }
+        .category-tab.active { 
+            color: #38bdf8; 
+            border-bottom: 3px solid #38bdf8; 
+            background: rgba(15, 23, 42, 0.5); 
+            box-shadow: inset 0 -2px 8px rgba(56, 189, 248, 0.2);
+        }
 
-        .playlist-items-wrapper { flex: 1; overflow-y: auto; contain: content; }
+        /* خێراکردنی ڕەندەرکردنی لیستی کەناڵەکان بە content-visibility */
+        .playlist-items-wrapper { 
+            flex: 1; 
+            overflow-y: auto; 
+            contain: content; /* زۆر یارمەتیدەرە بۆ خێرایی لۆدکردنی لیستی درێژ */
+        }
         
         .playlist-item {
             padding: 12px 16px;
-            border-bottom: 1px solid #1e293b;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: space-between;
             font-size: 15px;
+            transition: background 0.15s ease;
+            background: rgba(255, 255, 255, 0.01);
         }
 
-        .playlist-item:hover { background: #1e293b; }
-        .playlist-item.active { background: #2563eb; color: #fff; }
+        .playlist-item:hover { background: rgba(255, 255, 255, 0.06); }
+        .playlist-item.active { background: rgba(37, 99, 235, 0.8); color: #fff; backdrop-filter: blur(4px); }
 
         .channel-action-icons {
             display: flex;
@@ -208,18 +239,20 @@
             font-size: 12px;
             font-weight: 900;
             color: #dc2626;
-            background: #ffffff;
+            background: rgba(255, 255, 255, 0.9);
             padding: 3px 8px;
             border-radius: 4px;
             border: 1px solid #ef4444;
             font-family: monospace;
             direction: ltr;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
         }
 
         .ticker-bar {
-            background: #0284c7; color: #ffffff; padding: 6px 0;
+            background: rgba(2, 132, 199, 0.75); 
+            backdrop-filter: blur(8px);
+            color: #ffffff; padding: 6px 0;
             overflow: hidden; white-space: nowrap; display: flex; align-items: center; flex-shrink: 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .ticker-text {
@@ -231,20 +264,22 @@
 
         .auth-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.96); display: flex; justify-content: center;
-            align-items: center; z-index: 9999; backdrop-filter: blur(8px);
+            background: rgba(15, 23, 42, 0.85); display: flex; justify-content: center;
+            align-items: center; z-index: 9999; backdrop-filter: blur(12px);
         }
 
         .auth-card {
-            background: #1e293b; padding: 25px; border-radius: 12px;
-            border: 1px solid #334155; text-align: center; max-width: 460px; width: 90%;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            background: rgba(30, 41, 59, 0.85); 
+            backdrop-filter: blur(16px);
+            padding: 25px; border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1); text-align: center; max-width: 460px; width: 90%;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
         }
 
         .auth-card h2 { color: #38bdf8; margin-bottom: 12px; font-size: 20px; }
 
         .mac-box {
-            background: #0f172a; border: 1px dashed #38bdf8; padding: 12px;
+            background: rgba(15, 23, 42, 0.8); border: 1px dashed rgba(56, 189, 248, 0.6); padding: 12px;
             border-radius: 8px; font-size: 16px; font-weight: bold; color: #ef4444;
             letter-spacing: 1px; margin-bottom: 15px; user-select: all;
             display: flex; justify-content: space-between; align-items: center; direction: ltr;
@@ -273,11 +308,11 @@
         }
 
         .status-msg { font-size: 13px; margin-top: 12px; color: #ef4444; line-height: 1.5; }
-        .contact-box { margin-top: 18px; padding-top: 15px; border-top: 1px solid #334155; font-size: 13px; color: #cbd5e1; }
+        .contact-box { margin-top: 18px; padding-top: 15px; border-top: 1px solid rgba(255, 255, 255, 0.08); font-size: 13px; color: #cbd5e1; }
         .contact-phones { margin-top: 6px; font-weight: bold; color: #38bdf8; direction: ltr; font-size: 14px; }
 
         .cooldown-box {
-            background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #fca5a5;
+            background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #fca5a5;
             padding: 10px; border-radius: 6px; font-size: 13px; margin-bottom: 15px;
         }
 
@@ -286,7 +321,7 @@
             .main-wrapper { height: 100vh; border-radius: 0; border: none; }
             .content-area { flex-direction: column; }
             .video-container { width: 100%; height: 38vh; flex: none; }
-            .playlist-sidebar { width: 100%; flex: 1; border-right: none; border-top: 1px solid #334155; max-height: none; overflow: hidden; }
+            .playlist-sidebar { width: 100%; flex: 1; border-right: none; border-top: 1px solid rgba(255, 255, 255, 0.08); max-height: none; overflow: hidden; }
             .category-tabs-wrapper { position: sticky; top: 0; z-index: 10; }
             .playlist-items-wrapper { height: calc(62vh - 90px); overflow-y: auto; }
             
@@ -748,312 +783,101 @@
                     document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
                     this.classList.add('active');
                     currentCategory = cat;
-                    isSportsCategory = cat.toLowerCase().includes('وەرزش') || cat.toLowerCase().includes('sport') || cat.toLowerCase().includes('رزش');
+                    isSportsCategory = cat.toLowerCase().includes('وەرزش') || cat.toLowerCase().includes('sport');
                     updateWatermarkVisibility();
-                    renderPlaylist(parsedCategorizedChannels[cat]);
-                    this.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                    renderPlaylistItems(cat);
                 };
                 fragment.appendChild(tab);
             });
 
             tabsContainer.appendChild(fragment);
 
-            if (!currentCategory || !parsedCategorizedChannels[currentCategory]) {
+            // دیاریکردنی یەکەم بەش بە پێشوەختە
+            if (categories.length > 0) {
                 currentCategory = categories[0];
+                isSportsCategory = currentCategory.toLowerCase().includes('وەرزش') || currentCategory.toLowerCase().includes('sport');
+                updateWatermarkVisibility();
+                renderPlaylistItems(currentCategory);
             }
-            isSportsCategory = currentCategory.toLowerCase().includes('وەرزش') || currentCategory.toLowerCase().includes('sport') || currentCategory.toLowerCase().includes('رزش');
-            updateWatermarkVisibility();
-            renderPlaylist(parsedCategorizedChannels[currentCategory]);
-            
-            setTimeout(checkTabArrows, 200);
+
+            checkTabArrows();
         }
 
-        function checkTabArrows() {
-            const tabsContainer = document.getElementById('categoryTabs');
-            const arrowLeft = document.getElementById('arrowLeft');
-            const arrowRight = document.getElementById('arrowRight');
+        function renderPlaylistItems(category) {
+            const itemsContainer = document.getElementById('playlist-items');
+            itemsContainer.innerHTML = '';
 
-            if (!tabsContainer) return;
-
-            const maxScrollLeft = tabsContainer.scrollWidth - tabsContainer.clientWidth;
-            
-            if (maxScrollLeft <= 0) {
-                arrowLeft.classList.add('hidden');
-                arrowRight.classList.add('hidden');
+            const channels = parsedCategorizedChannels[category];
+            if (!channels || channels.length === 0) {
+                itemsContainer.innerHTML = '<div class="playlist-item">هیچ کەناڵێک لەم بەشەدا نییە</div>';
+                showStreamWaiting(false);
                 return;
             }
 
-            const currentScroll = Math.abs(tabsContainer.scrollLeft);
+            const fragment = document.createDocumentFragment();
 
-            if (currentScroll > 10) {
-                arrowRight.classList.remove('hidden');
-            } else {
-                arrowRight.classList.add('hidden');
-            }
+            channels.forEach((ch, index) => {
+                const item = document.createElement('div');
+                item.className = 'playlist-item';
+                item.innerHTML = `<span>${ch.name}</span> <i class="fas fa-play-circle" style="color: #38bdf8;"></i>`;
+                
+                item.onclick = function() {
+                    if (activeChannelElement) activeChannelElement.classList.remove('active');
+                    item.classList.add('active');
+                    activeChannelElement = item;
 
-            if (currentScroll < maxScrollLeft - 10) {
-                arrowLeft.classList.remove('hidden');
-            } else {
-                arrowLeft.classList.add('hidden');
-            }
+                    showStreamWaiting(true);
+                    player.src({ src: ch.url, type: ch.url.includes('.m3u8') ? 'application/x-mpegURL' : 'video/mp4' });
+                    player.play();
+                };
+
+                if (index === 0 && !player.currentSrc()) {
+                    item.classList.add('active');
+                    activeChannelElement = item;
+                    player.src({ src: ch.url, type: ch.url.includes('.m3u8') ? 'application/x-mpegURL' : 'video/mp4' });
+                }
+
+                fragment.appendChild(item);
+            });
+
+            itemsContainer.appendChild(fragment);
         }
 
         function scrollTabs(direction) {
             const tabsContainer = document.getElementById('categoryTabs');
             const scrollAmount = 150;
-            if (direction === 'left') {
+            if (direction === 'right') {
                 tabsContainer.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
             } else {
                 tabsContainer.scrollBy({ left: scrollAmount, behavior: 'smooth' });
             }
         }
 
-        function renderPlaylist(channels) {
-            const container = document.getElementById('playlist-items');
-            container.innerHTML = '';
+        function checkTabArrows() {
+            const tabs = document.getElementById('categoryTabs');
+            const arrowRight = document.getElementById('arrowRight');
+            const arrowLeft = document.getElementById('arrowLeft');
 
-            const fragment = document.createDocumentFragment();
-
-            channels.forEach((channel, index) => {
-                const div = document.createElement('div');
-                div.className = `playlist-item ${index === 0 ? 'active' : ''}`;
-                
-                div.innerHTML = `
-                    <span>📺 ${channel.name}</span>
-                    <div class="channel-action-icons">
-                        <div id="rec-badge-${index}" class="rec-timer-badge" style="display:none;">REC 00:00</div>
-                        <button class="icon-btn" onclick="toggleRecord('${index}', this, event)" title="تۆمارکردن / ڕیکۆرد"><i class="fas fa-circle" style="color: #ef4444; font-size: 12px;"></i></button>
-                        <button class="icon-btn" onclick="triggerCast('${channel.url}', event)" title="کاست (Cast)"><i class="fas fa-tv"></i></button>
-                        <button class="icon-btn" onclick="playChannel('${channel.url}', this, event)" title="پەخشکردن"><i class="fas fa-play"></i></button>
-                    </div>
-                `;
-
-                div.onclick = function(e) {
-                    if (e.target.tagName !== 'BUTTON' && !e.target.closest('button')) {
-                        playChannel(channel.url, div, e);
-                    }
-                };
-
-                fragment.appendChild(div);
-
-                if (index === 0 && player && !player.currentSrc()) {
-                    playChannel(channel.url, div, null);
-                }
-            });
-
-            container.appendChild(fragment);
-        }
-
-        let activeRecordings = {};
-
-        async function toggleRecord(index, btnElement, event) {
-            if (event) event.stopPropagation();
-            const badge = document.getElementById(`rec-badge-${index}`);
-            const icon = btnElement.querySelector('i');
-
-            if (!activeRecordings[index]) {
-                let videoElement = document.querySelector('#ara-sport-player_html5_api');
-                if (!videoElement) {
-                    alert("تکایە چاوەڕێ بکە تا پەخشەکە دەست پێدەکات.");
-                    return;
+            if (tabs.scrollWidth > tabs.clientWidth) {
+                if (tabs.scrollLeft > 10) {
+                    arrowRight.classList.remove('hidden');
+                } else {
+                    arrowRight.classList.add('hidden');
                 }
 
-                let canvas = document.createElement('canvas');
-                let ctx = canvas.getContext('2d');
-                canvas.width = videoElement.videoWidth || 1280;
-                canvas.height = videoElement.videoHeight || 720;
-
-                let canvasStream = canvas.captureStream(30);
-
-                let stream;
-                try {
-                    if (videoElement.captureStream) {
-                        stream = videoElement.captureStream();
-                    } else if (videoElement.mozCaptureStream) {
-                        stream = videoElement.mozCaptureStream();
-                    } else {
-                        stream = canvasStream;
-                    }
-
-                    if (window.AudioContext) {
-                        let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                        if (audioCtx.state === 'suspended') {
-                            await audioCtx.resume();
-                        }
-                        try {
-                            let sourceNode = audioCtx.createMediaElementSource(videoElement);
-                            let destination = audioCtx.createMediaStreamDestination();
-                            sourceNode.connect(destination);
-                            sourceNode.connect(audioCtx.destination);
-                            
-                            let audioTrack = destination.stream.getAudioTracks()[0];
-                            if (audioTrack) {
-                                stream.addTrack(audioTrack);
-                            }
-                        } catch(err) {
-                            console.log("Audio node already connected");
-                        }
-                    }
-                } catch (e) {
-                    console.error("Recording stream error:", e);
-                    alert("هەڵە لە ڕیکۆردکردنی دەنگ و ڤیدیۆی پەخشەکە.");
-                    return;
+                if (tabs.scrollLeft < (tabs.scrollWidth - tabs.clientWidth - 10)) {
+                    arrowLeft.classList.remove('hidden');
+                } else {
+                    arrowLeft.classList.add('hidden');
                 }
-
-                let drawInterval = setInterval(() => {
-                    if (videoElement.readyState >= 2) {
-                        ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-                        
-                        ctx.save();
-                        ctx.fillStyle = "rgba(15, 23, 42, 0.95)";
-                        ctx.strokeStyle = "rgba(56, 189, 248, 0.8)";
-                        ctx.lineWidth = 2;
-                        
-                        let boxWidth = isSportsCategory ? 150 : 130;
-                        let boxHeight = 35;
-                        let boxX = canvas.width - boxWidth - 18;
-                        let boxY = 42;
-                        
-                        ctx.beginPath();
-                        ctx.roundRect(boxX, boxY, boxWidth, boxHeight, 4);
-                        ctx.fill();
-                        ctx.stroke();
-                        
-                        ctx.font = "bold 14px Arial";
-                        ctx.fillStyle = "#ffffff";
-                        ctx.textAlign = "center";
-                        ctx.textBaseline = "middle";
-                        
-                        if (isSportsCategory) {
-                            ctx.fillText("ARA SPORT ", boxX + (boxWidth/2) - 12, boxY + (boxHeight/2));
-                            ctx.fillStyle = "#38bdf8";
-                            ctx.fillText("HD", boxX + (boxWidth/2) + 50, boxY + (boxHeight/2));
-                        } else {
-                            ctx.fillStyle = "#38bdf8";
-                            ctx.fillText("ARA TV", boxX + (boxWidth/2), boxY + (boxHeight/2));
-                        }
-                        ctx.restore();
-                    }
-                }, 33);
-
-                let finalStream = new MediaStream();
-                canvasStream.getVideoTracks().forEach(track => finalStream.addTrack(track));
-                stream.getAudioTracks().forEach(track => finalStream.addTrack(track));
-
-                let options = { mimeType: 'video/mp4;codecs=h264,aac' };
-                if (!MediaRecorder.isTypeSupported(options.mimeType)) {
-                    options = { mimeType: 'video/webm;codecs=h264,opus' };
-                    if (!MediaRecorder.isTypeSupported(options.mimeType)) {
-                        options = { mimeType: 'video/webm' };
-                    }
-                }
-
-                let mediaRecorder;
-                try {
-                    mediaRecorder = new MediaRecorder(finalStream, options);
-                } catch (err) {
-                    try {
-                        mediaRecorder = new MediaRecorder(finalStream);
-                    } catch (e2) {
-                        clearInterval(drawInterval);
-                        alert("تۆمارکردن لەم ئامێرەدا ڕێگەپێدراو نییە.");
-                        return;
-                    }
-                }
-
-                let recordedChunks = [];
-                mediaRecorder.ondataavailable = function(e) {
-                    if (e.data && e.data.size > 0) {
-                        recordedChunks.push(e.data);
-                    }
-                };
-
-                mediaRecorder.onstop = function() {
-                    clearInterval(drawInterval);
-                    let blob = new Blob(recordedChunks, { type: 'video/mp4' });
-                    let url = URL.createObjectURL(blob);
-                    let a = document.createElement('a');
-                    a.style.display = 'none';
-                    a.href = url;
-                    a.download = `ARA_RECORD_${Date.now()}.mp4`;
-                    document.body.appendChild(a);
-                    a.click();
-                    setTimeout(() => {
-                        document.body.removeChild(a);
-                        window.URL.revokeObjectURL(url);
-                    }, 100);
-                };
-
-                mediaRecorder.start(1000);
-
-                activeRecordings[index] = {
-                    mediaRecorder: mediaRecorder,
-                    drawInterval: drawInterval,
-                    seconds: 0,
-                    timer: setInterval(() => {
-                        activeRecordings[index].seconds++;
-                        let mins = Math.floor(activeRecordings[index].seconds / 60);
-                        let secs = activeRecordings[index].seconds % 60;
-                        badge.innerText = `REC ${mins < 10 ? "0" + mins : mins}:${secs < 10 ? "0" + secs : secs}`;
-                    }, 1000)
-                };
-
-                badge.style.display = 'block';
-                badge.innerText = "REC 00:00";
-                icon.style.color = '#ffffff';
-                btnElement.style.background = '#dc2626';
-                btnElement.style.padding = '4px 8px';
-                btnElement.style.borderRadius = '4px';
-
             } else {
-                clearInterval(activeRecordings[index].timer);
-                clearInterval(activeRecordings[index].drawInterval);
-                activeRecordings[index].mediaRecorder.stop();
-                delete activeRecordings[index];
-
-                badge.style.display = 'none';
-                icon.style.color = '#ef4444';
-                btnElement.style.background = 'transparent';
-                btnElement.style.padding = '0';
-                alert("تۆمارکردنەکە کۆتایی هات و فایلی MP4 دابەزی.");
-            }
-        }
-
-        function triggerCast(url, event) {
-            if (event) event.stopPropagation();
-            alert("لینکەکە کۆپی کرا: \n" + url);
-        }
-
-        function playChannel(url, element, event) {
-            if (event) event.stopPropagation();
-            showStreamWaiting(true);
-
-            if (activeChannelElement) activeChannelElement.classList.remove('active');
-            
-            if (element.classList.contains('playlist-item')) {
-                element.classList.add('active');
-                activeChannelElement = element;
-            } else {
-                const parent = element.closest('.playlist-item');
-                if (parent) {
-                    parent.classList.add('active');
-                    activeChannelElement = parent;
-                }
-            }
-
-            if (player) {
-                player.src({ src: url, type: 'application/x-mpegURL' });
-                player.play().then(() => {
-                    showStreamWaiting(false);
-                }).catch(e => {
-                    showStreamWaiting(false);
-                });
+                arrowRight.classList.add('hidden');
+                arrowLeft.classList.add('hidden');
             }
         }
 
         window.onload = function() {
             checkActivation(false);
-            window.addEventListener('resize', checkTabArrows);
         };
     </script>
 </body>
