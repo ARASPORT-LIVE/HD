@@ -110,6 +110,11 @@ body{height:100vh;height:100dvh;padding:max(10px,env(safe-area-inset-top)) 10px 
 
 /* ---- glass ticker ---- */
 .ticker-bar{background:linear-gradient(90deg,rgba(255,255,255,.06),rgba(255,255,255,.12),rgba(255,255,255,.06));backdrop-filter:blur(18px) saturate(170%);-webkit-backdrop-filter:blur(18px) saturate(170%);border-top:1px solid rgba(255,255,255,.2);box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 -6px 20px rgba(0,0,0,.25);color:#e2e8f0;padding:8px 0}
+
+/* ---- v4: group tabs strip ---- */
+.group-tabs{display:flex;gap:6px;padding:8px 10px;overflow-x:auto;direction:rtl;flex-shrink:0;scrollbar-width:none;touch-action:pan-x;-webkit-overflow-scrolling:touch;border-bottom:1px solid var(--gb);background:rgba(255,255,255,.03)}
+.group-tabs::-webkit-scrollbar{display:none}
+.group-tabs .category-tab{flex-shrink:0}
 </style>
 </head>
 <body>
@@ -155,6 +160,7 @@ body{height:100vh;height:100dvh;padding:max(10px,env(safe-area-inset-top)) 10px 
     <button id="backBtn" class="icon-btn" style="display:none" aria-label="back"><i class="fas fa-chevron-right"></i></button>
     <span id="panelTitle">گروپەکان</span>
    </div>
+   <div id="groupTabs" class="group-tabs" style="display:none"></div>
    <div class="playlist-items-wrapper"><div id="playlist-items"><div class="playlist-item">تکایە چاوەڕێ بکە...</div></div></div>
   </div>
  </div>
@@ -272,19 +278,40 @@ function initPlayer(){
  player=videojs("ara-sport-player",{autoplay:false,controls:true,preload:"auto",html5:{vhs:{overrideNative:true,enableLowInitialPlaylist:true}}});
  player.ready(function(){
   const w=document.createElement("div");w.className="vjs-watermark-logo";w.id="playerWatermark";
-  w.innerHTML='<div class="vjs-watermark-text">ARA SPORT <span>HD</span></div>';this.el().appendChild(w);
+  w.innerHTML='<div class="vjs-watermark-text">ARA SPORT <span>HD</span></div>';this.el().appendChild(w);positionWatermark();if(window.ResizeObserver)new ResizeObserver(positionWatermark).observe(this.el());this.on("loadedmetadata",positionWatermark);try{this.tech(true).el().addEventListener("resize",positionWatermark)}catch(e){}
  });
  bindFab();player.on(["waiting","stalled"],()=>showWait(true));
  player.on(["playing","canplay"],()=>showWait(false));
- // browsers block unmuted autoplay until a gesture: unmute on first touch
- const unmute=()=>{if(player){player.muted(false);player.volume(1)}["pointerdown","keydown"].forEach(e=>document.removeEventListener(e,unmute))};
- ["pointerdown","keydown"].forEach(e=>document.addEventListener(e,unmute));
+ // browsers block sound until a gesture: first touch/click anywhere unmutes and plays
+ let unlocked=false,swallowUntil=0;
+ const unlock=e=>{
+  if(!player)return;
+  if(!unlocked){
+   const need=player.muted()||player.paused();
+   player.muted(false);player.volume(1);
+   if(player.paused()){const q=player.play();if(q&&q.catch)q.catch(()=>{})}
+   unlocked=true;if(need)swallowUntil=Date.now()+700;
+  }
+  if(e.type==="click"&&Date.now()<swallowUntil&&e.target.closest&&e.target.closest(".video-container")){e.stopPropagation();e.preventDefault()}
+ };
+ ["touchend","click","keydown"].forEach(ev=>document.addEventListener(ev,unlock,true));
  if(cached){try{setData(JSON.parse(cached),true)}catch(e){}}
  loadPlaylist();
 }
 function showWait(w){$("streamStatusOverlay").style.display=w?"flex":"none"}
 function updateWatermark(){const w=$("playerWatermark");if(w)w.classList.toggle("show-watermark",isSports)}
 
+function positionWatermark(){
+ const w=$("playerWatermark");if(!w||!player)return;
+ let v;try{v=player.tech(true).el()}catch(e){return}
+ if(!v||!v.videoWidth)return;
+ const el=player.el(),cw=el.clientWidth,ch=el.clientHeight,sc=Math.min(cw/v.videoWidth,ch/v.videoHeight),dw=v.videoWidth*sc,dh=v.videoHeight*sc;
+ const left=(cw-dw)/2,top=(ch-dh)/2,st=w.style;
+ st.setProperty("left",(left+dw*0.895)+"px","important");st.setProperty("top",(top+dh*0.077)+"px","important");
+ st.setProperty("right","auto","important");st.setProperty("transform","translate(-50%,-50%)","important");
+ st.fontSize=Math.max(dw*0.0156,6)+"px";st.padding=".45em .75em";st.borderRadius=".4em";st.background="rgba(15,23,42,.97)";
+ if(w.firstChild)w.firstChild.style.fontSize="1em";
+}
 function parseChannels(csv){
  const out=[];
  csv.split("\n").forEach((line,i)=>{
@@ -314,7 +341,7 @@ function renderTabs(){}
 function renderChannels(){
  const box=$("playlist-items"),f=document.createDocumentFragment(),back=$("backBtn");
  if(view==="groups"||!currentCat){
-  $("panelTitle").textContent="گروپەکان";back.style.display="none";
+  $("panelTitle").textContent="گروپەکان";back.style.display="none";$("groupTabs").style.display="none";
   categories.forEach(c=>{
    const n=channels.filter(x=>x.cat===c).length,d=document.createElement("div");
    d.className="group-card";d.dataset.cat=c;
@@ -322,7 +349,7 @@ function renderChannels(){
    d.querySelector(".gn").textContent=c;f.appendChild(d);
   });
  }else{
-  $("panelTitle").textContent=currentCat;back.style.display="";
+  $("panelTitle").textContent=currentCat;back.style.display="";showTabs();
   channels.forEach((ch,i)=>{
    if(ch.cat!==currentCat)return;
    const d=document.createElement("div");d.className="playlist-item"+(ch.url===currentUrl?" active":"");d.dataset.i=i;
@@ -334,6 +361,24 @@ function renderChannels(){
  }
  box.innerHTML="";box.appendChild(f);
 }
+let tabsKey="";
+function showTabs(){
+ const gt=$("groupTabs");gt.style.display="flex";
+ const key=categories.join("|");
+ if(key!==tabsKey){
+  tabsKey=key;gt.innerHTML="";const f=document.createDocumentFragment();
+  categories.forEach(c=>{const t=document.createElement("div");t.className="category-tab";t.textContent=c;t.dataset.cat=c;f.appendChild(t)});
+  gt.appendChild(f);
+ }
+ let act=null;
+ gt.childNodes.forEach(t=>{const on=t.dataset.cat===currentCat;t.classList.toggle("active",on);if(on)act=t});
+ if(act)setTimeout(()=>act.scrollIntoView({inline:"center",block:"nearest",behavior:"smooth"}),30);
+}
+$("groupTabs").addEventListener("click",e=>{
+ const t=e.target.closest(".category-tab");if(!t||t.dataset.cat===currentCat)return;
+ currentCat=t.dataset.cat;renderChannels();$("playlist-items").parentNode.scrollTop=0;
+});
+$("groupTabs").addEventListener("wheel",e=>{if(Math.abs(e.deltaY)>Math.abs(e.deltaX)){e.currentTarget.scrollLeft+=e.deltaY;e.preventDefault()}},{passive:false});
 $("backBtn").addEventListener("click",()=>{view="groups";renderChannels()});
 $("playlist-items").addEventListener("click",e=>{
  const g=e.target.closest(".group-card");
@@ -356,15 +401,15 @@ function playChannel(ch){
 /* ---------- recording ---------- */
 let rec=null;
 function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()}
-function drawLogo(c,w,sports){
- const s=Math.max(w/1280,.5),fs=Math.round(22*s),pad=Math.round(10*s);
+function drawLogo(c,w,h,sports){
+ const fs=Math.max(Math.round(w*0.0156),8),px=fs*.75,py=fs*.45;
  c.font="900 "+fs+"px Arial";c.textBaseline="middle";c.direction="ltr";c.textAlign="left";
  const a=sports?"ARA SPORT ":"ARA ",b=sports?"HD":"TV";
- const wa=c.measureText(a).width,wb=c.measureText(b).width,bw=wa+wb+pad*2,bh=fs+pad*1.2;
- const bx=w-Math.round(20*s)-bw,by=Math.round(20*s);
- c.fillStyle="rgba(15,23,42,.85)";c.strokeStyle="rgba(56,189,248,.6)";c.lineWidth=Math.max(1,s*1.5);
- rr(c,bx,by,bw,bh,8*s);c.fill();c.stroke();
- c.fillStyle="#fff";c.fillText(a,bx+pad,by+bh/2);c.fillStyle="#38bdf8";c.fillText(b,bx+pad+wa,by+bh/2);
+ const wa=c.measureText(a).width,wb=c.measureText(b).width,bw=wa+wb+px*2,bh=fs+py*2;
+ const bx=sports?w*0.895-bw/2:w-fs*1.2-bw,by=sports?h*0.077-bh/2:fs*1.2;
+ c.fillStyle="rgba(15,23,42,.97)";c.strokeStyle="rgba(56,189,248,.6)";c.lineWidth=Math.max(1,fs/14);
+ rr(c,bx,by,bw,bh,fs*.4);c.fill();c.stroke();
+ c.fillStyle="#fff";c.fillText(a,bx+px,by+bh/2);c.fillStyle="#38bdf8";c.fillText(b,bx+px+wa,by+bh/2);
 }
 function toggleRec(ch){
  if(rec){stopRec();return}
@@ -380,7 +425,7 @@ function toggleRec(ch){
   dv=setInterval(()=>{
    if(!v.videoWidth)return;
    if(cv.width!==v.videoWidth){cv.width=v.videoWidth;cv.height=v.videoHeight}
-   c.drawImage(v,0,0,cv.width,cv.height);drawLogo(c,cv.width,sports);
+   c.drawImage(v,0,0,cv.width,cv.height);drawLogo(c,cv.width,cv.height,sports);
   },40);
   stream=cv.captureStream(25);
   src.getAudioTracks().forEach(t=>stream.addTrack(t));
