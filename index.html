@@ -25,7 +25,6 @@
             background-color: #0b0f19; color: #ffffff;
             font-family: 'GoranFontRegular-Regular', Tahoma, Arial, sans-serif;
             overflow-x: hidden;
-            /* خێراکردنی ڕوکار و ڕەندەرکردن */
             -webkit-font-smoothing: antialiased;
         }
 
@@ -35,7 +34,6 @@
             background: radial-gradient(circle at 50% 50%, #1e293b 0%, #0f172a 100%);
         }
 
-        /* دیزاینی شوشەیی سەرەکی (Main Glassmorphism Wrapper) */
         .main-wrapper {
             width: 100%; height: 96vh; max-width: 100%;
             background: rgba(30, 41, 59, 0.65);
@@ -45,7 +43,7 @@
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
             border: 1px solid rgba(255, 255, 255, 0.08);
             display: flex; flex-direction: column; position: relative;
-            transform: translateZ(0); /* هاندانی GPU بۆ خێرایی */
+            transform: translateZ(0);
         }
 
         .player-header {
@@ -126,9 +124,9 @@
             font-weight: 900;
         }
 
-        /* بەشی شوشەیی تەنیشت (Sidebar Glass) */
+        /* بەشی شوشەیی تەنیشت و تابەکان */
         .playlist-sidebar {
-            width: 360px; background: rgba(15, 23, 42, 0.6);
+            width: 380px; background: rgba(15, 23, 42, 0.6);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border-right: 1px solid rgba(255, 255, 255, 0.08);
@@ -141,12 +139,12 @@
             width: 100%;
             display: flex;
             align-items: center;
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(8px);
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(10px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        /* دیزاینی شوشەیی تابەکان (Glassmorphism Tabs) */
+        /* دیزاینی شوشەیی سەردەمییانە بۆ گروپ و تابەکان */
         .category-tabs {
             display: flex; 
             background: transparent; 
@@ -173,7 +171,7 @@
             cursor: pointer;
             z-index: 12;
             font-size: 12px;
-            transition: opacity 0.2s ease;
+            transition: all 0.2s ease;
         }
 
         .scroll-arrow.right { right: 0; border-left: 1px solid rgba(255, 255, 255, 0.08); }
@@ -182,26 +180,33 @@
 
         .category-tab {
             padding: 12px 16px; font-size: 14px; font-weight: bold; color: #94a3b8;
-            cursor: pointer; white-space: nowrap; transition: all 0.2s ease; 
+            cursor: pointer; white-space: nowrap; transition: all 0.25s ease; 
             border-bottom: 3px solid transparent;
             background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(4px);
         }
 
-        .category-tab:hover { color: #38bdf8; background: rgba(56, 189, 248, 0.05); }
+        .category-tab:hover { 
+            color: #38bdf8; 
+            background: rgba(56, 189, 248, 0.1); 
+            backdrop-filter: blur(8px);
+        }
+        
         .category-tab.active { 
             color: #38bdf8; 
             border-bottom: 3px solid #38bdf8; 
-            background: rgba(15, 23, 42, 0.5); 
-            box-shadow: inset 0 -2px 8px rgba(56, 189, 248, 0.2);
+            background: rgba(15, 23, 42, 0.7); 
+            backdrop-filter: blur(12px);
+            box-shadow: inset 0 -2px 12px rgba(56, 189, 248, 0.3);
         }
 
-        /* خێراکردنی ڕەندەرکردنی لیستی کەناڵەکان بە content-visibility */
         .playlist-items-wrapper { 
             flex: 1; 
             overflow-y: auto; 
-            contain: content; /* زۆر یارمەتیدەرە بۆ خێرایی لۆدکردنی لیستی درێژ */
+            contain: content;
         }
         
+        /* دیزاینی شوشەیی بۆ لیستی کەناڵەکان لە کاتی گەڕان و جووڵەدا */
         .playlist-item {
             padding: 12px 16px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.04);
@@ -210,41 +215,73 @@
             align-items: center;
             justify-content: space-between;
             font-size: 15px;
-            transition: background 0.15s ease;
-            background: rgba(255, 255, 255, 0.01);
+            transition: all 0.2s ease;
+            background: rgba(255, 255, 255, 0.015);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
         }
 
-        .playlist-item:hover { background: rgba(255, 255, 255, 0.06); }
-        .playlist-item.active { background: rgba(37, 99, 235, 0.8); color: #fff; backdrop-filter: blur(4px); }
+        .playlist-item:hover { 
+            background: rgba(255, 255, 255, 0.08); 
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transform: translateX(-3px);
+        }
+        
+        .playlist-item.active { 
+            background: rgba(37, 99, 235, 0.75); 
+            color: #fff; 
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+        }
 
         .channel-action-icons {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
         .icon-btn {
-            background: transparent;
-            border: none;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             color: #ffffff;
             cursor: pointer;
-            font-size: 15px;
+            font-size: 14px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 0;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(4px);
+        }
+
+        .icon-btn:hover {
+            background: rgba(56, 189, 248, 0.25);
+            border-color: #38bdf8;
+            color: #38bdf8;
+        }
+
+        .icon-btn.recording {
+            background: rgba(239, 68, 68, 0.85);
+            border-color: #ef4444;
+            color: #fff;
+            animation: pulse 1.2s infinite;
         }
 
         .rec-timer-badge {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 900;
-            color: #dc2626;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 3px 8px;
+            color: #ef4444;
+            background: rgba(15, 23, 42, 0.85);
+            padding: 3px 7px;
             border-radius: 4px;
-            border: 1px solid #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.4);
             font-family: monospace;
             direction: ltr;
+            backdrop-filter: blur(4px);
         }
 
         .ticker-bar {
@@ -672,6 +709,7 @@
         let activeChannelElement = null;
         let currentCategory = "";
         let isSportsCategory = false;
+        let activeRecordings = {};
 
         function initPlayer() {
             if (!player) {
@@ -792,7 +830,6 @@
 
             tabsContainer.appendChild(fragment);
 
-            // دیاریکردنی یەکەم بەش بە پێشوەختە
             if (categories.length > 0) {
                 currentCategory = categories[0];
                 isSportsCategory = currentCategory.toLowerCase().includes('وەرزش') || currentCategory.toLowerCase().includes('sport');
@@ -817,19 +854,26 @@
             const fragment = document.createDocumentFragment();
 
             channels.forEach((ch, index) => {
+                const channelId = `ch_${category}_${index}`.replace(/[^a-zA-Z0-9]/g, '_');
                 const item = document.createElement('div');
                 item.className = 'playlist-item';
-                item.innerHTML = `<span>${ch.name}</span> <i class="fas fa-play-circle" style="color: #38bdf8;"></i>`;
-                
-                item.onclick = function() {
-                    if (activeChannelElement) activeChannelElement.classList.remove('active');
-                    item.classList.add('active');
-                    activeChannelElement = item;
+                item.id = channelId;
 
-                    showStreamWaiting(true);
-                    player.src({ src: ch.url, type: ch.url.includes('.m3u8') ? 'application/x-mpegURL' : 'video/mp4' });
-                    player.play();
-                };
+                const isRec = activeRecordings[channelId] ? true : false;
+                const recTimeStr = isRec ? activeRecordings[channelId].formattedTime : "00:00";
+
+                item.innerHTML = `
+                    <span style="flex:1; cursor:pointer;" onclick="playChannel(this, '${ch.url}')">${ch.name}</span>
+                    <div class="channel-action-icons">
+                        <span id="timer_${channelId}" class="rec-timer-badge" style="display: ${isRec ? 'inline-block' : 'none'};">${recTimeStr}</span>
+                        <button class="icon-btn ${isRec ? 'recording' : ''}" id="rec_btn_${channelId}" title="تۆمارکردن" onclick="toggleRecord('${channelId}', '${ch.name}')">
+                            <i class="fas fa-circle"></i>
+                        </button>
+                        <button class="icon-btn" title="پخش" onclick="playChannel(this.closest('.playlist-item'), '${ch.url}')">
+                            <i class="fas fa-play"></i>
+                        </button>
+                    </div>
+                `;
 
                 if (index === 0 && !player.currentSrc()) {
                     item.classList.add('active');
@@ -841,6 +885,54 @@
             });
 
             itemsContainer.appendChild(fragment);
+        }
+
+        function playChannel(itemElement, url) {
+            if (activeChannelElement) activeChannelElement.classList.remove('active');
+            let parentItem = itemElement.closest('.playlist-item');
+            if (parentItem) {
+                parentItem.classList.add('active');
+                activeChannelElement = parentItem;
+            }
+
+            showStreamWaiting(true);
+            player.src({ src: url, type: url.includes('.m3u8') ? 'application/x-mpegURL' : 'video/mp4' });
+            player.play();
+        }
+
+        function toggleRecord(channelId, channelName) {
+            const btn = document.getElementById(`rec_btn_${channelId}`);
+            const timerBadge = document.getElementById(`timer_${channelId}`);
+
+            if (activeRecordings[channelId]) {
+                // وەستاندنی تۆمارکردن
+                clearInterval(activeRecordings[channelId].interval);
+                delete activeRecordings[channelId];
+                btn.classList.remove('recording');
+                timerBadge.style.display = 'none';
+                timerBadge.innerText = '00:00';
+                alert(`تۆمارکردنی کەناڵی (${channelName}) وەستا و پاشەکەوت کرا.`);
+            } else {
+                // دەستپێکردنی تۆمارکردن
+                let startTime = Date.now();
+                btn.classList.add('recording');
+                timerBadge.style.display = 'inline-block';
+
+                let recObj = {
+                    interval: setInterval(() => {
+                        let elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
+                        let mins = Math.floor(elapsedSeconds / 60);
+                        let secs = elapsedSeconds % 60;
+                        let formatted = (mins < 10 ? "0" + mins : mins) + ":" + (secs < 10 ? "0" + secs : secs);
+                        timerBadge.innerText = formatted;
+                        activeRecordings[channelId].formattedTime = formatted;
+                    }, 1000),
+                    formattedTime: "00:00"
+                };
+
+                activeRecordings[channelId] = recObj;
+                alert(`تۆمارکردنی کەناڵی (${channelName}) دەستی پێکرد.`);
+            }
         }
 
         function scrollTabs(direction) {
