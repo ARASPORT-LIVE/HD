@@ -26,5 +26,9 @@
   {
     "mac": "66:A7:F7:F4:A8:53",
     "expire": "Fri Oct 29 2027 23:59:59 GMT+0300 (Arabian Standard Time)"
+  },
+  {
+    "mac": "66:A7:F7:F4:A8:54",
+    "expire": "Sat Oct 30 2027 23:59:59 GMT+0300 (Arabian Standard Time)"
   }
 ]
