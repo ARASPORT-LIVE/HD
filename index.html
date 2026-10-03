@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>ARA TV - Web Player</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0f172a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="ARA TV">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://docs.google.com">
 <link rel="preconnect" href="https://vjs.zencdn.net">
 <link href="https://vjs.zencdn.net/7.20.3/video-js.css" rel="stylesheet">
@@ -115,6 +123,13 @@ body{height:100vh;height:100dvh;padding:max(10px,env(safe-area-inset-top)) 10px 
 .group-tabs{display:flex;gap:6px;padding:8px 10px;overflow-x:auto;direction:rtl;flex-shrink:0;scrollbar-width:none;touch-action:pan-x;-webkit-overflow-scrolling:touch;border-bottom:1px solid var(--gb);background:rgba(255,255,255,.03)}
 .group-tabs::-webkit-scrollbar{display:none}
 .group-tabs .category-tab{flex-shrink:0}
+
+/* ---- v5: install button + LIVE tag under logo ---- */
+.install-btn{cursor:pointer;color:#fff;font-family:inherit;background:linear-gradient(135deg,rgba(56,189,248,.35),rgba(139,92,246,.35));border:1px solid rgba(255,255,255,.3);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.vjs-live-tag{position:absolute;top:100%;left:50%;transform:translateX(-50%);margin-top:4px;display:none;align-items:center;gap:4px;padding:1px 8px;border-radius:4px;background:rgba(239,68,68,.92);font:900 10px Arial;letter-spacing:.5px;color:#fff;white-space:nowrap}
+.vjs-live-tag i{width:6px;height:6px;border-radius:50%;background:#fff;animation:pulse 1.2s infinite}
+.vjs-watermark-logo.is-live .vjs-live-tag{display:flex}
+@media(max-width:900px){.vjs-live-tag{font-size:7px;padding:1px 5px;gap:3px;margin-top:2px}.vjs-live-tag i{width:4px;height:4px}}
 </style>
 </head>
 <body>
@@ -144,6 +159,7 @@ body{height:100vh;height:100dvh;padding:max(10px,env(safe-area-inset-top)) 10px 
   <div class="header-right">
    <div id="trialBadge" class="badge trial-badge" style="display:none">⏱️ <span id="trialTimer">05:00</span></div>
    <div id="countdownBox" class="badge expire-countdown-badge" style="display:none">⏳ <span id="countdownTimer">--</span></div>
+   <button id="installBtn" class="badge install-btn" style="display:none"><i class="fas fa-download"></i> ئینستاڵ</button>
    <div class="live-badge">ڕاستەوخۆ</div>
   </div>
  </div>
@@ -278,7 +294,7 @@ function initPlayer(){
  player=videojs("ara-sport-player",{autoplay:false,controls:true,preload:"auto",html5:{vhs:{overrideNative:true,enableLowInitialPlaylist:true}}});
  player.ready(function(){
   const w=document.createElement("div");w.className="vjs-watermark-logo";w.id="playerWatermark";
-  w.innerHTML='<div class="vjs-watermark-text">ARA SPORT <span>HD</span></div>';this.el().appendChild(w);positionWatermark();if(window.ResizeObserver)new ResizeObserver(positionWatermark).observe(this.el());this.on("loadedmetadata",positionWatermark);try{this.tech(true).el().addEventListener("resize",positionWatermark)}catch(e){}
+  w.innerHTML='<div class="vjs-watermark-text">ARA SPORT <span>HD</span></div><div class="vjs-live-tag"><i></i>LIVE</div>';this.el().appendChild(w);positionWatermark();if(window.ResizeObserver)new ResizeObserver(positionWatermark).observe(this.el());this.on("loadedmetadata",positionWatermark);this.on(["loadedmetadata","durationchange","playing"],updateLive);try{this.tech(true).el().addEventListener("resize",positionWatermark)}catch(e){}
  });
  bindFab();player.on(["waiting","stalled"],()=>showWait(true));
  player.on(["playing","canplay"],()=>showWait(false));
@@ -301,6 +317,15 @@ function initPlayer(){
 function showWait(w){$("streamStatusOverlay").style.display=w?"flex":"none"}
 function updateWatermark(){const w=$("playerWatermark");if(w)w.classList.toggle("show-watermark",isSports)}
 
+function isLive(){
+ try{
+  if(player.duration()===Infinity)return true;
+  if(player.liveTracker&&player.liveTracker.isLive&&player.liveTracker.isLive())return true;
+ }catch(e){}
+ const ch=channels.find(x=>x.url===currentUrl);
+ return !!(ch&&/live|لایڤ|ڕاستەوخۆ/i.test(ch.name));
+}
+function updateLive(){const w=$("playerWatermark");if(w)w.classList.toggle("is-live",isLive())}
 function positionWatermark(){
  const w=$("playerWatermark");if(!w||!player)return;
  let v;try{v=player.tech(true).el()}catch(e){return}
@@ -309,8 +334,6 @@ function positionWatermark(){
  const left=(cw-dw)/2,top=(ch-dh)/2,st=w.style;
  st.setProperty("left",(left+dw*0.895)+"px","important");st.setProperty("top",(top+dh*0.077)+"px","important");
  st.setProperty("right","auto","important");st.setProperty("transform","translate(-50%,-50%)","important");
- st.fontSize=Math.max(dw*0.0156,6)+"px";st.padding=".45em .75em";st.borderRadius=".4em";st.background="rgba(15,23,42,.97)";
- if(w.firstChild)w.firstChild.style.fontSize="1em";
 }
 function parseChannels(csv){
  const out=[];
@@ -401,7 +424,7 @@ function playChannel(ch){
 /* ---------- recording ---------- */
 let rec=null;
 function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()}
-function drawLogo(c,w,h,sports){
+function drawLogo(c,w,h,sports,live){
  const fs=Math.max(Math.round(w*0.0156),8),px=fs*.75,py=fs*.45;
  c.font="900 "+fs+"px Arial";c.textBaseline="middle";c.direction="ltr";c.textAlign="left";
  const a=sports?"ARA SPORT ":"ARA ",b=sports?"HD":"TV";
@@ -410,6 +433,13 @@ function drawLogo(c,w,h,sports){
  c.fillStyle="rgba(15,23,42,.97)";c.strokeStyle="rgba(56,189,248,.6)";c.lineWidth=Math.max(1,fs/14);
  rr(c,bx,by,bw,bh,fs*.4);c.fill();c.stroke();
  c.fillStyle="#fff";c.fillText(a,bx+px,by+bh/2);c.fillStyle="#38bdf8";c.fillText(b,bx+px+wa,by+bh/2);
+ if(live){
+  const lf=fs*.62;c.font="900 "+lf+"px Arial";
+  const tw=c.measureText("LIVE").width,dot=lf*.45,lw=tw+dot+lf*1.5,lh=lf*1.55,lx=bx+bw/2-lw/2,ly=by+bh+fs*.25;
+  c.fillStyle="rgba(239,68,68,.92)";rr(c,lx,ly,lw,lh,lf*.35);c.fill();
+  c.fillStyle="#fff";c.beginPath();c.arc(lx+lf*.6+dot/2,ly+lh/2,dot/2,0,7);c.fill();
+  c.fillText("LIVE",lx+lf*.6+dot+lf*.3,ly+lh/2);
+ }
 }
 function toggleRec(ch){
  if(rec){stopRec();return}
@@ -425,7 +455,7 @@ function toggleRec(ch){
   dv=setInterval(()=>{
    if(!v.videoWidth)return;
    if(cv.width!==v.videoWidth){cv.width=v.videoWidth;cv.height=v.videoHeight}
-   c.drawImage(v,0,0,cv.width,cv.height);drawLogo(c,cv.width,cv.height,sports);
+   c.drawImage(v,0,0,cv.width,cv.height);drawLogo(c,cv.width,cv.height,sports,isLive());
   },40);
   stream=cv.captureStream(25);
   src.getAudioTracks().forEach(t=>stream.addTrack(t));
@@ -464,6 +494,20 @@ $("menuFab").addEventListener("click",openDrawer);
 $("drawerBackdrop").addEventListener("click",closeDrawer);
 window.addEventListener("orientationchange",closeDrawer);
 function bindFab(){if(!player)return;player.on("userinactive",()=>$("menuFab").classList.add("idle"));player.on("useractive",()=>$("menuFab").classList.remove("idle"))}
+
+
+/* ---------- PWA install ---------- */
+let dip=null;
+const isStandalone=()=>matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();dip=e});
+window.addEventListener("appinstalled",()=>{dip=null;$("installBtn").style.display="none"});
+if(!isStandalone())$("installBtn").style.display="flex";
+$("installBtn").addEventListener("click",async()=>{
+ if(dip){dip.prompt();try{await dip.userChoice}catch(e){}dip=null;return}
+ const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+ alert(ios?"لە Safari دوگمەی Share (⬆️) دابگرە و «Add to Home Screen» هەڵبژێرە.":"لە مێنیوی براوسەرەکەت (⋮) «Install app» یان «Add to Home screen» هەڵبژێرە.");
+});
+if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
 
 /* ---------- start ---------- */
 (function boot(){
