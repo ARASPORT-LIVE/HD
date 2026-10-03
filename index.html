@@ -124,7 +124,6 @@
             font-weight: 900;
         }
 
-        /* بەشی شوشەیی تەنیشت و تابەکان */
         .playlist-sidebar {
             width: 380px; background: rgba(15, 23, 42, 0.6);
             backdrop-filter: blur(12px);
@@ -144,7 +143,6 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        /* دیزاینی شوشەیی سەردەمییانە بۆ گروپ و تابەکان */
         .category-tabs {
             display: flex; 
             background: transparent; 
@@ -154,6 +152,8 @@
             flex-shrink: 0;
             width: 100%;
             will-change: scroll-position;
+            pointer-events: auto !important; /* ڕاستکردنەوەی کێشەی جووڵە و کلیک کردن لەسەر گروپەکان */
+            z-index: 15;
         }
         
         .category-tabs::-webkit-scrollbar { display: none; }
@@ -169,7 +169,7 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            z-index: 12;
+            z-index: 20;
             font-size: 12px;
             transition: all 0.2s ease;
         }
@@ -184,6 +184,7 @@
             border-bottom: 3px solid transparent;
             background: rgba(255, 255, 255, 0.02);
             backdrop-filter: blur(4px);
+            user-select: none;
         }
 
         .category-tab:hover { 
@@ -206,7 +207,6 @@
             contain: content;
         }
         
-        /* دیزاینی شوشەیی بۆ لیستی کەناڵەکان لە کاتی گەڕان و جووڵەدا */
         .playlist-item {
             padding: 12px 16px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.04);
@@ -262,26 +262,6 @@
             background: rgba(56, 189, 248, 0.25);
             border-color: #38bdf8;
             color: #38bdf8;
-        }
-
-        .icon-btn.recording {
-            background: rgba(239, 68, 68, 0.85);
-            border-color: #ef4444;
-            color: #fff;
-            animation: pulse 1.2s infinite;
-        }
-
-        .rec-timer-badge {
-            font-size: 11px;
-            font-weight: 900;
-            color: #ef4444;
-            background: rgba(15, 23, 42, 0.85);
-            padding: 3px 7px;
-            border-radius: 4px;
-            border: 1px solid rgba(239, 68, 68, 0.4);
-            font-family: monospace;
-            direction: ltr;
-            backdrop-filter: blur(4px);
         }
 
         .ticker-bar {
@@ -361,21 +341,6 @@
             .playlist-sidebar { width: 100%; flex: 1; border-right: none; border-top: 1px solid rgba(255, 255, 255, 0.08); max-height: none; overflow: hidden; }
             .category-tabs-wrapper { position: sticky; top: 0; z-index: 10; }
             .playlist-items-wrapper { height: calc(62vh - 90px); overflow-y: auto; }
-            
-            .video-js .vjs-watermark-logo.show-watermark {
-                display: flex !important;
-                top: 60px !important;
-                right: 10px !important;
-                padding: 2px 5px !important;
-                border-radius: 3px;
-            }
-            .vjs-watermark-logo.show-watermark .vjs-watermark-text {
-                font-size: 8px !important;
-            }
-        }
-
-        .video-js .vjs-watermark-logo.show-watermark {
-            display: flex !important;
         }
     </style>
 </head>
@@ -415,7 +380,7 @@
             <div class="brand-title">ARA TV</div>
             <div class="header-right">
                 <div id="trialBadge" class="trial-badge" style="display: none;">
-                    ⏱️ <span id="trialTimer">03:00</span>
+                    ⏱️️ <span id="trialTimer">03:00</span>
                 </div>
                 <div id="countdownBox" class="expire-countdown-badge" style="display: none;">
                     ⏳ <span id="countdownTimer">00d 00h 00m</span>
@@ -426,7 +391,7 @@
 
         <div class="content-area">
             <div class="video-container">
-                <video id="ara-sport-player" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="auto" crossorigin="anonymous" playsinline></video>
+                <video id="ara-sport-player" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="auto" crossorigin="anonymous" playsinline muted></video>
                 <div id="streamStatusOverlay" class="stream-status-overlay">
                     <i class="fas fa-spinner fa-spin"></i>
                 </div>
@@ -709,14 +674,14 @@
         let activeChannelElement = null;
         let currentCategory = "";
         let isSportsCategory = false;
-        let activeRecordings = {};
 
         function initPlayer() {
             if (!player) {
                 player = videojs('ara-sport-player', {
                     autoplay: true,
                     controls: true,
-                    preload: 'auto'
+                    preload: 'auto',
+                    muted: false // دڵنیابوونەوە لەوەی کە بێدەنگ نەبێت (دەنگ و وێنە پێکەوە کاربکەن)
                 });
 
                 player.ready(function() {
@@ -770,201 +735,159 @@
                 catch(e) { response = await fetch(targetUrl); }
 
                 if (response && response.ok) {
-                    const csvData = await response.text();
-                    const lines = csvData.split('\n');
-                    let tempChannels = {};
+                    const csvText = await response.text();
+                    const lines = csvText.split("\n");
+                    let categorized = {};
 
-                    for (let index = 1; index < lines.length; index++) {
-                        let line = lines[index];
-                        if (!line.trim()) continue;
-                        const columns = parseCSVLine(line);
-                        if (columns.length >= 3) {
-                            let group = columns[0].replace(/^"|"$/g, '').trim() || 'گشتی';
-                            const name = columns[1].replace(/^"|"$/g, '').trim();
-                            const url = columns[2].replace(/^"|"$/g, '').trim();
+                    lines.forEach((line, index) => {
+                        if (index === 0 || !line.trim()) return;
+                        const cols = parseCSVLine(line);
+                        if (cols.length >= 3) {
+                            let channelName = cols[0].replace(/^"|"$/g, '').trim();
+                            let channelUrl = cols[1].replace(/^"|"$/g, '').trim();
+                            let groupName = cols[2].replace(/^"|"$/g, '').trim() || "گشتی";
 
-                            if (name && url) {
-                                if (!tempChannels[group]) tempChannels[group] = [];
-                                tempChannels[group].push({ name, url });
+                            if (!categorized[groupName]) {
+                                categorized[groupName] = [];
                             }
+                            categorized[groupName].push({ name: channelName, url: channelUrl });
                         }
-                    }
+                    });
 
-                    parsedCategorizedChannels = tempChannels;
-                    localStorage.setItem("cached_sheets_channels", JSON.stringify(tempChannels));
-                    renderTabs();
+                    if (Object.keys(categorized).length > 0) {
+                        parsedCategorizedChannels = categorized;
+                        localStorage.setItem("cached_sheets_channels", JSON.stringify(categorized));
+                        renderTabs();
+                    }
                 }
-            } catch (error) {
-                console.error("Error loading channels:", error);
+            } catch (e) {
+                console.error("Error loading channels:", e);
             }
         }
 
         function renderTabs() {
-            const tabsContainer = document.getElementById('categoryTabs');
-            tabsContainer.innerHTML = '';
+            const tabsContainer = document.getElementById("categoryTabs");
+            tabsContainer.innerHTML = "";
+            let categories = Object.keys(parsedCategorizedChannels);
 
-            const categories = Object.keys(parsedCategorizedChannels);
+            if (categories.length === 0) return;
 
-            if (categories.length === 0) {
-                document.getElementById('playlist-items').innerHTML = '<div class="playlist-item">هیچ کەناڵێک نەدۆزرایەوە</div>';
-                showStreamWaiting(false);
-                return;
+            // دیاریکردنی یەکەم گروپ و یەکەم کەناڵ ئەگەر هێشتا هەڵبژاردن نەکراوە
+            if (!currentCategory || !parsedCategorizedChannels[currentCategory]) {
+                currentCategory = categories[0];
             }
 
-            const fragment = document.createDocumentFragment();
-
-            categories.forEach((cat, index) => {
-                const tab = document.createElement('div');
-                tab.className = `category-tab ${index === 0 ? 'active' : ''}`;
+            categories.forEach(cat => {
+                let tab = document.createElement("div");
+                tab.className = `category-tab ${cat === currentCategory ? 'active' : ''}`;
                 tab.innerText = cat;
                 tab.onclick = function() {
-                    document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
-                    currentCategory = cat;
-                    isSportsCategory = cat.toLowerCase().includes('وەرزش') || cat.toLowerCase().includes('sport');
-                    updateWatermarkVisibility();
-                    renderPlaylistItems(cat);
+                    switchCategory(cat);
                 };
-                fragment.appendChild(tab);
+                tabsContainer.appendChild(tab);
             });
 
-            tabsContainer.appendChild(fragment);
-
-            if (categories.length > 0) {
-                currentCategory = categories[0];
-                isSportsCategory = currentCategory.toLowerCase().includes('وەرزش') || currentCategory.toLowerCase().includes('sport');
-                updateWatermarkVisibility();
-                renderPlaylistItems(currentCategory);
-            }
-
             checkTabArrows();
+            renderChannelList(currentCategory);
         }
 
-        function renderPlaylistItems(category) {
-            const itemsContainer = document.getElementById('playlist-items');
-            itemsContainer.innerHTML = '';
+        function switchCategory(categoryName) {
+            currentCategory = categoryName;
+            
+            // نوێکردنەوەی تابی چالاک
+            const tabs = document.querySelectorAll('.category-tab');
+            tabs.forEach(tab => {
+                if (tab.innerText === categoryName) {
+                    tab.classList.add('active');
+                    tab.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
 
-            const channels = parsedCategorizedChannels[category];
-            if (!channels || channels.length === 0) {
-                itemsContainer.innerHTML = '<div class="playlist-item">هیچ کەناڵێک لەم بەشەدا نییە</div>';
-                showStreamWaiting(false);
+            renderChannelList(categoryName);
+        }
+
+        function renderChannelList(categoryName) {
+            const listContainer = document.getElementById("playlist-items");
+            listContainer.innerHTML = "";
+
+            let channels = parsedCategorizedChannels[categoryName] || [];
+            isSportsCategory = categoryName.toLowerCase().includes('sport') || categoryName.includes('وەرزش');
+            updateWatermarkVisibility();
+
+            if (channels.length === 0) {
+                listContainer.innerHTML = `<div class="playlist-item">هیچ کەناڵێک نییە لەم گروپەدا</div>`;
                 return;
             }
 
-            const fragment = document.createDocumentFragment();
-
             channels.forEach((ch, index) => {
-                const channelId = `ch_${category}_${index}`.replace(/[^a-zA-Z0-9]/g, '_');
-                const item = document.createElement('div');
-                item.className = 'playlist-item';
-                item.id = channelId;
+                let item = document.createElement("div");
+                item.className = "playlist-item";
+                item.innerHTML = `<span>${ch.name}</span>`;
+                item.onclick = function() {
+                    playChannel(ch.url, item);
+                };
+                listContainer.appendChild(item);
 
-                const isRec = activeRecordings[channelId] ? true : false;
-                const recTimeStr = isRec ? activeRecordings[channelId].formattedTime : "00:00";
-
-                item.innerHTML = `
-                    <span style="flex:1; cursor:pointer;" onclick="playChannel(this, '${ch.url}')">${ch.name}</span>
-                    <div class="channel-action-icons">
-                        <span id="timer_${channelId}" class="rec-timer-badge" style="display: ${isRec ? 'inline-block' : 'none'};">${recTimeStr}</span>
-                        <button class="icon-btn ${isRec ? 'recording' : ''}" id="rec_btn_${channelId}" title="تۆمارکردن" onclick="toggleRecord('${channelId}', '${ch.name}')">
-                            <i class="fas fa-circle"></i>
-                        </button>
-                        <button class="icon-btn" title="پخش" onclick="playChannel(this.closest('.playlist-item'), '${ch.url}')">
-                            <i class="fas fa-play"></i>
-                        </button>
-                    </div>
-                `;
-
-                if (index === 0 && !player.currentSrc()) {
-                    item.classList.add('active');
-                    activeChannelElement = item;
-                    player.src({ src: ch.url, type: ch.url.includes('.m3u8') ? 'application/x-mpegURL' : 'video/mp4' });
+                // ئەگەر یەکەم جارە ئەپەکە دەکرێتەوە و یەکەم کەناڵە، بەخێرایی بە دەنگ و وێنە دەستی پێبکات
+                if (categoryName === Object.keys(parsedCategorizedChannels)[0] && index === 0 && !player.currentSrc()) {
+                    playChannel(ch.url, item);
                 }
-
-                fragment.appendChild(item);
             });
-
-            itemsContainer.appendChild(fragment);
         }
 
-        function playChannel(itemElement, url) {
-            if (activeChannelElement) activeChannelElement.classList.remove('active');
-            let parentItem = itemElement.closest('.playlist-item');
-            if (parentItem) {
-                parentItem.classList.add('active');
-                activeChannelElement = parentItem;
+        function playChannel(url, element) {
+            if (activeChannelElement) {
+                activeChannelElement.classList.remove("active");
+            }
+            activeChannelElement = element;
+            if (activeChannelElement) {
+                activeChannelElement.classList.add("active");
             }
 
-            showStreamWaiting(true);
-            player.src({ src: url, type: url.includes('.m3u8') ? 'application/x-mpegURL' : 'video/mp4' });
-            player.play();
-        }
-
-        function toggleRecord(channelId, channelName) {
-            const btn = document.getElementById(`rec_btn_${channelId}`);
-            const timerBadge = document.getElementById(`timer_${channelId}`);
-
-            if (activeRecordings[channelId]) {
-                // وەستاندنی تۆمارکردن
-                clearInterval(activeRecordings[channelId].interval);
-                delete activeRecordings[channelId];
-                btn.classList.remove('recording');
-                timerBadge.style.display = 'none';
-                timerBadge.innerText = '00:00';
-                alert(`تۆمارکردنی کەناڵی (${channelName}) وەستا و پاشەکەوت کرا.`);
-            } else {
-                // دەستپێکردنی تۆمارکردن
-                let startTime = Date.now();
-                btn.classList.add('recording');
-                timerBadge.style.display = 'inline-block';
-
-                let recObj = {
-                    interval: setInterval(() => {
-                        let elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
-                        let mins = Math.floor(elapsedSeconds / 60);
-                        let secs = elapsedSeconds % 60;
-                        let formatted = (mins < 10 ? "0" + mins : mins) + ":" + (secs < 10 ? "0" + secs : secs);
-                        timerBadge.innerText = formatted;
-                        activeRecordings[channelId].formattedTime = formatted;
-                    }, 1000),
-                    formattedTime: "00:00"
-                };
-
-                activeRecordings[channelId] = recObj;
-                alert(`تۆمارکردنی کەناڵی (${channelName}) دەستی پێکرد.`);
+            if (player) {
+                player.src({ type: 'application/x-mpegURL', src: url });
+                player.play().then(() => {
+                    player.muted(false); // دڵنیابوونەوە لە کارکردنی دەنگ
+                }).catch(err => {
+                    console.log("Autoplay blocked or error:", err);
+                });
             }
         }
 
         function scrollTabs(direction) {
-            const tabsContainer = document.getElementById('categoryTabs');
+            const container = document.getElementById("categoryTabs");
             const scrollAmount = 150;
             if (direction === 'right') {
-                tabsContainer.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+                container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
             } else {
-                tabsContainer.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
             }
         }
 
         function checkTabArrows() {
-            const tabs = document.getElementById('categoryTabs');
-            const arrowRight = document.getElementById('arrowRight');
-            const arrowLeft = document.getElementById('arrowLeft');
+            const container = document.getElementById("categoryTabs");
+            const arrowRight = document.getElementById("arrowRight");
+            const arrowLeft = document.getElementById("arrowLeft");
 
-            if (tabs.scrollWidth > tabs.clientWidth) {
-                if (tabs.scrollLeft > 10) {
-                    arrowRight.classList.remove('hidden');
+            if (!container) return;
+
+            if (container.scrollWidth > container.clientWidth) {
+                if (container.scrollLeft > 10) {
+                    arrowLeft.classList.remove("hidden");
                 } else {
-                    arrowRight.classList.add('hidden');
+                    arrowLeft.classList.add("hidden");
                 }
 
-                if (tabs.scrollLeft < (tabs.scrollWidth - tabs.clientWidth - 10)) {
-                    arrowLeft.classList.remove('hidden');
+                if (container.scrollLeft < (container.scrollWidth - container.clientWidth - 10)) {
+                    arrowRight.classList.remove("hidden");
                 } else {
-                    arrowLeft.classList.add('hidden');
+                    arrowRight.classList.add("hidden");
                 }
             } else {
-                arrowRight.classList.add('hidden');
-                arrowLeft.classList.add('hidden');
+                arrowRight.classList.add("hidden");
+                arrowLeft.classList.add("hidden");
             }
         }
 
