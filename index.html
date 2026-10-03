@@ -2,7 +2,7 @@
 <html lang="ku" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>ARA TV - Web Player</title>
 <link rel="preconnect" href="https://docs.google.com">
 <link rel="preconnect" href="https://vjs.zencdn.net">
@@ -77,6 +77,36 @@ body{padding:0}.main-wrapper{height:100vh;border-radius:0}
 .playlist-sidebar{width:100%;flex:1;border-width:1px 0 0;min-height:0}
 .vjs-watermark-logo{top:60px;right:10px;padding:2px 5px}.vjs-watermark-text{font-size:8px}
 }
+
+/* ---- v3: dvh fix, groups list, landscape drawer ---- */
+html,body{height:100%}
+body{height:100vh;height:100dvh;padding:max(10px,env(safe-area-inset-top)) 10px max(10px,env(safe-area-inset-bottom))}
+.main-wrapper{height:100%}
+@media(max-width:900px){body{padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}.main-wrapper{height:100%}}
+.panel-head{display:flex;align-items:center;gap:10px;padding:10px 14px;flex-shrink:0;font-weight:bold;font-size:16px;border-bottom:1px solid var(--gb);background:rgba(255,255,255,.04)}
+#panelTitle{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:linear-gradient(90deg,var(--ac),var(--ac2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.group-card{display:flex;align-items:center;gap:12px;padding:14px;margin-bottom:8px;border-radius:14px;cursor:pointer;font-size:16px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);transition:background .15s,transform .15s}
+.group-card:hover,.group-card:active{background:rgba(56,189,248,.18);transform:translateX(-3px)}
+.group-card .gi{color:var(--ac);font-size:18px}
+.group-card .gn{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.group-card .gc{font-size:12px;padding:2px 9px;border-radius:999px;background:rgba(255,255,255,.12)}
+.side-zone,.menu-fab,.drawer-backdrop{display:none}
+.menu-fab{position:absolute;top:12px;right:12px;z-index:1003;width:42px;height:42px;border-radius:50%;align-items:center;justify-content:center;cursor:pointer;color:#fff;background:rgba(15,23,42,.55);border:1px solid var(--gb);backdrop-filter:blur(10px);transition:opacity .3s}
+.menu-fab.idle{opacity:0;pointer-events:none}
+@media(orientation:landscape) and (max-height:520px){
+ body{padding:0}
+ .main-wrapper{border-radius:0;border:0;background:#000;backdrop-filter:none;-webkit-backdrop-filter:none}
+ .player-header,.ticker-bar{display:none}
+ .content-area{position:fixed;inset:0}
+ .video-container{position:fixed;inset:0;width:100%;height:100%}
+ .side-zone{display:block;position:absolute;top:0;right:0;bottom:56px;width:22%;z-index:1002}
+ .menu-fab{display:flex}
+ .playlist-sidebar{position:fixed;top:0;bottom:0;right:0;width:min(340px,75vw);z-index:3000;transform:translateX(105%);transition:transform .25s;border-width:0 0 0 1px;background:rgba(15,23,42,.78)}
+ body.drawer-open .playlist-sidebar{transform:none}
+ .drawer-backdrop{position:fixed;inset:0;z-index:2999;background:rgba(0,0,0,.35)}
+ body:not(.drawer-open) .drawer-backdrop{display:none}
+ body.drawer-open .drawer-backdrop{display:block}
+}
 </style>
 </head>
 <body>
@@ -109,16 +139,18 @@ body{padding:0}.main-wrapper{height:100vh;border-radius:0}
    <div class="live-badge">ڕاستەوخۆ</div>
   </div>
  </div>
+ <div id="drawerBackdrop" class="drawer-backdrop"></div>
  <div class="content-area">
   <div class="video-container">
    <video id="ara-sport-player" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="auto" crossorigin="anonymous" playsinline></video>
+   <div id="sideZone" class="side-zone"></div>
+   <div id="menuFab" class="menu-fab"><i class="fas fa-list"></i></div>
    <div id="streamStatusOverlay" class="stream-status-overlay"><i class="fas fa-spinner fa-spin"></i></div>
   </div>
   <div class="playlist-sidebar glass">
-   <div class="category-tabs-wrapper">
-    <div id="arrowRight" class="scroll-arrow right hidden" onclick="scrollTabs(1)"><i class="fas fa-chevron-right"></i></div>
-    <div id="categoryTabs" class="category-tabs" onscroll="checkTabArrows()"></div>
-    <div id="arrowLeft" class="scroll-arrow left hidden" onclick="scrollTabs(-1)"><i class="fas fa-chevron-left"></i></div>
+   <div class="panel-head">
+    <button id="backBtn" class="icon-btn" style="display:none" aria-label="back"><i class="fas fa-chevron-right"></i></button>
+    <span id="panelTitle">گروپەکان</span>
    </div>
    <div class="playlist-items-wrapper"><div id="playlist-items"><div class="playlist-item">تکایە چاوەڕێ بکە...</div></div></div>
   </div>
@@ -239,7 +271,7 @@ function initPlayer(){
   const w=document.createElement("div");w.className="vjs-watermark-logo";w.id="playerWatermark";
   w.innerHTML='<div class="vjs-watermark-text">ARA SPORT <span>HD</span></div>';this.el().appendChild(w);
  });
- player.on(["waiting","stalled"],()=>showWait(true));
+ bindFab();player.on(["waiting","stalled"],()=>showWait(true));
  player.on(["playing","canplay"],()=>showWait(false));
  // browsers block unmuted autoplay until a gesture: unmute on first touch
  const unmute=()=>{if(player){player.muted(false);player.volume(1)}["pointerdown","keydown"].forEach(e=>document.removeEventListener(e,unmute))};
@@ -255,9 +287,8 @@ function parseChannels(csv){
  csv.split("\n").forEach((line,i)=>{
   if(!i||!line.trim())return;
   const c=parseCSVLine(line).map(x=>x.replace(/^"|"$/g,"").trim());
-  const ui=c.findIndex(x=>/^https?:\/\//i.test(x));if(ui<0)return;
-  const rest=c.filter((x,k)=>k!==ui&&x&&!/^https?:\/\//i.test(x));
-  out.push({name:rest[0]||"Channel",url:c[ui],cat:rest[1]||"گشتی"});
+  if(c.length<3||!c[1]||!c[2])return;
+  out.push({cat:c[0]||"گشتی",name:c[1],url:c[2]});
  });
  return out;
 }
@@ -275,38 +306,42 @@ async function loadPlaylist(){
   if(changed){ls("cached_sheets_channels",JSON.stringify(list));setData(list)}
  }catch(e){if(!channels.length)$("playlist-items").innerHTML='<div class="playlist-item">هەڵە لە بارکردنی لیستی کەناڵەکان</div>'}
 }
-function renderTabs(){
- const f=document.createDocumentFragment();
- categories.forEach(c=>{const t=document.createElement("div");t.className="category-tab"+(c===currentCat?" active":"");t.textContent=c;t.dataset.cat=c;f.appendChild(t)});
- const box=$("categoryTabs");box.innerHTML="";box.appendChild(f);setTimeout(checkTabArrows,50);
-}
-$("categoryTabs").addEventListener("click",e=>{
- const t=e.target.closest(".category-tab");if(!t)return;
- currentCat=t.dataset.cat;
- document.querySelectorAll(".category-tab").forEach(x=>x.classList.toggle("active",x===t));
- renderChannels();
-});
+let view="groups";
+function renderTabs(){}
 function renderChannels(){
- const f=document.createDocumentFragment();
- channels.forEach((ch,i)=>{
-  if(ch.cat!==currentCat)return;
-  const d=document.createElement("div");d.className="playlist-item"+(ch.url===currentUrl?" active":"");d.dataset.i=i;
-  d.innerHTML=`<span class="item-name"></span><div class="channel-action-icons"><span class="rec-timer-badge" style="display:none">00:00</span><button class="icon-btn rec-btn" data-rec="1" title="Record"><i class="fas fa-circle"></i></button></div>`;
-  d.firstChild.textContent=ch.name;
-  if(rec&&rec.url===ch.url){d.querySelector(".rec-btn").classList.add("recording");d.querySelector(".rec-timer-badge").style.display=""}
-  f.appendChild(d);
- });
- const box=$("playlist-items");box.innerHTML="";box.appendChild(f);
- isSports=/sport|سپۆرت|ریاضە|bein|ڕیاضە/i.test(currentCat);updateWatermark();
+ const box=$("playlist-items"),f=document.createDocumentFragment(),back=$("backBtn");
+ if(view==="groups"||!currentCat){
+  $("panelTitle").textContent="گروپەکان";back.style.display="none";
+  categories.forEach(c=>{
+   const n=channels.filter(x=>x.cat===c).length,d=document.createElement("div");
+   d.className="group-card";d.dataset.cat=c;
+   d.innerHTML='<i class="fas fa-layer-group gi"></i><span class="gn"></span><span class="gc">'+n+'</span><i class="fas fa-chevron-left"></i>';
+   d.querySelector(".gn").textContent=c;f.appendChild(d);
+  });
+ }else{
+  $("panelTitle").textContent=currentCat;back.style.display="";
+  channels.forEach((ch,i)=>{
+   if(ch.cat!==currentCat)return;
+   const d=document.createElement("div");d.className="playlist-item"+(ch.url===currentUrl?" active":"");d.dataset.i=i;
+   d.innerHTML='<span class="item-name"></span><div class="channel-action-icons"><span class="rec-timer-badge" style="display:none">00:00</span><button class="icon-btn rec-btn" data-rec="1" title="Record"><i class="fas fa-circle"></i></button></div>';
+   d.firstChild.textContent=ch.name;
+   if(rec&&rec.url===ch.url){d.querySelector(".rec-btn").classList.add("recording");d.querySelector(".rec-timer-badge").style.display=""}
+   f.appendChild(d);
+  });
+ }
+ box.innerHTML="";box.appendChild(f);
 }
+$("backBtn").addEventListener("click",()=>{view="groups";renderChannels()});
 $("playlist-items").addEventListener("click",e=>{
+ const g=e.target.closest(".group-card");
+ if(g){currentCat=g.dataset.cat;view="channels";renderChannels();$("playlist-items").parentNode.scrollTop=0;return}
  const it=e.target.closest(".playlist-item");if(!it||it.dataset.i===undefined)return;
  const ch=channels[it.dataset.i];
  if(e.target.closest("[data-rec]")){toggleRec(ch);return}
- playChannel(ch);
+ playChannel(ch);closeDrawer();
 });
 function playChannel(ch){
- currentUrl=ch.url;
+ currentUrl=ch.url;isSports=/sport|وەرزش|سپۆرت|ریاضە|bein|ڕیاضە/i.test(ch.cat);updateWatermark();
  const type=/\.m3u8|\/hls|m3u8/i.test(ch.url)?"application/x-mpegURL":/\.mp4/i.test(ch.url)?"video/mp4":"application/x-mpegURL";
  showWait(true);
  player.muted(false);player.src({src:ch.url,type});
@@ -343,14 +378,18 @@ function stopRec(){
  if(!rec)return;clearInterval(rec.iv);try{rec.mr.stop()}catch(e){}rec=null;renderChannels();
 }
 
-/* ---------- tab arrows (RTL aware) ---------- */
-function scrollTabs(dir){$("categoryTabs").scrollBy({left:dir*160,behavior:"smooth"})}
-function checkTabArrows(){
- const t=$("categoryTabs"),max=t.scrollWidth-t.clientWidth,pos=Math.abs(t.scrollLeft);
- $("arrowRight").classList.toggle("hidden",max<=2||pos<=2);
- $("arrowLeft").classList.toggle("hidden",max<=2||pos>=max-2);
+/* ---------- landscape side drawer ---------- */
+function openDrawer(){
+ const c=channels.find(x=>x.url===currentUrl);
+ if(c){currentCat=c.cat;view="channels"}
+ renderChannels();document.body.classList.add("drawer-open");
 }
-window.addEventListener("resize",checkTabArrows);
+function closeDrawer(){document.body.classList.remove("drawer-open")}
+$("sideZone").addEventListener("click",openDrawer);
+$("menuFab").addEventListener("click",openDrawer);
+$("drawerBackdrop").addEventListener("click",closeDrawer);
+window.addEventListener("orientationchange",closeDrawer);
+function bindFab(){if(!player)return;player.on("userinactive",()=>$("menuFab").classList.add("idle"));player.on("useractive",()=>$("menuFab").classList.remove("idle"))}
 
 /* ---------- start ---------- */
 (function boot(){
