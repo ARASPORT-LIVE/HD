@@ -1,899 +1,769 @@
 <!DOCTYPE html>
 <html lang="ku" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ARA TV - Web Player</title>
-    
-    <!-- Video.js CSS -->
-    <link href="https://vjs.zencdn.net/7.20.3/video-js.css" rel="stylesheet" />
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    
-    <style>
-        @font-face {
-            font-family: 'GoranFontRegular-Regular';
-            src: url('GoranFontRegular-Regular.ttf') format('truetype'),
-                 url('GoranFontRegular-Regular.woff') format('woff');
-            font-weight: normal; font-style: normal;
-        }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ARA TV - Web Player</title>
+    
+    <!-- Video.js CSS -->
+    <link href="https://vjs.zencdn.net/7.20.3/video-js.css" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <style>
+        @font-face {
+            font-family: 'GoranFontRegular-Regular';
+            src: url('GoranFontRegular-Regular.ttf') format('truetype'),
+                 url('GoranFontRegular-Regular.woff') format('woff');
+            font-weight: normal; font-style: normal;
+        }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        html, body {
-            width: 100%; height: 100%;
-            background-color: #0b0f19; color: #ffffff;
-            font-family: 'GoranFontRegular-Regular', Tahoma, Arial, sans-serif;
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-        }
+        html, body {
+            width: 100%; height: 100%;
+            background-color: #0b0f19; color: #ffffff;
+            font-family: 'GoranFontRegular-Regular', Tahoma, Arial, sans-serif;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
 
-        body {
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center; padding: 10px;
-            background: radial-gradient(circle at 50% 50%, #1e293b 0%, #0f172a 100%);
-        }
+        body {
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center; padding: 10px;
+            background: radial-gradient(circle at 50% 50%, #1e293b 0%, #0f172a 100%);
+        }
 
-        .main-wrapper {
-            width: 100%; height: 96vh; max-width: 100%;
-            background: rgba(30, 41, 59, 0.65);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-radius: 16px; overflow: hidden;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            display: flex; flex-direction: column; position: relative;
-            transform: translateZ(0);
-        }
+        .main-wrapper {
+            width: 100%; height: 96vh; max-width: 100%;
+            background: rgba(30, 41, 59, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 16px; overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex; flex-direction: column; position: relative;
+            transform: translateZ(0);
+        }
 
-        .player-header {
-            background: rgba(15, 23, 42, 0.75);
-            backdrop-filter: blur(10px);
-            padding: 12px 20px; display: flex;
-            justify-content: space-between; align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            gap: 8px; flex-shrink: 0;
-        }
+        .player-header {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(10px);
+            padding: 12px 20px; display: flex;
+            justify-content: space-between; align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            gap: 8px; flex-shrink: 0;
+        }
 
-        .brand-title { font-size: 22px; font-weight: bold; color: #38bdf8; white-space: nowrap; text-shadow: 0 2px 10px rgba(56,189,248,0.3); }
-        .header-right { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
+        .brand-title { font-size: 22px; font-weight: bold; color: #38bdf8; white-space: nowrap; text-shadow: 0 2px 10px rgba(56,189,248,0.3); }
+        .header-right { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
 
-        .expire-countdown-badge {
-            background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(56, 189, 248, 0.4); color: #38bdf8;
-            padding: 5px 12px; border-radius: 20px; font-size: 13px; font-weight: bold;
-            display: flex; align-items: center; gap: 6px; direction: ltr;
-        }
+        .expire-countdown-badge {
+            background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(56, 189, 248, 0.4); color: #38bdf8;
+            padding: 5px 12px; border-radius: 20px; font-size: 13px; font-weight: bold;
+            display: flex; align-items: center; gap: 6px; direction: ltr;
+        }
 
-        .trial-badge {
-            background-color: rgba(245, 158, 11, 0.85); color: white; padding: 5px 12px; border-radius: 20px;
-            font-size: 13px; font-weight: bold; display: flex; align-items: center; gap: 6px; direction: ltr;
-        }
+        .trial-badge {
+            background-color: rgba(245, 158, 11, 0.85); color: white; padding: 5px 12px; border-radius: 20px;
+            font-size: 13px; font-weight: bold; display: flex; align-items: center; gap: 6px; direction: ltr;
+        }
 
-        .live-badge {
-            background-color: rgba(239, 68, 68, 0.9); color: white; padding: 4px 12px; border-radius: 20px;
-            font-size: 13px; animation: pulse 1.5s infinite;
-        }
+        .live-badge {
+            background-color: rgba(239, 68, 68, 0.9); color: white; padding: 4px 12px; border-radius: 20px;
+            font-size: 13px; animation: pulse 1.5s infinite;
+        }
 
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
-        .content-area { display: flex; flex-direction: row; width: 100%; flex: 1; min-height: 0; }
+        .content-area { display: flex; flex-direction: row; width: 100%; flex: 1; min-height: 0; }
 
-        .video-container {
-            flex: 1; position: relative; background: #000;
-            display: flex; align-items: center; justify-content: center;
-            overflow: hidden;
-        }
+        .video-container {
+            flex: 1; position: relative; background: #000;
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden;
+        }
 
-        .video-js { width: 100% !important; height: 100% !important; font-family: Arial, sans-serif !important; }
+        .video-js { width: 100% !important; height: 100% !important; font-family: Arial, sans-serif !important; }
 
-        .stream-status-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.7); display: flex; justify-content: center;
-            align-items: center; z-index: 1001; font-size: 32px; color: #38bdf8;
-            backdrop-filter: blur(4px); pointer-events: none;
-        }
+        .stream-status-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.7); display: flex; justify-content: center;
+            align-items: center; z-index: 1001; font-size: 32px; color: #38bdf8;
+            backdrop-filter: blur(4px); pointer-events: none;
+        }
 
-        .video-js .vjs-watermark-logo {
-            position: absolute !important;
-            top: 42px !important;
-            right: 18px !important;
-            z-index: 1000 !important;
-            pointer-events: none;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            background: rgba(15, 23, 42, 0.85);
-            padding: 4px 10px;
-            border-radius: 6px;
-            border: 1px solid rgba(56, 189, 248, 0.4);
-            backdrop-filter: blur(6px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-        }
+        .video-js .vjs-watermark-logo {
+            position: absolute !important;
+            top: 42px !important;
+            right: 18px !important;
+            z-index: 1000 !important;
+            pointer-events: none;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(15, 23, 42, 0.85);
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            backdrop-filter: blur(6px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
 
-        .vjs-watermark-text {
-            color: #ffffff;
-            font-weight: 900;
-            font-size: 15px;
-            letter-spacing: 0.6px;
-            font-family: Arial, sans-serif;
-            line-height: 1;
-        }
+        .vjs-watermark-text {
+            color: #ffffff;
+            font-weight: 900;
+            font-size: 15px;
+            letter-spacing: 0.6px;
+            font-family: Arial, sans-serif;
+            line-height: 1;
+        }
 
-        .vjs-watermark-text span {
-            color: #38bdf8;
-            font-weight: 900;
-        }
+        .vjs-watermark-text span {
+            color: #38bdf8;
+            font-weight: 900;
+        }
 
-        .playlist-sidebar {
-            width: 380px; background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-right: 1px solid rgba(255, 255, 255, 0.08);
-            display: flex; flex-direction: column; height: 100%;
-            position: relative;
-        }
+        /* بەشی شوشەیی تەنیشت و تابەکان */
+        .playlist-sidebar {
+            width: 380px; background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex; flex-direction: column; height: 100%;
+            position: relative;
+        }
 
-        .category-tabs-wrapper {
-            position: relative;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            background: rgba(30, 41, 59, 0.5);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        }
+        .category-tabs-wrapper {
+            position: relative;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
 
-        .category-tabs {
-            display: flex; 
-            background: transparent; 
-            overflow-x: auto;
-            scroll-behavior: smooth;
-            scrollbar-width: none;
-            flex-shrink: 0;
-            width: 100%;
-            will-change: scroll-position;
-            pointer-events: auto !important; /* ڕاستکردنەوەی کێشەی جووڵە و کلیک کردن لەسەر گروپەکان */
-            z-index: 15;
-        }
-        
-        .category-tabs::-webkit-scrollbar { display: none; }
+        /* دیزاینی شوشەیی سەردەمییانە بۆ گروپ و تابەکان */
+        .category-tabs {
+            display: flex; 
+            background: transparent; 
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            scrollbar-width: none;
+            flex-shrink: 0;
+            width: 100%;
+            will-change: scroll-position;
+        }
+        
+        .category-tabs::-webkit-scrollbar { display: none; }
 
-        .scroll-arrow {
-            position: absolute;
-            top: 0; bottom: 0;
-            width: 28px;
-            background: rgba(15, 23, 42, 0.85);
-            color: #38bdf8;
-            border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 20;
-            font-size: 12px;
-            transition: all 0.2s ease;
-        }
+        .scroll-arrow {
+            position: absolute;
+            top: 0; bottom: 0;
+            width: 28px;
+            background: rgba(15, 23, 42, 0.85);
+            color: #38bdf8;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 12;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
 
-        .scroll-arrow.right { right: 0; border-left: 1px solid rgba(255, 255, 255, 0.08); }
-        .scroll-arrow.left { left: 0; border-right: 1px solid rgba(255, 255, 255, 0.08); }
-        .scroll-arrow.hidden { display: none; opacity: 0; pointer-events: none; }
+        .scroll-arrow.right { right: 0; border-left: 1px solid rgba(255, 255, 255, 0.08); }
+        .scroll-arrow.left { left: 0; border-right: 1px solid rgba(255, 255, 255, 0.08); }
+        .scroll-arrow.hidden { display: none; opacity: 0; pointer-events: none; }
 
-        .category-tab {
-            padding: 12px 16px; font-size: 14px; font-weight: bold; color: #94a3b8;
-            cursor: pointer; white-space: nowrap; transition: all 0.25s ease; 
-            border-bottom: 3px solid transparent;
-            background: rgba(255, 255, 255, 0.02);
-            backdrop-filter: blur(4px);
-            user-select: none;
-        }
+        .category-tab {
+            padding: 12px 16px; font-size: 14px; font-weight: bold; color: #94a3b8;
+            cursor: pointer; white-space: nowrap; transition: all 0.25s ease; 
+            border-bottom: 3px solid transparent;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(4px);
+        }
 
-        .category-tab:hover { 
-            color: #38bdf8; 
-            background: rgba(56, 189, 248, 0.1); 
-            backdrop-filter: blur(8px);
-        }
-        
-        .category-tab.active { 
-            color: #38bdf8; 
-            border-bottom: 3px solid #38bdf8; 
-            background: rgba(15, 23, 42, 0.7); 
-            backdrop-filter: blur(12px);
-            box-shadow: inset 0 -2px 12px rgba(56, 189, 248, 0.3);
-        }
+        .category-tab:hover { 
+            color: #38bdf8; 
+            background: rgba(56, 189, 248, 0.1); 
+            backdrop-filter: blur(8px);
+        }
+        
+        .category-tab.active { 
+            color: #38bdf8; 
+            border-bottom: 3px solid #38bdf8; 
+            background: rgba(15, 23, 42, 0.7); 
+            backdrop-filter: blur(12px);
+            box-shadow: inset 0 -2px 12px rgba(56, 189, 248, 0.3);
+        }
 
-        .playlist-items-wrapper { 
-            flex: 1; 
-            overflow-y: auto; 
-            contain: content;
-        }
-        
-        .playlist-item {
-            padding: 12px 16px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-size: 15px;
-            transition: all 0.2s ease;
-            background: rgba(255, 255, 255, 0.015);
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
-        }
+        .playlist-items-wrapper { 
+            flex: 1; 
+            overflow-y: auto; 
+            contain: content;
+        }
+        
+        /* دیزاینی شوشەیی بۆ لیستی کەناڵەکان لە کاتی گەڕان و جووڵەدا */
+        .playlist-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 15px;
+            transition: all 0.2s ease;
+            background: rgba(255, 255, 255, 0.015);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
 
-        .playlist-item:hover { 
-            background: rgba(255, 255, 255, 0.08); 
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            transform: translateX(-3px);
-        }
-        
-        .playlist-item.active { 
-            background: rgba(37, 99, 235, 0.75); 
-            color: #fff; 
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
-        }
+        .playlist-item:hover { 
+            background: rgba(255, 255, 255, 0.08); 
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transform: translateX(-3px);
+        }
+        
+        .playlist-item.active { 
+            background: rgba(37, 99, 235, 0.75); 
+            color: #fff; 
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+        }
 
-        .channel-action-icons {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+        .channel-action-icons {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-        .icon-btn {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: #ffffff;
-            cursor: pointer;
-            font-size: 14px;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-            backdrop-filter: blur(4px);
-        }
+        .icon-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            cursor: pointer;
+            font-size: 14px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(4px);
+        }
 
-        .icon-btn:hover {
-            background: rgba(56, 189, 248, 0.25);
-            border-color: #38bdf8;
-            color: #38bdf8;
-        }
+        .icon-btn:hover {
+            background: rgba(56, 189, 248, 0.25);
+            border-color: #38bdf8;
+            color: #38bdf8;
+        }
 
-        .ticker-bar {
-            background: rgba(2, 132, 199, 0.75); 
-            backdrop-filter: blur(8px);
-            color: #ffffff; padding: 6px 0;
-            overflow: hidden; white-space: nowrap; display: flex; align-items: center; flex-shrink: 0;
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
-        }
+        .icon-btn.recording {
+            background: rgba(239, 68, 68, 0.85);
+            border-color: #ef4444;
+            color: #fff;
+            animation: pulse 1.2s infinite;
+        }
 
-        .ticker-text {
-            display: inline-block; padding-right: 100%;
-            animation: ticker 25s linear infinite; font-size: 13px;
-        }
+        .rec-timer-badge {
+            font-size: 11px;
+            font-weight: 900;
+            color: #ef4444;
+            background: rgba(15, 23, 42, 0.85);
+            padding: 3px 7px;
+            border-radius: 4px;
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            font-family: monospace;
+            direction: ltr;
+            backdrop-filter: blur(4px);
+        }
 
-        @keyframes ticker { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(100%, 0, 0); } }
+        .ticker-bar {
+            background: rgba(2, 132, 199, 0.75); 
+            backdrop-filter: blur(8px);
+            color: #ffffff; padding: 6px 0;
+            overflow: hidden; white-space: nowrap; display: flex; align-items: center; flex-shrink: 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
 
-        .auth-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.85); display: flex; justify-content: center;
-            align-items: center; z-index: 9999; backdrop-filter: blur(12px);
-        }
+        .ticker-text {
+            display: inline-block; padding-right: 100%;
+            animation: ticker 25s linear infinite; font-size: 13px;
+        }
 
-        .auth-card {
-            background: rgba(30, 41, 59, 0.85); 
-            backdrop-filter: blur(16px);
-            padding: 25px; border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.1); text-align: center; max-width: 460px; width: 90%;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-        }
+        @keyframes ticker { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(100%, 0, 0); } }
 
-        .auth-card h2 { color: #38bdf8; margin-bottom: 12px; font-size: 20px; }
+        .auth-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.85); display: flex; justify-content: center;
+            align-items: center; z-index: 9999; backdrop-filter: blur(12px);
+        }
 
-        .mac-box {
-            background: rgba(15, 23, 42, 0.8); border: 1px dashed rgba(56, 189, 248, 0.6); padding: 12px;
-            border-radius: 8px; font-size: 16px; font-weight: bold; color: #ef4444;
-            letter-spacing: 1px; margin-bottom: 15px; user-select: all;
-            display: flex; justify-content: space-between; align-items: center; direction: ltr;
-        }
+        .auth-card {
+            background: rgba(30, 41, 59, 0.85); 
+            backdrop-filter: blur(16px);
+            padding: 25px; border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1); text-align: center; max-width: 460px; width: 90%;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+        }
 
-        .copy-btn {
-            background: #2563eb; color: white; border: none; padding: 6px 12px;
-            border-radius: 4px; cursor: pointer; font-size: 12px;
-        }
+        .auth-card h2 { color: #38bdf8; margin-bottom: 12px; font-size: 20px; }
 
-        .send-actions { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; }
-        .send-row { display: flex; gap: 10px; }
+        .mac-box {
+            background: rgba(15, 23, 42, 0.8); border: 1px dashed rgba(56, 189, 248, 0.6); padding: 12px;
+            border-radius: 8px; font-size: 16px; font-weight: bold; color: #ef4444;
+            letter-spacing: 1px; margin-bottom: 15px; user-select: all;
+            display: flex; justify-content: space-between; align-items: center; direction: ltr;
+        }
 
-        .send-btn {
-            flex: 1; padding: 9px; border: none; border-radius: 6px; color: white;
-            font-size: 12px; cursor: pointer; font-weight: bold; display: flex;
-            align-items: center; justify-content: center; gap: 6px; text-decoration: none;
-        }
+        .copy-btn {
+            background: #2563eb; color: white; border: none; padding: 6px 12px;
+            border-radius: 4px; cursor: pointer; font-size: 12px;
+        }
 
-        .whatsapp-btn { background: #16a34a; }
-        .sms-btn { background: #0284c7; }
+        .send-actions { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; }
+        .send-row { display: flex; gap: 10px; }
 
-        .auth-btn {
-            width: 100%; padding: 12px; border: none; border-radius: 6px;
-            background: #059669; color: #fff; font-size: 15px; cursor: pointer; font-weight: bold;
-        }
+        .send-btn {
+            flex: 1; padding: 9px; border: none; border-radius: 6px; color: white;
+            font-size: 12px; cursor: pointer; font-weight: bold; display: flex;
+            align-items: center; justify-content: center; gap: 6px; text-decoration: none;
+        }
 
-        .status-msg { font-size: 13px; margin-top: 12px; color: #ef4444; line-height: 1.5; }
-        .contact-box { margin-top: 18px; padding-top: 15px; border-top: 1px solid rgba(255, 255, 255, 0.08); font-size: 13px; color: #cbd5e1; }
-        .contact-phones { margin-top: 6px; font-weight: bold; color: #38bdf8; direction: ltr; font-size: 14px; }
+        .whatsapp-btn { background: #16a34a; }
+        .sms-btn { background: #0284c7; }
 
-        .cooldown-box {
-            background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #fca5a5;
-            padding: 10px; border-radius: 6px; font-size: 13px; margin-bottom: 15px;
-        }
+        .auth-btn {
+            width: 100%; padding: 12px; border: none; border-radius: 6px;
+            background: #059669; color: #fff; font-size: 15px; cursor: pointer; font-weight: bold;
+        }
 
-        @media (max-width: 900px) {
-            body { padding: 0; }
-            .main-wrapper { height: 100vh; border-radius: 0; border: none; }
-            .content-area { flex-direction: column; }
-            .video-container { width: 100%; height: 38vh; flex: none; }
-            .playlist-sidebar { width: 100%; flex: 1; border-right: none; border-top: 1px solid rgba(255, 255, 255, 0.08); max-height: none; overflow: hidden; }
-            .category-tabs-wrapper { position: sticky; top: 0; z-index: 10; }
-            .playlist-items-wrapper { height: calc(62vh - 90px); overflow-y: auto; }
-        }
-    </style>
+        .status-msg { font-size: 13px; margin-top: 12px; color: #ef4444; line-height: 1.5; }
+        .contact-box { margin-top: 18px; padding-top: 15px; border-top: 1px solid rgba(255, 255, 255, 0.08); font-size: 13px; color: #cbd5e1; }
+        .contact-phones { margin-top: 6px; font-weight: bold; color: #38bdf8; direction: ltr; font-size: 14px; }
+
+        .cooldown-box {
+            background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #fca5a5;
+            padding: 10px; border-radius: 6px; font-size: 13px; margin-bottom: 15px;
+        }
+
+        @media (max-width: 900px) {
+            body { padding: 0; }
+            .main-wrapper { height: 100vh; border-radius: 0; border: none; }
+            .content-area { flex-direction: column; }
+            .video-container { width: 100%; height: 38vh; flex: none; }
+            .playlist-sidebar { width: 100%; flex: 1; border-right: none; border-top: 1px solid rgba(255, 255, 255, 0.08); max-height: none; overflow: hidden; }
+            .category-tabs-wrapper { position: sticky; top: 0; z-index: 10; }
+            .playlist-items-wrapper { height: calc(62vh - 90px); overflow-y: auto; }
+            
+            .video-js .vjs-watermark-logo.show-watermark {
+                display: flex !important;
+                top: 60px !important;
+                right: 10px !important;
+                padding: 2px 5px !important;
+                border-radius: 3px;
+            }
+            .vjs-watermark-logo.show-watermark .vjs-watermark-text {
+                font-size: 8px !important;
+            }
+        }
+
+        .video-js .vjs-watermark-logo.show-watermark {
+            display: flex !important;
+        }
+    </style>
 </head>
 <body>
 
-    <div id="authOverlay" class="auth-overlay" style="display: none;">
-        <div class="auth-card">
-            <h2>ئەکتیڤکردنی ئامێرەکەت</h2>
-            <div id="cooldownNotice" class="cooldown-box" style="display: none;">
-                تایمەری ترایەڵ تەواو بوو! تکایە <span id="cooldownTimer" style="font-weight: bold; color: #fff;">05:00</span> چاوەڕێ بکە بۆ ترایەڵی داهاتوو.
-            </div>
-            <p id="overlayIntroMsg">بۆ بینینی بەردەوامی پەخشەکە، تەواوی ماک ئادرێسەکەت بۆ ئەدمین بنێرە:</p>
-            <div class="mac-box">
-                <span id="deviceMac">باردەکرێت...</span>
-                <button class="copy-btn" onclick="copyMac()">کۆپی</button>
-            </div>
-            <div class="send-actions">
-                <div class="send-row">
-                    <a id="waLink1" href="#" target="_blank" class="send-btn whatsapp-btn"><i class="fab fa-whatsapp"></i> واتسئاپ 1</a>
-                    <a id="waLink2" href="#" target="_blank" class="send-btn whatsapp-btn" style="background: #15803d;"><i class="fab fa-whatsapp"></i> واتسئاپ 2</a>
-                </div>
-                <div class="send-row">
-                    <a id="smsLink" href="#" class="send-btn sms-btn"><i class="fas fa-comment-alt"></i> بە نامە (SMS)</a>
-                </div>
-            </div>
-            <button onclick="checkActivation(true)" class="auth-btn">پشکنینی ئەکتیڤبوون</button>
-            <div id="statusMsg" class="status-msg">ئەم ئامێرە ئەکتیڤ نەکراوە!</div>
-            <div class="contact-box">
-                بۆ زانیاری زیاتر یان نوێکردنەوەی سیستمەکە پەیوەندی بکەن بە:
-                <div class="contact-phones">07501224994 &nbsp;|&nbsp; 07748134314</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="main-wrapper">
-        <div class="player-header">
-            <div class="brand-title">ARA TV</div>
-            <div class="header-right">
-                <div id="trialBadge" class="trial-badge" style="display: none;">
-                    ⏱️️ <span id="trialTimer">03:00</span>
-                </div>
-                <div id="countdownBox" class="expire-countdown-badge" style="display: none;">
-                    ⏳ <span id="countdownTimer">00d 00h 00m</span>
-                </div>
-                <div class="live-badge">ڕاستەوخۆ</div>
-            </div>
-        </div>
-
-        <div class="content-area">
-            <div class="video-container">
-                <video id="ara-sport-player" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="auto" crossorigin="anonymous" playsinline muted></video>
-                <div id="streamStatusOverlay" class="stream-status-overlay">
-                    <i class="fas fa-spinner fa-spin"></i>
-                </div>
-            </div>
-
-            <div class="playlist-sidebar">
-                <div class="category-tabs-wrapper">
-                    <button class="scroll-arrow right hidden" id="arrowRight" onclick="scrollTabs('right')"><i class="fas fa-chevron-right"></i></button>
-                    <div id="categoryTabs" class="category-tabs" onscroll="checkTabArrows()"></div>
-                    <button class="scroll-arrow left hidden" id="arrowLeft" onclick="scrollTabs('left')"><i class="fas fa-chevron-left"></i></button>
-                </div>
-                
-                <div class="playlist-items-wrapper">
-                    <div id="playlist-items">
-                        <div class="playlist-item">تکایە چاوەڕێ بکە...</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="ticker-bar">
-            <div class="ticker-text">
-                بەخێر بێن بۆ سیستمی پەخشی ARA TV، تکایە لەکاتی بوونی هەر کێشە و گرفتێکدا پەیوەندی بکەن بە ژمارە تەلەفۆنی 07748134314 یان 07501224994
-            </div>
-        </div>
-    </div>
-
-    <script src="https://vjs.zencdn.net/7.20.3/video.js"></script>
-    
-    <script>
-        const GOOGLE_SHEETS_CHANNELS_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRgvWrahp_pwJWRnX4QCE4KmuhUb6gl5Rk_rDpjA2ODuCNH1nyLUcD-L0g0I6PrD45F0hb7odKi_zbW/pub?gid=250464113&single=true&output=csv";
-        const GOOGLE_SHEETS_MACS_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRgvWrahp_pwJWRnX4QCE4KmuhUb6gl5Rk_rDpjA2ODuCNH1nyLUcD-L0g0I6PrD45F0hb7odKi_zbW/pub?gid=0&single=true&output=csv";
-
-        function getDeviceMac() {
-            let mac = localStorage.getItem("ara_device_mac");
-            if (!mac) {
-                const hexDigits = "0123456789ABCDEF";
-                let macArr = [];
-                for (let i = 0; i < 6; i++) {
-                    macArr.push(hexDigits.charAt(Math.floor(Math.random() * 16)) + hexDigits.charAt(Math.floor(Math.random() * 16)));
-                }
-                mac = macArr.join(":");
-                localStorage.setItem("ara_device_mac", mac);
-            }
-            return mac.toUpperCase().trim();
-        }
-
-        const currentMac = getDeviceMac();
-        document.getElementById("deviceMac").innerText = currentMac;
-
-        const phone1 = "9647501224994";
-        const phone2 = "9647748134314";
-        const msgText = encodeURIComponent(`سڵاو، تکایە ئەم ئامێرە ئەکتیڤ بکە:\nMAC Address:\n${currentMac}`);
-        
-        document.getElementById("waLink1").href = `https://wa.me/${phone1}?text=${msgText}`;
-        document.getElementById("waLink2").href = `https://wa.me/${phone2}?text=${msgText}`;
-        document.getElementById("smsLink").href = `sms:${phone1}?body=${msgText}`;
-
-        function copyMac() {
-            navigator.clipboard.writeText(currentMac);
-            alert("ماک ئادرێسەکەت کۆپی کرا: " + currentMac);
-        }
-
-        let timerInterval;
-
-        function parseFlexibleDate(dateStr) {
-            if (!dateStr) return null;
-            dateStr = dateStr.trim().replace(/"/g, '');
-
-            let parsedDate = new Date(dateStr);
-            if (!isNaN(parsedDate.getTime())) return parsedDate;
-
-            let parts = dateStr.split(' ');
-            let datePart = parts[0];
-            let timePart = parts[1] || '23:59:59';
-            let year, month, day;
-
-            if (datePart.includes('/')) {
-                let dSplit = datePart.split('/');
-                if (dSplit[0].length === 4) { year = dSplit[0]; month = dSplit[1]; day = dSplit[2]; }
-                else { day = dSplit[0]; month = dSplit[1]; year = dSplit[2]; }
-            } else if (datePart.includes('-')) {
-                let dSplit = datePart.split('-');
-                if (dSplit[0].length === 4) { year = dSplit[0]; month = dSplit[1]; day = dSplit[2]; }
-                else { day = dSplit[0]; month = dSplit[1]; year = dSplit[2]; }
-            } else {
-                return null;
-            }
-
-            if (month && month.length === 1) month = '0' + month;
-            if (day && day.length === 1) day = '0' + day;
-
-            return new Date(`${year}-${month}-${day}T${timePart}`);
-        }
-
-        function startCountdown(expireDateStr) {
-            document.getElementById("trialBadge").style.display = "none";
-            document.getElementById("countdownBox").style.display = "flex";
-            
-            const expireDateObj = parseFlexibleDate(expireDateStr);
-            const expireTime = (expireDateObj && !isNaN(expireDateObj.getTime())) ? expireDateObj.getTime() : 0;
-
-            if (timerInterval) clearInterval(timerInterval);
-
-            timerInterval = setInterval(function() {
-                const now = new Date().getTime();
-                const distance = expireTime - now;
-
-                if (distance <= 0 || isNaN(distance)) {
-                    clearInterval(timerInterval);
-                    document.getElementById("countdownTimer").innerText = "ئێکسپایەر بووە";
-                    if (player) player.pause();
-                    document.getElementById("statusMsg").innerText = "ئابوونەکەت بەسەرچوو!";
-                    document.getElementById("authOverlay").style.display = "flex";
-                    return;
-                }
-
-                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-                document.getElementById("countdownTimer").innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-            }, 1000);
-        }
-
-        let trialInterval;
-        let cooldownInterval;
-
-        function startTrialTimer() {
-            document.getElementById("trialBadge").style.display = "flex";
-            const now = new Date().getTime();
-            let trialEnd = localStorage.getItem("ara_trial_end_time");
-
-            if (!trialEnd) {
-                trialEnd = now + (3 * 60 * 1000);
-                localStorage.setItem("ara_trial_end_time", trialEnd);
-            } else {
-                trialEnd = parseInt(trialEnd);
-            }
-
-            if (trialInterval) clearInterval(trialInterval);
-
-            trialInterval = setInterval(function() {
-                const currentTime = new Date().getTime();
-                const trialSecondsLeft = Math.ceil((trialEnd - currentTime) / 1000);
-
-                if (trialSecondsLeft <= 0) {
-                    clearInterval(trialInterval);
-                    document.getElementById("trialBadge").style.display = "none";
-                    if (player) player.pause();
-                    localStorage.removeItem("ara_trial_end_time");
-                    
-                    const cooldownEnd = new Date().getTime() + (5 * 60 * 1000);
-                    localStorage.setItem("ara_trial_cooldown", cooldownEnd);
-                    showCooldownOverlay(cooldownEnd);
-                } else {
-                    let mins = Math.floor(trialSecondsLeft / 60);
-                    let secs = trialSecondsLeft % 60;
-                    document.getElementById("trialTimer").innerText = 
-                        (mins < 10 ? "0" + mins : mins) + ":" + (secs < 10 ? "0" + secs : secs);
-                }
-            }, 1000);
-        }
-
-        function showCooldownOverlay(cooldownEnd) {
-            document.getElementById("authOverlay").style.display = "flex";
-            document.getElementById("cooldownNotice").style.display = "block";
-            document.getElementById("statusMsg").innerText = "کاتی ترایەڵی ٣ دەقیقەیی تەواو بوو!";
-
-            if (cooldownInterval) clearInterval(cooldownInterval);
-
-            cooldownInterval = setInterval(function() {
-                const now = new Date().getTime();
-                const distance = cooldownEnd - now;
-
-                if (distance <= 0) {
-                    clearInterval(cooldownInterval);
-                    localStorage.removeItem("ara_trial_cooldown");
-                    document.getElementById("cooldownNotice").style.display = "none";
-                    document.getElementById("authOverlay").style.display = "none";
-                    initPlayer();
-                    startTrialTimer();
-                    return;
-                }
-
-                const mins = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                const secs = Math.floor((distance % (1000 * 60)) / 1000);
-                document.getElementById("cooldownTimer").innerText = 
-                    (mins < 10 ? "0" + mins : mins) + ":" + (secs < 10 ? "0" + secs : secs);
-            }, 1000);
-        }
-
-        function parseCSVLine(text) {
-            let result = [], cell = '', inQuotes = false;
-            for (let i = 0; i < text.length; i++) {
-                let c = text[i];
-                if (c === '"') inQuotes = !inQuotes;
-                else if (c === ',' && !inQuotes) { result.push(cell.trim()); cell = ''; }
-                else cell += c;
-            }
-            result.push(cell.trim());
-            return result;
-        }
-
-        async function checkActivation(isManualCheck = false) {
-            const statusMsg = document.getElementById("statusMsg");
-            if (isManualCheck) statusMsg.innerText = "لە پشکنیندایە...";
-
-            let allowedDevices = [];
-
-            try {
-                const targetUrl = GOOGLE_SHEETS_MACS_URL + "&t=" + Date.now();
-                const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(targetUrl);
-
-                let response;
-                try { response = await fetch(proxyUrl); } 
-                catch(e) { response = await fetch(targetUrl); }
-
-                if (response && response.ok) {
-                    const csvText = await response.text();
-                    const lines = csvText.split("\n");
-                    lines.forEach((line, index) => {
-                        if (index === 0 || !line.trim()) return;
-                        const cols = parseCSVLine(line);
-                        if (cols.length >= 3) {
-                            allowedDevices.push({
-                                mac: cols[0].replace(/^"|"$/g, '').trim().toUpperCase(),
-                                expire: cols[2].replace(/^"|"$/g, '').trim()
-                            });
-                        }
-                    });
-                }
-            } catch (e) {
-                console.error("Error loading MACs from Google Sheets:", e);
-            }
-
-            const now = new Date().getTime();
-            const foundDevice = allowedDevices.find(item => item.mac === currentMac);
-
-            if (!foundDevice) {
-                if (isManualCheck) {
-                    statusMsg.innerText = "ئەم ماک ئادرێسە لە شیتەکەدا نەدۆزرایەوە!";
-                    statusMsg.style.color = "#ef4444";
-                } else {
-                    const storedCooldown = localStorage.getItem("ara_trial_cooldown");
-                    if (storedCooldown && parseInt(storedCooldown) > now) {
-                        showCooldownOverlay(parseInt(storedCooldown));
-                    } else {
-                        initPlayer();
-                        startTrialTimer();
-                    }
-                }
-                return false;
-            }
-
-            const expireDateObj = parseFlexibleDate(foundDevice.expire);
-            const expireTime = (expireDateObj && !isNaN(expireDateObj.getTime())) ? expireDateObj.getTime() : 0;
-
-            if (now > expireTime) {
-                statusMsg.innerText = "ئابوونەکەت بەسەرچوو!";
-                statusMsg.style.color = "#f59e0b";
-                document.getElementById("authOverlay").style.display = "flex";
-                return false;
-            }
-
-            if (trialInterval) clearInterval(trialInterval);
-            if (cooldownInterval) clearInterval(cooldownInterval);
-            localStorage.removeItem("ara_trial_cooldown");
-            localStorage.removeItem("ara_trial_end_time");
-            document.getElementById("cooldownNotice").style.display = "none";
-            document.getElementById("authOverlay").style.display = "none";
-            startCountdown(foundDevice.expire);
-            initPlayer();
-            return true;
-        }
-
-        var player;
-        let parsedCategorizedChannels = {};
-        let activeChannelElement = null;
-        let currentCategory = "";
-        let isSportsCategory = false;
-
-        function initPlayer() {
-            if (!player) {
-                player = videojs('ara-sport-player', {
-                    autoplay: true,
-                    controls: true,
-                    preload: 'auto',
-                    muted: false // دڵنیابوونەوە لەوەی کە بێدەنگ نەبێت (دەنگ و وێنە پێکەوە کاربکەن)
-                });
-
-                player.ready(function() {
-                    var watermark = document.createElement('div');
-                    watermark.className = 'vjs-watermark-logo';
-                    watermark.id = 'playerWatermark';
-                    watermark.innerHTML = `<div class="vjs-watermark-text">ARA SPORT <span>HD</span></div>`;
-                    this.el().appendChild(watermark);
-                    updateWatermarkVisibility();
-                });
-
-                player.on(['waiting', 'stalled'], function() { showStreamWaiting(true); });
-                player.on(['playing', 'canplay'], function() { showStreamWaiting(false); });
-
-                const cachedData = localStorage.getItem("cached_sheets_channels");
-                if (cachedData) {
-                    parsedCategorizedChannels = JSON.parse(cachedData);
-                    renderTabs();
-                }
-                
-                loadGoogleSheetsPlaylist();
-            }
-        }
-
-        function showStreamWaiting(isWaiting) {
-            const overlay = document.getElementById('streamStatusOverlay');
-            if (overlay) {
-                if (isWaiting) overlay.style.display = 'flex';
-                else overlay.style.display = 'none';
-            }
-        }
-
-        function updateWatermarkVisibility() {
-            const watermark = document.getElementById('playerWatermark');
-            if (watermark) {
-                if (isSportsCategory) {
-                    watermark.classList.add('show-watermark');
-                } else {
-                    watermark.classList.remove('show-watermark');
-                }
-            }
-        }
-
-        async function loadGoogleSheetsPlaylist() {
-            try {
-                const targetUrl = GOOGLE_SHEETS_CHANNELS_URL + "&t=" + Date.now();
-                const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(targetUrl);
-
-                let response;
-                try { response = await fetch(proxyUrl); } 
-                catch(e) { response = await fetch(targetUrl); }
-
-                if (response && response.ok) {
-                    const csvText = await response.text();
-                    const lines = csvText.split("\n");
-                    let categorized = {};
-
-                    lines.forEach((line, index) => {
-                        if (index === 0 || !line.trim()) return;
-                        const cols = parseCSVLine(line);
-                        if (cols.length >= 3) {
-                            let channelName = cols[0].replace(/^"|"$/g, '').trim();
-                            let channelUrl = cols[1].replace(/^"|"$/g, '').trim();
-                            let groupName = cols[2].replace(/^"|"$/g, '').trim() || "گشتی";
-
-                            if (!categorized[groupName]) {
-                                categorized[groupName] = [];
-                            }
-                            categorized[groupName].push({ name: channelName, url: channelUrl });
-                        }
-                    });
-
-                    if (Object.keys(categorized).length > 0) {
-                        parsedCategorizedChannels = categorized;
-                        localStorage.setItem("cached_sheets_channels", JSON.stringify(categorized));
-                        renderTabs();
-                    }
-                }
-            } catch (e) {
-                console.error("Error loading channels:", e);
-            }
-        }
-
-        function renderTabs() {
-            const tabsContainer = document.getElementById("categoryTabs");
-            tabsContainer.innerHTML = "";
-            let categories = Object.keys(parsedCategorizedChannels);
-
-            if (categories.length === 0) return;
-
-            // دیاریکردنی یەکەم گروپ و یەکەم کەناڵ ئەگەر هێشتا هەڵبژاردن نەکراوە
-            if (!currentCategory || !parsedCategorizedChannels[currentCategory]) {
-                currentCategory = categories[0];
-            }
-
-            categories.forEach(cat => {
-                let tab = document.createElement("div");
-                tab.className = `category-tab ${cat === currentCategory ? 'active' : ''}`;
-                tab.innerText = cat;
-                tab.onclick = function() {
-                    switchCategory(cat);
-                };
-                tabsContainer.appendChild(tab);
-            });
-
-            checkTabArrows();
-            renderChannelList(currentCategory);
-        }
-
-        function switchCategory(categoryName) {
-            currentCategory = categoryName;
-            
-            // نوێکردنەوەی تابی چالاک
-            const tabs = document.querySelectorAll('.category-tab');
-            tabs.forEach(tab => {
-                if (tab.innerText === categoryName) {
-                    tab.classList.add('active');
-                    tab.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-                } else {
-                    tab.classList.remove('active');
-                }
-            });
-
-            renderChannelList(categoryName);
-        }
-
-        function renderChannelList(categoryName) {
-            const listContainer = document.getElementById("playlist-items");
-            listContainer.innerHTML = "";
-
-            let channels = parsedCategorizedChannels[categoryName] || [];
-            isSportsCategory = categoryName.toLowerCase().includes('sport') || categoryName.includes('وەرزش');
-            updateWatermarkVisibility();
-
-            if (channels.length === 0) {
-                listContainer.innerHTML = `<div class="playlist-item">هیچ کەناڵێک نییە لەم گروپەدا</div>`;
-                return;
-            }
-
-            channels.forEach((ch, index) => {
-                let item = document.createElement("div");
-                item.className = "playlist-item";
-                item.innerHTML = `<span>${ch.name}</span>`;
-                item.onclick = function() {
-                    playChannel(ch.url, item);
-                };
-                listContainer.appendChild(item);
-
-                // ئەگەر یەکەم جارە ئەپەکە دەکرێتەوە و یەکەم کەناڵە، بەخێرایی بە دەنگ و وێنە دەستی پێبکات
-                if (categoryName === Object.keys(parsedCategorizedChannels)[0] && index === 0 && !player.currentSrc()) {
-                    playChannel(ch.url, item);
-                }
-            });
-        }
-
-        function playChannel(url, element) {
-            if (activeChannelElement) {
-                activeChannelElement.classList.remove("active");
-            }
-            activeChannelElement = element;
-            if (activeChannelElement) {
-                activeChannelElement.classList.add("active");
-            }
-
-            if (player) {
-                player.src({ type: 'application/x-mpegURL', src: url });
-                player.play().then(() => {
-                    player.muted(false); // دڵنیابوونەوە لە کارکردنی دەنگ
-                }).catch(err => {
-                    console.log("Autoplay blocked or error:", err);
-                });
-            }
-        }
-
-        function scrollTabs(direction) {
-            const container = document.getElementById("categoryTabs");
-            const scrollAmount = 150;
-            if (direction === 'right') {
-                container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-            } else {
-                container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-            }
-        }
-
-        function checkTabArrows() {
-            const container = document.getElementById("categoryTabs");
-            const arrowRight = document.getElementById("arrowRight");
-            const arrowLeft = document.getElementById("arrowLeft");
-
-            if (!container) return;
-
-            if (container.scrollWidth > container.clientWidth) {
-                if (container.scrollLeft > 10) {
-                    arrowLeft.classList.remove("hidden");
-                } else {
-                    arrowLeft.classList.add("hidden");
-                }
-
-                if (container.scrollLeft < (container.scrollWidth - container.clientWidth - 10)) {
-                    arrowRight.classList.remove("hidden");
-                } else {
-                    arrowRight.classList.add("hidden");
-                }
-            } else {
-                arrowRight.classList.add("hidden");
-                arrowLeft.classList.add("hidden");
-            }
-        }
-
-        window.onload = function() {
-            checkActivation(false);
-        };
-    </script>
-</body>
-</html>
+    <div id="authOverlay" class="auth-overlay" style="display: none;">
+        <div class="auth-card">
+            <h2>ئەکتیڤکردنی ئامێرەکەت</h2>
+            <div id="cooldownNotice" class="cooldown-box" style="display: none;">
+                تایمەری ترایەڵ تەواو بوو! تکایە <span id="cooldownTimer" style="font-weight: bold; color: #fff;">05:00</span> چاوەڕێ بکە بۆ ترایەڵی داهاتوو.
+            </div>
+            <p id="overlayIntroMsg">بۆ بینینی بەردەوامی پەخشەکە، تەواوی ماک ئادرێسەکەت بۆ ئەدمین بنێرە:</p>
+            <div class="mac-box">
+                <span id="deviceMac">باردەکرێت...</span>
+                <button class="copy-btn" onclick="copyMac()">کۆپی</button>
+            </div>
+            <div class="send-actions">
+                <div class="send-row">
+                    <a id="waLink1" href="#" target="_blank" class="send-btn whatsapp-btn"><i class="fab fa-whatsapp"></i> واتسئاپ 1</a>
+                    <a id="waLink2" href="#" target="_blank" class="send-btn whatsapp-btn" style="background: #15803d;"><i class="fab fa-whatsapp"></i> واتسئاپ 2</a>
+                </div>
+                <div class="send-row">
+                    <a id="smsLink" href="#" class="send-btn sms-btn"><i class="fas fa-comment-alt"></i> بە نامە (SMS)</a>
+                </div>
+            </div>
+            <button onclick="checkActivation(true)" class="auth-btn">پشکنینی ئەکتیڤبوون</button>
+            <div id="statusMsg" class="status-msg">ئەم ئامێرە ئەکتیڤ نەکراوە!</div>
+            <div class="contact-box">
+                بۆ زانیاری زیاتر یان نوێکردنەوەی سیستمەکە پەیوەندی بکەن بە:
+                <div class="contact-phones">07501224994 &nbsp;|&nbsp; 07748134314</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-wrapper">
+        <div class="player-header">
+            <div class="brand-title">ARA TV</div>
+            <div class="header-right">
+                <div id="trialBadge" class="trial-badge" style="display: none;">
+                    ⏱️ <span id="trialTimer">03:00</span>
+                </div>
+                <div id="countdownBox" class="expire-countdown-badge" style="display: none;">
+                    ⏳ <span id="countdownTimer">00d 00h 00m</span>
+                </div>
+                <div class="live-badge">ڕاستەوخۆ</div>
+            </div>
+        </div>
+
+        <div class="content-area">
+            <div class="video-container">
+                <video id="ara-sport-player" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="auto" crossorigin="anonymous" playsinline></video>
+                <div id="streamStatusOverlay" class="stream-status-overlay">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </div>
+            </div>
+
+            <div class="playlist-sidebar">
+                <div class="category-tabs-wrapper">
+                    <button class="scroll-arrow right hidden" id="arrowRight" onclick="scrollTabs('right')"><i class="fas fa-chevron-right"></i></button>
+                    <div id="categoryTabs" class="category-tabs" onscroll="checkTabArrows()"></div>
+                    <button class="scroll-arrow left hidden" id="arrowLeft" onclick="scrollTabs('left')"><i class="fas fa-chevron-left"></i></button>
+                </div>
+                
+                <div class="playlist-items-wrapper">
+                    <div id="playlist-items">
+                        <div class="playlist-item">تکایە چاوەڕێ بکە...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ticker-bar">
+            <div class="ticker-text">
+                بەخێر بێن بۆ سیستمی پەخشی ARA TV، تکایە لەکاتی بوونی هەر کێشە و گرفتێکدا پەیوەندی بکەن بە ژمارە تەلەفۆنی 07748134314 یان 07501224994
+            </div>
+        </div>
+    </div>
+
+    <script src="https://vjs.zencdn.net/7.20.3/video.js"></script>
+    
+    <script>
+        const GOOGLE_SHEETS_CHANNELS_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRgvWrahp_pwJWRnX4QCE4KmuhUb6gl5Rk_rDpjA2ODuCNH1nyLUcD-L0g0I6PrD45F0hb7odKi_zbW/pub?gid=250464113&single=true&output=csv";
+        const GOOGLE_SHEETS_MACS_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRgvWrahp_pwJWRnX4QCE4KmuhUb6gl5Rk_rDpjA2ODuCNH1nyLUcD-L0g0I6PrD45F0hb7odKi_zbW/pub?gid=0&single=true&output=csv";
+
+        function getDeviceMac() {
+            let mac = localStorage.getItem("ara_device_mac");
+            if (!mac) {
+                const hexDigits = "0123456789ABCDEF";
+                let macArr = [];
+                for (let i = 0; i < 6; i++) {
+                    macArr.push(hexDigits.charAt(Math.floor(Math.random() * 16)) + hexDigits.charAt(Math.floor(Math.random() * 16)));
+                }
+                mac = macArr.join(":");
+                localStorage.setItem("ara_device_mac", mac);
+            }
+            return mac.toUpperCase().trim();
+        }
+
+        const currentMac = getDeviceMac();
+        document.getElementById("deviceMac").innerText = currentMac;
+
+        const phone1 = "9647501224994";
+        const phone2 = "9647748134314";
+        const msgText = encodeURIComponent(`سڵاو، تکایە ئەم ئامێرە ئەکتیڤ بکە:\nMAC Address:\n${currentMac}`);
+        
+        document.getElementById("waLink1").href = `https://wa.me/${phone1}?text=${msgText}`;
+        document.getElementById("waLink2").href = `https://wa.me/${phone2}?text=${msgText}`;
+        document.getElementById("smsLink").href = `sms:${phone1}?body=${msgText}`;
+
+        function copyMac() {
+            navigator.clipboard.writeText(currentMac);
+            alert("ماک ئادرێسەکەت کۆپی کرا: " + currentMac);
+        }
+
+        let timerInterval;
+
+        function parseFlexibleDate(dateStr) {
+            if (!dateStr) return null;
+            dateStr = dateStr.trim().replace(/"/g, '');
+
+            let parsedDate = new Date(dateStr);
+            if (!isNaN(parsedDate.getTime())) return parsedDate;
+
+            let parts = dateStr.split(' ');
+            let datePart = parts[0];
+            let timePart = parts[1] || '23:59:59';
+            let year, month, day;
+
+            if (datePart.includes('/')) {
+                let dSplit = datePart.split('/');
+                if (dSplit[0].length === 4) { year = dSplit[0]; month = dSplit[1]; day = dSplit[2]; }
+                else { day = dSplit[0]; month = dSplit[1]; year = dSplit[2]; }
+            } else if (datePart.includes('-')) {
+                let dSplit = datePart.split('-');
+                if (dSplit[0].length === 4) { year = dSplit[0]; month = dSplit[1]; day = dSplit[2]; }
+                else { day = dSplit[0]; month = dSplit[1]; year = dSplit[2]; }
+            } else {
+                return null;
+            }
+
+            if (month && month.length === 1) month = '0' + month;
+            if (day && day.length === 1) day = '0' + day;
+
+            return new Date(`${year}-${month}-${day}T${timePart}`);
+        }
+
+        function startCountdown(expireDateStr) {
+            document.getElementById("trialBadge").style.display = "none";
+            document.getElementById("countdownBox").style.display = "flex";
+            
+            const expireDateObj = parseFlexibleDate(expireDateStr);
+            const expireTime = (expireDateObj && !isNaN(expireDateObj.getTime())) ? expireDateObj.getTime() : 0;
+
+            if (timerInterval) clearInterval(timerInterval);
+
+            timerInterval = setInterval(function() {
+                const now = new Date().getTime();
+                const distance = expireTime - now;
+
+                if (distance <= 0 || isNaN(distance)) {
+                    clearInterval(timerInterval);
+                    document.getElementById("countdownTimer").innerText = "ئێکسپایەر بووە";
+                    if (player) player.pause();
+                    document.getElementById("statusMsg").innerText = "ئابوونەکەت بەسەرچوو!";
+                    document.getElementById("authOverlay").style.display = "flex";
+                    return;
+                }
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                document.getElementById("countdownTimer").innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+            }, 1000);
+        }
+
+        let trialInterval;
+        let cooldownInterval;
+
+        function startTrialTimer() {
+            document.getElementById("trialBadge").style.display = "flex";
+            const now = new Date().getTime();
+            let trialEnd = localStorage.getItem("ara_trial_end_time");
+
+            if (!trialEnd) {
+                trialEnd = now + (3 * 60 * 1000);
+                localStorage.setItem("ara_trial_end_time", trialEnd);
+            } else {
+                trialEnd = parseInt(trialEnd);
+            }
+
+            if (trialInterval) clearInterval(trialInterval);
+
+            trialInterval = setInterval(function() {
+                const currentTime = new Date().getTime();
+                const trialSecondsLeft = Math.ceil((trialEnd - currentTime) / 1000);
+
+                if (trialSecondsLeft <= 0) {
+                    clearInterval(trialInterval);
+                    document.getElementById("trialBadge").style.display = "none";
+                    if (player) player.pause();
+                    localStorage.removeItem("ara_trial_end_time");
+                    
+                    const cooldownEnd = new Date().getTime() + (5 * 60 * 1000);
+                    localStorage.setItem("ara_trial_cooldown", cooldownEnd);
+                    showCooldownOverlay(cooldownEnd);
+                } else {
+                    let mins = Math.floor(trialSecondsLeft / 60);
+                    let secs = trialSecondsLeft % 60;
+                    document.getElementById("trialTimer").innerText = 
+                        (mins < 10 ? "0" + mins : mins) + ":" + (secs < 10 ? "0" + secs : secs);
+                }
+            }, 1000);
+        }
+
+        function showCooldownOverlay(cooldownEnd) {
+            document.getElementById("authOverlay").style.display = "flex";
+            document.getElementById("cooldownNotice").style.display = "block";
+            document.getElementById("statusMsg").innerText = "کاتی ترایەڵی ٣ دەقیقەیی تەواو بوو!";
+
+            if (cooldownInterval) clearInterval(cooldownInterval);
+
+            cooldownInterval = setInterval(function() {
+                const now = new Date().getTime();
+                const distance = cooldownEnd - now;
+
+                if (distance <= 0) {
+                    clearInterval(cooldownInterval);
+                    localStorage.removeItem("ara_trial_cooldown");
+                    document.getElementById("cooldownNotice").style.display = "none";
+                    document.getElementById("authOverlay").style.display = "none";
+                    initPlayer();
+                    startTrialTimer();
+                    return;
+                }
+
+                const mins = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const secs = Math.floor((distance % (1000 * 60)) / 1000);
+                document.getElementById("cooldownTimer").innerText = 
+                    (mins < 10 ? "0" + mins : mins) + ":" + (secs < 10 ? "0" + secs : secs);
+            }, 1000);
+        }
+
+        function parseCSVLine(text) {
+            let result = [], cell = '', inQuotes = false;
+            for (let i = 0; i < text.length; i++) {
+                let c = text[i];
+                if (c === '"') inQuotes = !inQuotes;
+                else if (c === ',' && !inQuotes) { result.push(cell.trim()); cell = ''; }
+                else cell += c;
+            }
+            result.push(cell.trim());
+            return result;
+        }
+
+        async function checkActivation(isManualCheck = false) {
+            const statusMsg = document.getElementById("statusMsg");
+            if (isManualCheck) statusMsg.innerText = "لە پشکنیندایە...";
+
+            let allowedDevices = [];
+
+            try {
+                const targetUrl = GOOGLE_SHEETS_MACS_URL + "&t=" + Date.now();
+                const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(targetUrl);
+
+                let response;
+                try { response = await fetch(proxyUrl); } 
+                catch(e) { response = await fetch(targetUrl); }
+
+                if (response && response.ok) {
+                    const csvText = await response.text();
+                    const lines = csvText.split("\n");
+                    lines.forEach((line, index) => {
+                        if (index === 0 || !line.trim()) return;
+                        const cols = parseCSVLine(line);
+                        if (cols.length >= 3) {
+                            allowedDevices.push({
+                                mac: cols[0].replace(/^"|"$/g, '').trim().toUpperCase(),
+                                expire: cols[2].replace(/^"|"$/g, '').trim()
+                            });
+                        }
+                    });
+                }
+            } catch (e) {
+                console.error("Error loading MACs from Google Sheets:", e);
+            }
+
+            const now = new Date().getTime();
+            const foundDevice = allowedDevices.find(item => item.mac === currentMac);
+
+            if (!foundDevice) {
+                if (isManualCheck) {
+                    statusMsg.innerText = "ئەم ماک ئادرێسە لە شیتەکەدا نەدۆزرایەوە!";
+                    statusMsg.style.color = "#ef4444";
+                } else {
+                    const storedCooldown = localStorage.getItem("ara_trial_cooldown");
+                    if (storedCooldown && parseInt(storedCooldown) > now) {
+                        showCooldownOverlay(parseInt(storedCooldown));
+                    } else {
+                        initPlayer();
+                        startTrialTimer();
+                    }
+                }
+                return false;
+            }
+
+            const expireDateObj = parseFlexibleDate(foundDevice.expire);
+            const expireTime = (expireDateObj && !isNaN(expireDateObj.getTime())) ? expireDateObj.getTime() : 0;
+
+            if (now > expireTime) {
+                statusMsg.innerText = "ئابوونەکەت بەسەرچوو!";
+                statusMsg.style.color = "#f59e0b";
+                document.getElementById("authOverlay").style.display = "flex";
+                return false;
+            }
+
+            if (trialInterval) clearInterval(trialInterval);
+            if (cooldownInterval) clearInterval(cooldownInterval);
+            localStorage.removeItem("ara_trial_cooldown");
+            localStorage.removeItem("ara_trial_end_time");
+            document.getElementById("cooldownNotice").style.display = "none";
+            document.getElementById("authOverlay").style.display = "none";
+            startCountdown(foundDevice.expire);
+            initPlayer();
+            return true;
+        }
+
+        var player;
+        let parsedCategorizedChannels = {};
+        let activeChannelElement = null;
+        let currentCategory = "";
+        let isSportsCategory = false;
+        let activeRecordings = {};
+
+        function initPlayer() {
+            if (!player) {
+                player = videojs('ara-sport-player', {
+                    autoplay: true,
+                    controls: true,
+                    preload: 'auto'
+                });
+
+                player.ready(function() {
+                    var watermark = document.createElement('div');
+                    watermark.className = 'vjs-watermark-logo';
+                    watermark.id = 'playerWatermark';
+                    watermark.innerHTML = `<div class="vjs-watermark-text">ARA SPORT <span>HD</span></div>`;
+                    this.el().appendChild(watermark);
+                    updateWatermarkVisibility();
+                });
+
+                player.on(['waiting', 'stalled'], function() { showStreamWaiting(true); });
+                player.on(['playing', 'canplay'], function() { showStreamWaiting(false); });
+
+                const cachedData = localStorage.getItem("cached_sheets_channels");
+                if (cachedData) {
+                    parsedCategorizedChannels = JSON.parse(cachedData);
+                    renderTabs();
+                }
+                
+                loadGoogleSheetsPlaylist();
+            }
+        }
+
+        function showStreamWaiting(isWaiting) {
+            const overlay = document.getElementById('streamStatusOverlay');
+            if (overlay) {
+                if (isWaiting) overlay.style.display = 'flex';
+                else overlay.style.display = 'none';
+            }
+        }
+
+        function updateWatermarkVisibility() {
+            const watermark = document.getElementById('playerWatermark');
+            if (watermark) {
+                if (isSportsCategory) {
+                    watermark.classList.add('show-watermark');
+                } else {
+                    watermark.classList.remove('show-watermark');
+                }
+            }
+        }
+
+        async function loadGoogleSheetsPlaylist() {
+            try {
+                const targetUrl = GOOGLE_SHEETS_CHANNELS_URL + "&t=" + Date.now();
+                const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(targetUrl);
+
+                let response;
+       
