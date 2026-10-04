@@ -173,7 +173,7 @@ body{height:100vh;height:100dvh;padding:max(10px,env(safe-area-inset-top)) 10px 
 /* ---- channel logos in the list ---- */
 .ch-left{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
 .ch-logo{width:38px;height:38px;flex-shrink:0;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:var(--ac);font-size:15px}
-.ch-logo img{width:100%;height:100%;object-fit:cover;display:block;background:transparent;padding:0}
+.ch-logo img{width:100%;height:100%;object-fit:cover;display:block;background:transparent;padding:0;transform:scale(1.35)}
 </style>
 </head>
 <body>
@@ -461,27 +461,45 @@ function findCode(lines,W,H){
  }
  return null;
 }
+let codeNeedFull=false,codeFullMiss=0,codeLoopOn=false;
+/* continuous loop: next scan starts 0.1s after the previous one finishes */
+function codeLoop(){
+ if(codeLoopOn)return;codeLoopOn=true;
+ const run=async()=>{try{await codeScan()}catch(e){}setTimeout(run,100)};
+ run();
+}
 async function codeScan(){
- if(codeBox&&(++codeTick%3))return;
- if(codeBusy||!player||player.paused()||document.hidden||(codeFail[currentUrl]||0)>=2)return;
+ if(!player||player.paused()||document.hidden||(codeFail[currentUrl]||0)>=2)return;
  let v;try{v=player.tech(true).el()}catch(e){return}
  if(!v||!v.videoWidth)return;
- const url=currentUrl;codeBusy=true;
+ const url=currentUrl,vw=v.videoWidth,vh=v.videoHeight;
  try{
-  const k=Math.min(1,1280/v.videoWidth),W=Math.round(v.videoWidth*k),H=Math.round(v.videoHeight*k);
+  // code already known: scan only a small area around it (fast, follows it if it moves)
+  const region=!!codeBox&&!codeNeedFull;
+  let sx=0,sy=0,sw=vw,sh=vh;
+  if(region){
+   const bw=codeBox.x1-codeBox.x0,bh=codeBox.y1-codeBox.y0;
+   const x0=Math.max(0,codeBox.x0-bw*.35),x1=Math.min(1,codeBox.x1+bw*.35),y0=Math.max(0,codeBox.y0-bh*1.2),y1=Math.min(1,codeBox.y1+bh*1.2);
+   sx=x0*vw;sy=y0*vh;sw=(x1-x0)*vw;sh=(y1-y0)*vh;
+  }
+  const k=region?Math.min(3,Math.max(1,600/sw)):Math.min(1,1280/vw),W=Math.round(sw*k),H=Math.round(sh*k);
   const cv=document.createElement("canvas");cv.width=W;cv.height=H;
   const c=cv.getContext("2d",{willReadFrequently:true});
-  c.drawImage(v,0,0,W,H);c.getImageData(0,0,1,1); // throws when the stream has no CORS
+  c.drawImage(v,sx,sy,sw,sh,0,0,W,H);c.getImageData(0,0,1,1); // throws when the stream has no CORS
   const w=await getCodeWorker(),r=await w.recognize(cv);
-  if(url!==currentUrl){codeBusy=false;return}
+  if(url!==currentUrl)return;
   const f=findCode((r.data&&r.data.lines)||[],W,H);
-  if(f){codeBox=f;codeMiss=0;saveCodeBox(url,f)}
-  else if(codeBox&&++codeMiss>=3){codeBox=null;saveCodeBox(url,null)}
+  if(f){
+   // convert back to whole-picture fractions
+   codeBox={x0:(sx+f.x0*sw)/vw,y0:(sy+f.y0*sh)/vh,x1:(sx+f.x1*sw)/vw,y1:(sy+f.y1*sh)/vh};
+   codeMiss=0;codeFullMiss=0;codeNeedFull=false;saveCodeBox(url,codeBox);
+  }else if(codeBox){
+   if(region){if(++codeMiss>=3){codeMiss=0;codeNeedFull=true}} // not in its area: look at the whole picture
+   else if(++codeFullMiss>=3){codeBox=null;codeFullMiss=0;codeNeedFull=false;saveCodeBox(url,null)} // really gone: remove cover
+  }
   positionWatermark();
  }catch(e){codeFail[url]=(codeFail[url]||0)+1}
- codeBusy=false;
 }
-setInterval(codeScan,5000);
 function positionCover(left,top,dw,dh){
  const el=$("codeCover");if(!el)return;
  if(!codeBox){el.style.display="none";return}
@@ -647,12 +665,11 @@ function playTs(url){
  if(p&&p.catch)p.catch(()=>{v.muted=true;const q=me.play();if(q&&q.catch)q.catch(()=>{})});
 }
 function playChannel(ch){
- currentUrl=ch.url;codeBox=loadCodeBoxes()[ch.url]||null;codeMiss=0;isSports=/sport|وەرزش|سپۆرت|ریاضە|bein|ڕیاضە/i.test(ch.cat);updateWatermark();
+ currentUrl=ch.url;codeBox=loadCodeBoxes()[ch.url]||null;codeMiss=0;codeNeedFull=false;codeFullMiss=0;codeLoop();isSports=/sport|وەرزش|سپۆرت|ریاضە|bein|ڕیاضە/i.test(ch.cat);updateWatermark();
  ocrState=null;ocrMiss=0;ocrFails=0;if(!ocrTimer)ocrTimer=setInterval(ocrCheck,4000);setTimeout(ocrCheck,2500);
  const kind=detectType(ch.url);
  showWait(true);tsRetries=0;
- player.one("playing",()=>setTimeout(codeScan,1000));
- // remove the previous channel's fallback handler
+  // remove the previous channel's fallback handler
  if(hlsErrHandler){player.off("error",hlsErrHandler);hlsErrHandler=null}
  destroyTs();
  player.muted(false);
