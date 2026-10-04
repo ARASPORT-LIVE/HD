@@ -246,7 +246,7 @@ body{height:100vh;height:100dvh;padding:max(10px,env(safe-area-inset-top)) 10px 
 const CH_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vRgvWrahp_pwJWRnX4QCE4KmuhUb6gl5Rk_rDpjA2ODuCNH1nyLUcD-L0g0I6PrD45F0hb7odKi_zbW/pub?gid=250464113&single=true&output=csv";
 const MAC_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vRgvWrahp_pwJWRnX4QCE4KmuhUb6gl5Rk_rDpjA2ODuCNH1nyLUcD-L0g0I6PrD45F0hb7odKi_zbW/pub?gid=0&single=true&output=csv";
 /* ---------- Cloudflare Worker proxy (CORS + http -> https) ---------- */
-const PROXY="https://ara-proxy.NAME.workers.dev/?url=";   // <-- replace with YOUR worker address
+const PROXY="https://ara-proxy.xrmaybatam.workers.dev/?url=";
 const needProxy=u=>/^http:\/\//i.test(u)||/storelink\.pro/i.test(u);
 const pxy=u=>PROXY+encodeURIComponent(u);
 let currentSrc="";
