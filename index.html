@@ -235,6 +235,8 @@ body{height:100vh;height:100dvh;padding:max(10px,env(safe-area-inset-top)) 10px 
 </div>
 
 <script src="https://vjs.zencdn.net/7.20.3/video.js"></script>
+<!-- mpegts.js: plays raw MPEG-TS (.ts) live streams -->
+<script src="https://cdn.jsdelivr.net/npm/mpegts.js@1.7.3/dist/mpegts.min.js"></script>
 <script>
 const CH_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vRgvWrahp_pwJWRnX4QCE4KmuhUb6gl5Rk_rDpjA2ODuCNH1nyLUcD-L0g0I6PrD45F0hb7odKi_zbW/pub?gid=250464113&single=true&output=csv";
 const MAC_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vRgvWrahp_pwJWRnX4QCE4KmuhUb6gl5Rk_rDpjA2ODuCNH1nyLUcD-L0g0I6PrD45F0hb7odKi_zbW/pub?gid=0&single=true&output=csv";
@@ -301,7 +303,7 @@ function startTrialTimer(){
   const left=Math.ceil((end-Date.now())/1000);
   if(left<=0){
    clearInterval(trialInterval);trialInterval=null;$("trialBadge").style.display="none";
-   if(player)player.pause();ls("ara_trial_end_time",null);
+   if(player)player.pause();destroyTs();ls("ara_trial_end_time",null);
    const ce=Date.now()+300000;ls("ara_trial_cooldown",ce);showCooldownOverlay(ce);
   }else $("trialTimer").innerText=pad(Math.floor(left/60))+":"+pad(left%60);
  },1000);
@@ -332,13 +334,13 @@ async function checkActivation(manual=false,silent=false){
  const now=Date.now(),dev=list.find(x=>x.mac===currentMac);
  if(!dev){
   if(silent)return false;
-  if(startedFromCache){startedFromCache=false;activated=false;ls("ara_auth_exp",null);if(player)player.pause();$("authOverlay").style.display="flex";st.innerText="ئەم ماک ئادرێسە لە شیتەکەدا نەدۆزرایەوە!";return false}
+  if(startedFromCache){startedFromCache=false;activated=false;ls("ara_auth_exp",null);if(player)player.pause();destroyTs();$("authOverlay").style.display="flex";st.innerText="ئەم ماک ئادرێسە لە شیتەکەدا نەدۆزرایەوە!";return false}
   if(manual){st.innerText="ئەم ماک ئادرێسە لە شیتەکەدا نەدۆزرایەوە!";st.style.color="#ef4444"}
   else{const c=parseInt(ls("ara_trial_cooldown"))||0;if(c>now)showCooldownOverlay(c);else{initPlayer();startTrialTimer()}}
   return false;
  }
  const d=parseFlexibleDate(dev.expire),exp=d&&!isNaN(d)?d.getTime():0;
- if(now>exp){activated=false;if(silent)return false;ls("ara_auth_exp",null);st.innerText="ئابوونەکەت بەسەرچوو!";st.style.color="#f59e0b";if(player)player.pause();$("authOverlay").style.display="flex";return false}
+ if(now>exp){activated=false;if(silent)return false;ls("ara_auth_exp",null);st.innerText="ئابوونەکەت بەسەرچوو!";st.style.color="#f59e0b";if(player)player.pause();destroyTs();$("authOverlay").style.display="flex";return false}
  clearInterval(trialInterval);trialInterval=null;clearInterval(cooldownInterval);
  ls("ara_trial_cooldown",null);ls("ara_trial_end_time",null);ls("ara_auth_exp",dev.expire);
  $("cooldownNotice").style.display="none";$("authOverlay").style.display="none";
@@ -356,6 +358,8 @@ function initPlayer(){
  player.ready(function(){
   const w=document.createElement("div");w.className="vjs-watermark-logo";w.id="playerWatermark";
   w.innerHTML='<div class="vjs-watermark-text">ARA SPORT <span>HD</span></div><div class="vjs-live-tag"><i></i>LIVE</div>';this.el().appendChild(w);(()=>{const cc=document.createElement("div");cc.id="codeCover";cc.className="code-cover";cc.innerHTML="ARA SPORT&nbsp;<span>HD</span>";this.el().appendChild(cc)})();positionWatermark();if(window.ResizeObserver)new ResizeObserver(positionWatermark).observe(this.el());this.on("loadedmetadata",positionWatermark);this.on(["loadedmetadata","durationchange","playing"],updateLive);try{this.tech(true).el().addEventListener("resize",positionWatermark)}catch(e){}
+  // raw <video> events, so the spinner also hides for TS streams (mpegts.js)
+  try{const tv=this.tech(true).el();["playing","canplay"].forEach(ev=>tv.addEventListener(ev,()=>{showWait(false);positionWatermark();updateLive()}));["waiting","stalled"].forEach(ev=>tv.addEventListener(ev,()=>showWait(true)))}catch(e){}
  });
  bindFab();player.on(["waiting","stalled"],()=>showWait(true));
  player.on(["playing","canplay"],()=>showWait(false));
@@ -420,6 +424,7 @@ async function ocrCheck(){
 let ocrMiss=0;
 function isLive(){
  if(isSports&&ocrState!==null)return ocrState;
+ if(tsPlayer)return true; // raw TS streams are always live
  try{
   if(player.duration()===Infinity)return true;
   if(player.liveTracker&&player.liveTracker.isLive&&player.liveTracker.isLive())return true;
@@ -584,15 +589,81 @@ $("playlist-items").addEventListener("click",e=>{
  if(e.target.closest("[data-rec]")){toggleRec(ch);return}
  playChannel(ch);closeDrawer();
 });
+
+/* ---------- stream engine: HLS (video.js) + MPEG-TS (mpegts.js) + MP4 ---------- */
+let tsPlayer=null,hlsErrHandler=null,tsRetries=0;
+
+function destroyTs(){
+ if(tsPlayer){
+  try{tsPlayer.pause();tsPlayer.unload();tsPlayer.detachMediaElement();tsPlayer.destroy()}catch(e){}
+  tsPlayer=null;
+ }
+}
+// decide how to play a link: "hls" | "mp4" | "ts"
+function detectType(url){
+ const u=url.toLowerCase(),path=u.split("?")[0];
+ if(/m3u8/.test(u))return "hls";
+ if(/\.mp4$/.test(path))return "mp4";
+ if(/\.(ts|mpegts)$/.test(path)||/extension=ts|output=ts|type=ts|\/play\/live\.php/.test(u))return "ts";
+ // no file extension (e.g. /user/pass/12345): most IPTV panels serve MPEG-TS
+ const last=path.split("/").pop();
+ if(!/\.[a-z0-9]{2,5}$/.test(last))return "ts";
+ return "hls";
+}
+function playTs(url){
+ destroyTs();
+ let v;try{v=player.tech(true).el()}catch(e){return}
+ if(!window.mpegts||!mpegts.getFeatureList().mseLivePlayback){
+  // browser without MSE (old iOS Safari): try native playback
+  player.src({src:url,type:"video/mp2t"});
+  const p=player.play();if(p&&p.catch)p.catch(()=>{});
+  return;
+ }
+ tsPlayer=mpegts.createPlayer(
+  {type:"mpegts",isLive:true,url:url},
+  {enableWorker:true,liveBufferLatencyChasing:true,liveBufferLatencyMaxLatency:6,liveBufferLatencyMinRemain:1,lazyLoadMaxDuration:30,autoCleanupSourceBuffer:true}
+ );
+ const me=tsPlayer;
+ me.attachMediaElement(v);
+ me.load();
+ me.on(mpegts.Events.ERROR,()=>{
+  // retry a few times, then give up
+  if(tsPlayer!==me||currentUrl!==url||++tsRetries>3)return;
+  setTimeout(()=>{if(tsPlayer===me&&currentUrl===url){try{me.unload();me.load();const q=me.play();if(q&&q.catch)q.catch(()=>{})}catch(e){}}},2000);
+ });
+ const p=me.play();
+ if(p&&p.catch)p.catch(()=>{v.muted=true;const q=me.play();if(q&&q.catch)q.catch(()=>{})});
+}
 function playChannel(ch){
  currentUrl=ch.url;codeBox=loadCodeBoxes()[ch.url]||null;codeMiss=0;isSports=/sport|وەرزش|سپۆرت|ریاضە|bein|ڕیاضە/i.test(ch.cat);updateWatermark();
- ocrState=null;ocrMiss=0;ocrFails=0;if(!ocrTimer)ocrTimer=setInterval(ocrCheck,4000);setTimeout(ocrCheck,2500);updateLive();
- const type=/\.m3u8|\/hls|m3u8/i.test(ch.url)?"application/x-mpegURL":/\.mp4/i.test(ch.url)?"video/mp4":"application/x-mpegURL";
- showWait(true);
+ ocrState=null;ocrMiss=0;ocrFails=0;if(!ocrTimer)ocrTimer=setInterval(ocrCheck,4000);setTimeout(ocrCheck,2500);
+ const kind=detectType(ch.url);
+ showWait(true);tsRetries=0;
  player.one("playing",()=>setTimeout(codeScan,1000));
- player.muted(false);player.src({src:ch.url,type});
- const p=player.play();
- if(p&&p.catch)p.catch(()=>{player.muted(true);const q=player.play();if(q&&q.catch)q.catch(()=>{})}); // fallback: muted autoplay, unmuted on first tap
+ // remove the previous channel's fallback handler
+ if(hlsErrHandler){player.off("error",hlsErrHandler);hlsErrHandler=null}
+ destroyTs();
+ player.muted(false);
+ if(kind==="ts"){
+  player.pause();
+  playTs(ch.url);
+ }else{
+  player.src({src:ch.url,type:kind==="mp4"?"video/mp4":"application/x-mpegURL"});
+  const p=player.play();
+  if(p&&p.catch)p.catch(()=>{player.muted(true);const q=player.play();if(q&&q.catch)q.catch(()=>{})}); // fallback: muted autoplay, unmuted on first tap
+  if(kind==="hls"){
+   // if HLS fails, the link may really be a raw TS stream: try it that way once
+   const url=ch.url;
+   hlsErrHandler=()=>{
+    player.off("error",hlsErrHandler);hlsErrHandler=null;
+    if(currentUrl!==url)return;
+    try{player.error(null)}catch(e){}
+    player.pause();playTs(url);
+   };
+   player.on("error",hlsErrHandler);
+  }
+ }
+ updateLive();
  document.querySelectorAll(".playlist-item").forEach(x=>x.classList.toggle("active",channels[x.dataset.i]&&channels[x.dataset.i].url===ch.url));
 }
 
@@ -681,11 +752,11 @@ const isIOS=()=>/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platfo
 $("iosClose").addEventListener("click",()=>$("iosGuide").classList.remove("show"));
 $("iosGuide").addEventListener("click",e=>{if(e.target.id==="iosGuide")$("iosGuide").classList.remove("show")});
 $("installBtn").addEventListener("click",async()=>{
- // ئۆفلاین: هیچ نەکاتەوە، تەنها پەیامی ئینتەرنێت
+ // offline: only show the internet message
  if(!navigator.onLine){alert("تکایە ئینتەرنێتەکەت کارا بکە");return}
- // ئایفۆن: ئەپڵ ڕێگە نادات ڕاستەوخۆ زیاد بکرێت، بۆیە ڕێنمایی ناو ئەپەکە نیشان دەدرێت
+ // iPhone: Apple does not allow direct install, so show the in-app guide
  if(isIOS()){$("iosGuide").classList.add("show");return}
- // ئەندرۆید: ئەگەر براوسەر هێشتا ئامادە نەبوو، تۆزێک چاوەڕێ بکە
+ // Android: if the browser is not ready yet, wait a moment
  if(!dip){
   await new Promise(r=>{
    window.addEventListener("beforeinstallprompt",()=>r(),{once:true});
