@@ -173,7 +173,8 @@ body{height:100vh;height:100dvh;padding:max(10px,env(safe-area-inset-top)) 10px 
 /* ---- channel logos in the list ---- */
 .ch-left{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
 .ch-logo{width:38px;height:38px;flex-shrink:0;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:var(--ac);font-size:15px}
-.ch-logo img{width:100%;height:100%;object-fit:cover;display:block;background:transparent;padding:0;transform:scale(1.35)}
+.ch-logo img{width:100%;height:100%;object-fit:cover;display:block;background:transparent;padding:0}
+.ch-logo img.raw{transform:scale(2.1)}
 </style>
 </head>
 <body>
@@ -551,7 +552,7 @@ function setData(list,fromCache){
  channels=list;categories=groupList();
  if(!categories.includes(currentCat))currentCat=categories[0];
  renderTabs();renderChannels();
- if(!currentUrl&&list.length)playChannel(channels[allOrder()[0]]);
+ if(!currentUrl&&list.length)playChannel(channels.find(c=>/amozhgary|ئامۆژگاری/i.test(c.name))||channels[allOrder()[0]]);
 }
 async function loadPlaylist(){
  try{
@@ -560,6 +561,47 @@ async function loadPlaylist(){
   const changed=JSON.stringify(list)!==ls("cached_sheets_channels");
   if(changed){ls("cached_sheets_channels",JSON.stringify(list));setData(list)}
  }catch(e){if(!channels.length)$("playlist-items").innerHTML='<div class="playlist-item">هەڵە لە بارکردنی لیستی کەناڵەکان</div>'}
+}
+/* ---------- channel logos: auto-trim white margins so the logo fills the frame ---------- */
+const logoCache={},LOGO_PH='<i class="fas fa-tv"></i>';
+function trimLogo(im){
+ const k=Math.min(1,256/Math.max(im.naturalWidth,im.naturalHeight)),w=Math.max(1,Math.round(im.naturalWidth*k)),h=Math.max(1,Math.round(im.naturalHeight*k));
+ const cv=document.createElement("canvas");cv.width=w;cv.height=h;
+ const c=cv.getContext("2d",{willReadFrequently:true});c.drawImage(im,0,0,w,h);
+ const d=c.getImageData(0,0,w,h).data; // throws if the image host blocks CORS
+ const bg=i=>d[i+3]<25||(d[i]>232&&d[i+1]>232&&d[i+2]>232);
+ let x0=w,y0=h,x1=-1,y1=-1;
+ for(let y=0;y<h;y++)for(let x=0;x<w;x++){if(!bg((y*w+x)*4)){if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y}}
+ if(x1<0)throw 0;
+ const cw=x1-x0+1,chh=y1-y0+1,side=Math.min(cw,chh),inset=side*.16;
+ const sx=x0+(cw-side)/2+inset,sy=y0+(chh-side)/2+inset,ss=side-inset*2;
+ // edge colour (fills the rounded corners)
+ let r=0,g=0,b=0,n=0;
+ [[sx+ss/2,sy+2],[sx+ss/2,sy+ss-3],[sx+2,sy+ss/2],[sx+ss-3,sy+ss/2]].forEach(([px,py])=>{const i=(Math.round(py)*w+Math.round(px))*4;if(i>=0&&i<d.length&&!bg(i)){r+=d[i];g+=d[i+1];b+=d[i+2];n++}});
+ const o=document.createElement("canvas");o.width=o.height=96;const oc=o.getContext("2d");
+ oc.fillStyle=n?`rgb(${r/n|0},${g/n|0},${b/n|0})`:"#0f172a";oc.fillRect(0,0,96,96);
+ oc.drawImage(cv,sx,sy,ss,ss,0,0,96,96);
+ return o.toDataURL("image/png");
+}
+function showPlainLogo(box,url){
+ const im=new Image();im.className="raw";im.referrerPolicy="no-referrer";im.alt="";
+ im.onerror=()=>{box.innerHTML=LOGO_PH};
+ im.onload=()=>{box.innerHTML="";box.appendChild(im)};
+ im.src=url;
+}
+function setLogo(box,url){
+ box.innerHTML=LOGO_PH;
+ if(!url)return;
+ const c=logoCache[url];
+ if(c){if(c.v)box.innerHTML='<img src="'+c.v+'" alt="">';else showPlainLogo(box,url);return}
+ const im=new Image();im.crossOrigin="anonymous";im.referrerPolicy="no-referrer";
+ im.onload=()=>{
+  let v=null;try{v=trimLogo(im)}catch(e){}
+  logoCache[url]={v};
+  if(v)box.innerHTML='<img src="'+v+'" alt="">';else showPlainLogo(box,url);
+ };
+ im.onerror=()=>{logoCache[url]={v:null};showPlainLogo(box,url)};
+ im.src=url;
 }
 let view="groups";
 function renderTabs(){}
@@ -580,12 +622,7 @@ function renderChannels(){
    const d=document.createElement("div");d.className="playlist-item"+(ch.url===currentUrl?" active":"");d.dataset.i=i;
    d.innerHTML='<div class="ch-left"><span class="ch-logo"></span><span class="item-name"></span></div><div class="channel-action-icons"><span class="rec-timer-badge" style="display:none">00:00</span><button class="icon-btn rec-btn" data-rec="1" title="Record"><i class="fas fa-circle"></i></button></div>';
    d.querySelector(".item-name").textContent=ch.name;
-   const lgBox=d.querySelector(".ch-logo"),ph='<i class="fas fa-tv"></i>';
-   if(ch.logo){
-    const im=new Image();im.referrerPolicy="no-referrer";im.loading="lazy";im.alt="";
-    im.onerror=()=>{lgBox.innerHTML=ph};
-    im.src=ch.logo;lgBox.appendChild(im);
-   }else lgBox.innerHTML=ph;
+   setLogo(d.querySelector(".ch-logo"),ch.logo);
    if(rec&&rec.url===ch.url){d.querySelector(".rec-btn").classList.add("recording");d.querySelector(".rec-timer-badge").style.display=""}
    f.appendChild(d);
   });
