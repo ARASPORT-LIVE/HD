@@ -166,9 +166,14 @@ body{height:100vh;height:100dvh;padding:max(10px,env(safe-area-inset-top)) 10px 
 .ios-step i{color:var(--ac);margin:0 4px}
 .ios-close{margin-top:6px;width:100%;padding:12px;border:none;border-radius:10px;background:#2563eb;color:#fff;font-family:inherit;font-size:15px;font-weight:bold;cursor:pointer}
 .ios-arrow{margin-top:10px;color:var(--ac);font-size:22px;animation:pulse 1.2s infinite}
+
+/* ---- in-page toast (replaces browser alert) ---- */
+.toast{position:fixed;left:50%;bottom:calc(30px + env(safe-area-inset-bottom));transform:translate(-50%,20px);z-index:20000;max-width:90%;padding:12px 20px;border-radius:14px;background:rgba(30,41,59,.95);border:1px solid var(--gb);color:#fff;font-size:15px;text-align:center;line-height:1.6;box-shadow:0 10px 30px rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s}
+.toast.show{opacity:1;transform:translate(-50%,0)}
 </style>
 </head>
 <body>
+<div id="toast" class="toast"></div>
 <div id="iosGuide" class="ios-guide">
  <div class="ios-card">
   <h3>دابەزاندنی ARA TV لەسەر ئایفۆن</h3>
@@ -188,8 +193,7 @@ body{height:100vh;height:100dvh;padding:max(10px,env(safe-area-inset-top)) 10px 
   <div class="mac-box"><span id="deviceMac">...</span><button class="copy-btn" onclick="copyMac()">کۆپی</button></div>
   <div class="send-actions">
    <div class="send-row">
-    <a id="waLink1" href="#" target="_blank" class="send-btn whatsapp-btn"><i class="fab fa-whatsapp"></i> واتسئاپ 1</a>
-    <a id="waLink2" href="#" target="_blank" class="send-btn whatsapp-btn" style="background:#15803d"><i class="fab fa-whatsapp"></i> واتسئاپ 2</a>
+    <a id="waLink1" href="#" class="send-btn whatsapp-btn"><i class="fab fa-whatsapp"></i> واتسئاپ</a>
    </div>
    <div class="send-row"><a id="smsLink" href="#" class="send-btn sms-btn"><i class="fas fa-comment-alt"></i> بە نامە (SMS)</a></div>
   </div>
@@ -245,10 +249,16 @@ function getDeviceMac(){
 const currentMac=getDeviceMac();
 $("deviceMac").innerText=currentMac;
 const msg=encodeURIComponent(`سڵاو، تکایە ئەم ئامێرە ئەکتیڤ بکە:\nMAC Address:\n${currentMac}`);
-$("waLink1").href=`https://wa.me/9647501224994?text=${msg}`;
-$("waLink2").href=`https://wa.me/9647748134314?text=${msg}`;
-$("smsLink").href=`sms:9647501224994?body=${msg}`;
-function copyMac(){navigator.clipboard&&navigator.clipboard.writeText(currentMac);alert("ماک ئادرێسەکەت کۆپی کرا: "+currentMac)}
+$("waLink1").href=`https://wa.me/9647748134314?text=${msg}`;
+$("smsLink").href=`sms:9647748134314?body=${msg}`;
+let toastTimer;
+function showToast(t){const el=$("toast");el.textContent=t;el.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove("show"),2200)}
+window.alert=showToast; // no browser dialogs: nothing shows the site address
+function copyMac(){
+ const done=()=>showToast("ماک ئادرێسەکەت کۆپی کرا");
+ const fb=()=>{try{const t=document.createElement("textarea");t.value=currentMac;t.style.cssText="position:fixed;opacity:0";document.body.appendChild(t);t.select();document.execCommand("copy");t.remove();done()}catch(e){}};
+ try{navigator.clipboard.writeText(currentMac).then(done).catch(fb)}catch(e){fb()}
+}
 
 /* ---------- fetch (direct first, proxy fallback, 6s timeout) ---------- */
 function fetchText(url){
