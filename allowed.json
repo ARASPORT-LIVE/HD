@@ -142,5 +142,9 @@
   {
     "mac": "هەواڵ",
     "expire": "https://5a3ed7a72ed4b.streamlock.net/live/SMIL:myStream.smil/chunklist_w1791118443_b1700000_sleng_t64MTA4MHA=.m3u8"
+  },
+  {
+    "mac": "خێزانی",
+    "expire": "http://baskhd2.ddns.net:1935/live/basktv/playlist.m3u8"
   }
 ]
