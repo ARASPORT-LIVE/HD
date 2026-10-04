@@ -166,5 +166,9 @@
   {
     "mac": "خێزانی",
     "expire": "http://iptvtree.net:8080/Javamicro/0481fbb702/301674"
+  },
+  {
+    "mac": "ئاینی",
+    "expire": "http://live20.bozztv.com/giatv/giatv-sozquran/sozquran/chunks.m3u8"
   }
 ]
