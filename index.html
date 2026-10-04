@@ -245,6 +245,11 @@ body{height:100vh;height:100dvh;padding:max(10px,env(safe-area-inset-top)) 10px 
 <script>
 const CH_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vRgvWrahp_pwJWRnX4QCE4KmuhUb6gl5Rk_rDpjA2ODuCNH1nyLUcD-L0g0I6PrD45F0hb7odKi_zbW/pub?gid=250464113&single=true&output=csv";
 const MAC_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vRgvWrahp_pwJWRnX4QCE4KmuhUb6gl5Rk_rDpjA2ODuCNH1nyLUcD-L0g0I6PrD45F0hb7odKi_zbW/pub?gid=0&single=true&output=csv";
+/* ---------- Cloudflare Worker proxy (CORS + http -> https) ---------- */
+const PROXY="https://ara-proxy.NAME.workers.dev/?url=";   // <-- replace with YOUR worker address
+const needProxy=u=>/^http:\/\//i.test(u)||/storelink\.pro/i.test(u);
+const pxy=u=>PROXY+encodeURIComponent(u);
+let currentSrc="";
 const $=id=>document.getElementById(id);
 const ls=(k,v)=>{try{if(v===undefined)return localStorage.getItem(k);if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){return null}};
 
@@ -694,9 +699,12 @@ function playTs(url){
  me.attachMediaElement(v);
  me.load();
  me.on(mpegts.Events.ERROR,()=>{
-  // retry a few times, then give up
-  if(tsPlayer!==me||currentUrl!==url||++tsRetries>3)return;
-  setTimeout(()=>{if(tsPlayer===me&&currentUrl===url){try{me.unload();me.load();const q=me.play();if(q&&q.catch)q.catch(()=>{})}catch(e){}}},2000);
+  if(tsPlayer!==me||currentSrc!==url)return;
+  // not proxied yet: retry immediately through the proxy
+  if(!url.startsWith(PROXY)){currentSrc=pxy(currentUrl);playTs(currentSrc);return}
+  // already proxied: retry a few times, then give up
+  if(++tsRetries>3)return;
+  setTimeout(()=>{if(tsPlayer===me&&currentSrc===url){try{me.unload();me.load();const q=me.play();if(q&&q.catch)q.catch(()=>{})}catch(e){}}},2000);
  });
  const p=me.play();
  if(p&&p.catch)p.catch(()=>{v.muted=true;const q=me.play();if(q&&q.catch)q.catch(()=>{})});
@@ -705,6 +713,7 @@ function playChannel(ch){
  currentUrl=ch.url;codeBox=loadCodeBoxes()[ch.url]||null;codeMiss=0;codeNeedFull=false;codeFullMiss=0;codeLoop();isSports=/sport|وەرزش|سپۆرت|ریاضە|bein|ڕیاضە/i.test(ch.cat);updateWatermark();
  ocrState=null;ocrMiss=0;ocrFails=0;if(!ocrTimer)ocrTimer=setInterval(ocrCheck,4000);setTimeout(ocrCheck,2500);
  const kind=detectType(ch.url);
+ const src=needProxy(ch.url)?pxy(ch.url):ch.url;currentSrc=src;
  showWait(true);tsRetries=0;
   // remove the previous channel's fallback handler
  if(hlsErrHandler){player.off("error",hlsErrHandler);hlsErrHandler=null}
@@ -712,9 +721,9 @@ function playChannel(ch){
  player.muted(false);
  if(kind==="ts"){
   player.pause();
-  playTs(ch.url);
+  playTs(src);
  }else{
-  player.src({src:ch.url,type:kind==="mp4"?"video/mp4":"application/x-mpegURL"});
+  player.src({src:src,type:kind==="mp4"?"video/mp4":"application/x-mpegURL"});
   const p=player.play();
   if(p&&p.catch)p.catch(()=>{player.muted(true);const q=player.play();if(q&&q.catch)q.catch(()=>{})}); // fallback: muted autoplay, unmuted on first tap
   if(kind==="hls"){
@@ -724,7 +733,7 @@ function playChannel(ch){
     player.off("error",hlsErrHandler);hlsErrHandler=null;
     if(currentUrl!==url)return;
     try{player.error(null)}catch(e){}
-    player.pause();playTs(url);
+    player.pause();playTs(src);
    };
    player.on("error",hlsErrHandler);
   }
