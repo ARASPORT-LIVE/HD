@@ -102,5 +102,9 @@
   {
     "mac": "وەرزشی",
     "expire": "https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8"
+  },
+  {
+    "mac": "هەواڵ",
+    "expire": "https://avamedia.live/"
   }
 ]
