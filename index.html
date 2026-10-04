@@ -150,6 +150,11 @@ body{height:100vh;height:100dvh;padding:max(10px,env(safe-area-inset-top)) 10px 
 .vjs-live-tag{font:900 .62em Arial;padding:.2em .6em;gap:.3em;margin-top:.4em;letter-spacing:0;line-height:1.1}
 .vjs-live-tag i{width:.45em;height:.45em}
 @media(max-width:900px){.vjs-live-tag{font:900 .62em Arial;padding:.2em .6em;gap:.3em;margin-top:.4em;letter-spacing:0}.vjs-live-tag i{width:.45em;height:.45em}}
+
+/* ---- v8: LIVE at bottom-right corner of logo, code cover ---- */
+.vjs-live-tag{left:auto;right:0;transform:none}
+.code-cover{position:absolute;z-index:999;display:none;align-items:center;justify-content:center;pointer-events:none;overflow:hidden;white-space:nowrap;color:#fff;font:900 1em Arial;background:rgba(15,23,42,.98);border:.07em solid rgba(56,189,248,.6);border-radius:.4em}
+.code-cover span{color:#38bdf8}
 </style>
 </head>
 <body>
@@ -248,7 +253,7 @@ function startCountdown(exp){
  clearInterval(timerInterval);
  const tick=()=>{
   const dist=end-Date.now();
-  if(dist<=0||isNaN(dist)){clearInterval(timerInterval);$("countdownTimer").innerText="ئێکسپایەر بووە";if(player)player.pause();ls("ara_auth_exp",null);$("statusMsg").innerText="ئابوونەکەت بەسەرچوو!";$("authOverlay").style.display="flex";return}
+  if(dist<=0||isNaN(dist)){clearInterval(timerInterval);activated=false;$("countdownTimer").innerText="ئێکسپایەر بووە";if(player)player.pause();ls("ara_auth_exp",null);$("statusMsg").innerText="ئابوونەکەت بەسەرچوو!";$("authOverlay").style.display="flex";return}
   const D=Math.floor(dist/864e5),H=Math.floor(dist%864e5/36e5),M=Math.floor(dist%36e5/6e4),S=Math.floor(dist%6e4/1e3);
   $("countdownTimer").innerText=`${D}d ${H}h ${M}m ${S}s`;
  };
@@ -282,7 +287,8 @@ function showCooldownOverlay(ce){
 
 /* ---------- activation ---------- */
 let startedFromCache=false;
-async function checkActivation(manual=false){
+let activated=false;
+async function checkActivation(manual=false,silent=false){
  const st=$("statusMsg");if(manual)st.innerText="لە پشکنیندایە...";
  let list=[];
  try{
@@ -293,17 +299,20 @@ async function checkActivation(manual=false){
  }
  const now=Date.now(),dev=list.find(x=>x.mac===currentMac);
  if(!dev){
-  if(startedFromCache){startedFromCache=false;ls("ara_auth_exp",null);if(player)player.pause();$("authOverlay").style.display="flex";st.innerText="ئەم ماک ئادرێسە لە شیتەکەدا نەدۆزرایەوە!";return false}
+  if(silent)return false;
+  if(startedFromCache){startedFromCache=false;activated=false;ls("ara_auth_exp",null);if(player)player.pause();$("authOverlay").style.display="flex";st.innerText="ئەم ماک ئادرێسە لە شیتەکەدا نەدۆزرایەوە!";return false}
   if(manual){st.innerText="ئەم ماک ئادرێسە لە شیتەکەدا نەدۆزرایەوە!";st.style.color="#ef4444"}
   else{const c=parseInt(ls("ara_trial_cooldown"))||0;if(c>now)showCooldownOverlay(c);else{initPlayer();startTrialTimer()}}
   return false;
  }
  const d=parseFlexibleDate(dev.expire),exp=d&&!isNaN(d)?d.getTime():0;
- if(now>exp){ls("ara_auth_exp",null);st.innerText="ئابوونەکەت بەسەرچوو!";st.style.color="#f59e0b";if(player)player.pause();$("authOverlay").style.display="flex";return false}
+ if(now>exp){activated=false;if(silent)return false;ls("ara_auth_exp",null);st.innerText="ئابوونەکەت بەسەرچوو!";st.style.color="#f59e0b";if(player)player.pause();$("authOverlay").style.display="flex";return false}
  clearInterval(trialInterval);trialInterval=null;clearInterval(cooldownInterval);
  ls("ara_trial_cooldown",null);ls("ara_trial_end_time",null);ls("ara_auth_exp",dev.expire);
  $("cooldownNotice").style.display="none";$("authOverlay").style.display="none";
- startCountdown(dev.expire);initPlayer();return true;
+ activated=true;startCountdown(dev.expire);initPlayer();
+ if(player&&player.paused()){const q=player.play();if(q&&q.catch)q.catch(()=>{})}
+ return true;
 }
 
 /* ---------- player ---------- */
@@ -314,7 +323,7 @@ function initPlayer(){
  player=videojs("ara-sport-player",{autoplay:false,controls:true,preload:"auto",html5:{vhs:{overrideNative:true,enableLowInitialPlaylist:true}}});
  player.ready(function(){
   const w=document.createElement("div");w.className="vjs-watermark-logo";w.id="playerWatermark";
-  w.innerHTML='<div class="vjs-watermark-text">ARA SPORT <span>HD</span></div><div class="vjs-live-tag"><i></i>LIVE</div>';this.el().appendChild(w);positionWatermark();if(window.ResizeObserver)new ResizeObserver(positionWatermark).observe(this.el());this.on("loadedmetadata",positionWatermark);this.on(["loadedmetadata","durationchange","playing"],updateLive);try{this.tech(true).el().addEventListener("resize",positionWatermark)}catch(e){}
+  w.innerHTML='<div class="vjs-watermark-text">ARA SPORT <span>HD</span></div><div class="vjs-live-tag"><i></i>LIVE</div>';this.el().appendChild(w);(()=>{const cc=document.createElement("div");cc.id="codeCover";cc.className="code-cover";cc.innerHTML="ARA SPORT&nbsp;<span>HD</span>";this.el().appendChild(cc)})();positionWatermark();if(window.ResizeObserver)new ResizeObserver(positionWatermark).observe(this.el());this.on("loadedmetadata",positionWatermark);this.on(["loadedmetadata","durationchange","playing"],updateLive);try{this.tech(true).el().addEventListener("resize",positionWatermark)}catch(e){}
  });
  bindFab();player.on(["waiting","stalled"],()=>showWait(true));
  player.on(["playing","canplay"],()=>showWait(false));
@@ -387,16 +396,78 @@ function isLive(){
  return !!(ch&&/live|لایڤ|ڕاستەوخۆ/i.test(ch.name));
 }
 function updateLive(){const w=$("playerWatermark");if(w)w.classList.toggle("is-live",isLive())}
+/* ---------- OCR: find a 10–12 digit code on the picture and cover it with the ARA SPORT HD badge ---------- */
+let codeTick=0,codeBox=null,codeMiss=0,codeWorker=null,codeLoading=null,codeBusy=false;const codeFail={};
+function loadCodeBoxes(){try{return JSON.parse(ls("ara_codeboxes")||"{}")}catch(e){return {}}}
+function saveCodeBox(url,b){const m=loadCodeBoxes();if(b)m[url]=b;else delete m[url];ls("ara_codeboxes",JSON.stringify(m))}
+async function getCodeWorker(){
+ if(codeWorker)return codeWorker;
+ if(!codeLoading)codeLoading=(async()=>{
+  await loadTess();
+  const w=await Tesseract.createWorker("eng");
+  await w.setParameters({tessedit_char_whitelist:"0123456789",tessedit_pageseg_mode:"11"});
+  return w;
+ })();
+ try{codeWorker=await codeLoading}catch(e){codeLoading=null;throw e}
+ return codeWorker;
+}
+function findCode(lines,W,H){
+ for(const ln of lines){
+  const ws=(ln.words||[]).filter(x=>/\d/.test(x.text)&&x.confidence>=55);
+  const n=ws.reduce((a,x)=>a+x.text.replace(/\D/g,"").length,0);
+  if(n>=10&&n<=12)return{x0:Math.min(...ws.map(x=>x.bbox.x0))/W,y0:Math.min(...ws.map(x=>x.bbox.y0))/H,x1:Math.max(...ws.map(x=>x.bbox.x1))/W,y1:Math.max(...ws.map(x=>x.bbox.y1))/H};
+ }
+ return null;
+}
+async function codeScan(){
+ if(codeBox&&(++codeTick%3))return;
+ if(codeBusy||!player||player.paused()||document.hidden||(codeFail[currentUrl]||0)>=2)return;
+ let v;try{v=player.tech(true).el()}catch(e){return}
+ if(!v||!v.videoWidth)return;
+ const url=currentUrl;codeBusy=true;
+ try{
+  const k=Math.min(1,1280/v.videoWidth),W=Math.round(v.videoWidth*k),H=Math.round(v.videoHeight*k);
+  const cv=document.createElement("canvas");cv.width=W;cv.height=H;
+  const c=cv.getContext("2d",{willReadFrequently:true});
+  c.drawImage(v,0,0,W,H);c.getImageData(0,0,1,1); // throws when the stream has no CORS
+  const w=await getCodeWorker(),r=await w.recognize(cv);
+  if(url!==currentUrl){codeBusy=false;return}
+  const f=findCode((r.data&&r.data.lines)||[],W,H);
+  if(f){codeBox=f;codeMiss=0;saveCodeBox(url,f)}
+  else if(codeBox&&++codeMiss>=3){codeBox=null;saveCodeBox(url,null)}
+  positionWatermark();
+ }catch(e){codeFail[url]=(codeFail[url]||0)+1}
+ codeBusy=false;
+}
+setInterval(codeScan,5000);
+function positionCover(left,top,dw,dh){
+ const el=$("codeCover");if(!el)return;
+ if(!codeBox){el.style.display="none";return}
+ const px=dw*.006,py=dh*.012,x=left+codeBox.x0*dw-px,y=top+codeBox.y0*dh-py,w=(codeBox.x1-codeBox.x0)*dw+px*2,h=(codeBox.y1-codeBox.y0)*dh+py*2;
+ Object.assign(el.style,{display:"flex",left:x+"px",top:y+"px",width:w+"px",height:h+"px",fontSize:Math.max(Math.min(h*.6,w/9.6),5)+"px"});
+}
+function drawCover(c,w,h){
+ if(!codeBox)return;
+ const px=w*.006,py=h*.012,x=codeBox.x0*w-px,y=codeBox.y0*h-py,bw=(codeBox.x1-codeBox.x0)*w+px*2,bh=(codeBox.y1-codeBox.y0)*h+py*2,fs=Math.max(Math.min(bh*.6,bw/9.6),5);
+ c.fillStyle="rgba(15,23,42,.98)";c.strokeStyle="rgba(56,189,248,.6)";c.lineWidth=Math.max(1,fs*.07);
+ rr(c,x,y,bw,bh,fs*.4);c.fill();c.stroke();
+ c.font="900 "+fs+"px Arial";c.textBaseline="middle";c.direction="ltr";c.textAlign="left";
+ const a="ARA SPORT ",b="HD",wa=c.measureText(a).width,wb=c.measureText(b).width,sx=x+(bw-wa-wb)/2;
+ c.fillStyle="#fff";c.fillText(a,sx,y+bh/2);c.fillStyle="#38bdf8";c.fillText(b,sx+wa,y+bh/2);
+}
+let logoRatio=.0115;
 function positionWatermark(){
  const w=$("playerWatermark");if(!w||!player)return;
  let v;try{v=player.tech(true).el()}catch(e){return}
  if(!v||!v.videoWidth)return;
  const el=player.el(),cw=el.clientWidth,ch=el.clientHeight,sc=Math.min(cw/v.videoWidth,ch/v.videoHeight),dw=v.videoWidth*sc,dh=v.videoHeight*sc;
  const left=(cw-dw)/2,top=(ch-dh)/2,st=w.style;
- st.setProperty("left",(left+dw*0.90)+"px","important");st.setProperty("top",(top+dh*0.076)+"px","important");
- st.setProperty("right","auto","important");st.setProperty("transform","translate(-50%,-50%)","important");
- st.fontSize=Math.max(dw*0.0115,6)+"px";st.padding=".65em .5em";st.borderRadius=".4em";st.background="rgba(15,23,42,.96)";
+ logoRatio=Math.max(.0115,10/dw);
+ st.setProperty("left",(left+dw*0.957)+"px","important");st.setProperty("top",(top+dh*0.076)+"px","important");
+ st.setProperty("right","auto","important");st.setProperty("transform","translate(-100%,-50%)","important");
+ st.fontSize=(dw*logoRatio)+"px";st.padding=".65em .5em";st.borderRadius=".4em";st.background="rgba(15,23,42,.96)";
  if(w.firstChild)w.firstChild.style.fontSize="1em";
+ positionCover(left,top,dw,dh);
 }
 function parseChannels(csv){
  const out=[];
@@ -482,10 +553,11 @@ $("playlist-items").addEventListener("click",e=>{
  playChannel(ch);closeDrawer();
 });
 function playChannel(ch){
- currentUrl=ch.url;isSports=/sport|وەرزش|سپۆرت|ریاضە|bein|ڕیاضە/i.test(ch.cat);updateWatermark();
+ currentUrl=ch.url;codeBox=loadCodeBoxes()[ch.url]||null;codeMiss=0;isSports=/sport|وەرزش|سپۆرت|ریاضە|bein|ڕیاضە/i.test(ch.cat);updateWatermark();
  ocrState=null;ocrMiss=0;ocrFails=0;if(!ocrTimer)ocrTimer=setInterval(ocrCheck,4000);setTimeout(ocrCheck,2500);updateLive();
  const type=/\.m3u8|\/hls|m3u8/i.test(ch.url)?"application/x-mpegURL":/\.mp4/i.test(ch.url)?"video/mp4":"application/x-mpegURL";
  showWait(true);
+ player.one("playing",()=>setTimeout(codeScan,1000));
  player.muted(false);player.src({src:ch.url,type});
  const p=player.play();
  if(p&&p.catch)p.catch(()=>{player.muted(true);const q=player.play();if(q&&q.catch)q.catch(()=>{})}); // fallback: muted autoplay, unmuted on first tap
@@ -496,17 +568,17 @@ function playChannel(ch){
 let rec=null;
 function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()}
 function drawLogo(c,w,h,sports,live){
- const fs=Math.max(Math.round(w*0.0115),8),px=fs*.5,py=fs*.65;
+ const fs=Math.max(Math.round(w*logoRatio),8),px=fs*.5,py=fs*.65;
  c.font="900 "+fs+"px Arial";c.textBaseline="middle";c.direction="ltr";c.textAlign="left";
  const a=sports?"ARA SPORT ":"ARA ",b=sports?"HD":"TV";
  const wa=c.measureText(a).width,wb=c.measureText(b).width,bw=wa+wb+px*2,bh=fs+py*2;
- const bx=sports?w*0.90-bw/2:w-fs*1.2-bw,by=sports?h*0.076-bh/2:fs*1.2;
+ const bx=sports?w*0.957-bw:w-fs*1.2-bw,by=sports?h*0.076-bh/2:fs*1.2;
  c.fillStyle="rgba(15,23,42,.97)";c.strokeStyle="rgba(56,189,248,.6)";c.lineWidth=Math.max(1,fs/14);
  rr(c,bx,by,bw,bh,fs*.4);c.fill();c.stroke();
  c.fillStyle="#fff";c.fillText(a,bx+px,by+bh/2);c.fillStyle="#38bdf8";c.fillText(b,bx+px+wa,by+bh/2);
  if(live){
   const lf=fs*.62;c.font="900 "+lf+"px Arial";
-  const tw=c.measureText("LIVE").width,dot=lf*.45,lw=tw+dot+lf*1.5,lh=lf*1.55,lx=bx+bw/2-lw/2,ly=by+bh+fs*.25;
+  const tw=c.measureText("LIVE").width,dot=lf*.45,lw=tw+dot+lf*1.5,lh=lf*1.55,lx=bx+bw-lw,ly=by+bh+fs*.25;
   c.fillStyle="rgba(239,68,68,.92)";rr(c,lx,ly,lw,lh,lf*.35);c.fill();
   c.fillStyle="#fff";c.beginPath();c.arc(lx+lf*.6+dot/2,ly+lh/2,dot/2,0,7);c.fill();
   c.fillText("LIVE",lx+lf*.6+dot+lf*.3,ly+lh/2);
@@ -526,7 +598,7 @@ function toggleRec(ch){
   dv=setInterval(()=>{
    if(!v.videoWidth)return;
    if(cv.width!==v.videoWidth){cv.width=v.videoWidth;cv.height=v.videoHeight}
-   c.drawImage(v,0,0,cv.width,cv.height);drawLogo(c,cv.width,cv.height,sports,isLive());
+   c.drawImage(v,0,0,cv.width,cv.height);drawCover(c,cv.width,cv.height);drawLogo(c,cv.width,cv.height,sports,isLive());
   },40);
   stream=cv.captureStream(25);
   src.getAudioTracks().forEach(t=>stream.addTrack(t));
@@ -583,8 +655,11 @@ if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.ser
 /* ---------- start ---------- */
 (function boot(){
  const exp=ls("ara_auth_exp"),d=parseFlexibleDate(exp);
- if(d&&!isNaN(d)&&d.getTime()>Date.now()){startedFromCache=true;startCountdown(exp);initPlayer()} // instant start for known subscribers
+ if(d&&!isNaN(d)&&d.getTime()>Date.now()){startedFromCache=true;activated=true;startCountdown(exp);initPlayer()} // instant start for known subscribers
  checkActivation(false); // verify in background
+ // a MAC added to the sheet activates the app within ~15s, without waiting for the trial to end
+ setInterval(()=>{if(!activated&&!document.hidden)checkActivation(false,true)},15000);
+ document.addEventListener("visibilitychange",()=>{if(!document.hidden&&!activated)checkActivation(false,true)});
 })();
 </script>
 </body>
