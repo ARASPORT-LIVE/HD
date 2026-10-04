@@ -130,6 +130,26 @@ body{height:100vh;height:100dvh;padding:max(10px,env(safe-area-inset-top)) 10px 
 .vjs-live-tag i{width:6px;height:6px;border-radius:50%;background:#fff;animation:pulse 1.2s infinite}
 .vjs-watermark-logo.is-live .vjs-live-tag{display:flex}
 @media(max-width:900px){.vjs-live-tag{font-size:7px;padding:1px 5px;gap:3px;margin-top:2px}.vjs-live-tag i{width:4px;height:4px}}
+
+/* ---- v6: LIVE tag scales with logo ---- */
+.vjs-live-tag{font:900 .62em Arial;padding:.12em .6em;gap:.3em;margin-top:.25em}
+.vjs-live-tag i{width:.5em;height:.5em}
+@media(max-width:900px){.vjs-live-tag{font:900 .62em Arial;padding:.12em .6em;gap:.3em;margin-top:.25em}.vjs-live-tag i{width:.5em;height:.5em}}
+
+/* ---- v7: no black bars, preview logo = recording logo ---- */
+.video-container{background:transparent}
+.video-js,.video-js .vjs-tech{background-color:transparent!important}
+.video-container .video-js{position:absolute!important;inset:0}
+@media(max-width:900px){.video-container{height:auto;aspect-ratio:16/9;flex:none}}
+@media(orientation:landscape) and (max-height:520px){
+ .video-container{position:fixed;inset:0;width:100%;height:100%;aspect-ratio:auto;background:#000}
+ .video-js,.video-js .vjs-tech{background-color:#000!important}
+}
+.vjs-watermark-logo{border:.07em solid rgba(56,189,248,.6);box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;line-height:1}
+.vjs-watermark-text{letter-spacing:0;line-height:1}
+.vjs-live-tag{font:900 .62em Arial;padding:.2em .6em;gap:.3em;margin-top:.4em;letter-spacing:0;line-height:1.1}
+.vjs-live-tag i{width:.45em;height:.45em}
+@media(max-width:900px){.vjs-live-tag{font:900 .62em Arial;padding:.2em .6em;gap:.3em;margin-top:.4em;letter-spacing:0}.vjs-live-tag i{width:.45em;height:.45em}}
 </style>
 </head>
 <body>
@@ -317,7 +337,48 @@ function initPlayer(){
 function showWait(w){$("streamStatusOverlay").style.display=w?"flex":"none"}
 function updateWatermark(){const w=$("playerWatermark");if(w)w.classList.toggle("show-watermark",isSports)}
 
+/* ---------- OCR: read LIVE / DIRECT written on the picture (top-right area) ---------- */
+let ocrState=null,ocrWorker=null,ocrLoading=null,ocrFails=0,ocrTimer=null;
+function loadTess(){
+ if(window.Tesseract)return Promise.resolve();
+ return new Promise((res,rej)=>{const sc=document.createElement("script");sc.src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js";sc.onload=res;sc.onerror=rej;document.head.appendChild(sc)});
+}
+async function getWorker(){
+ if(ocrWorker)return ocrWorker;
+ if(!ocrLoading)ocrLoading=(async()=>{
+  await loadTess();
+  const w=await Tesseract.createWorker("eng");
+  await w.setParameters({tessedit_pageseg_mode:"11",tessedit_char_whitelist:"LIVEDIRCTO"});
+  return w;
+ })();
+ try{ocrWorker=await ocrLoading}catch(e){ocrLoading=null;throw e}
+ return ocrWorker;
+}
+async function ocrCheck(){
+ if(!player||!isSports||player.paused()||document.hidden)return;
+ let v;try{v=player.tech(true).el()}catch(e){return}
+ if(!v||!v.videoWidth)return;
+ try{
+  const sx=v.videoWidth*0.70,sw=v.videoWidth*0.30,sh=v.videoHeight*0.14,k=Math.min(3,900/sw);
+  const cv=document.createElement("canvas");cv.width=Math.round(sw*k);cv.height=Math.round(sh*k);
+  const c=cv.getContext("2d",{willReadFrequently:true});
+  c.drawImage(v,sx,0,sw,sh,0,0,cv.width,cv.height);
+  const im=c.getImageData(0,0,cv.width,cv.height),d=im.data;
+  for(let i=0;i<d.length;i+=4){const l=.299*d[i]+.587*d[i+1]+.114*d[i+2],o=l>205?0:255;d[i]=d[i+1]=d[i+2]=o}
+  c.putImageData(im,0,0);
+  const w=await getWorker(),r=await w.recognize(cv),t=((r.data&&r.data.text)||"").toUpperCase();
+  ocrFails=0;
+  if(/L[I1]V[E3]|D[I1]R[E3]C/.test(t)){ocrMiss=0;ocrState=true}
+  else if(ocrState===null){ocrState=false}
+  else if(++ocrMiss>=2){ocrState=false}
+  updateLive();
+ }catch(e){
+  if(++ocrFails>=3){ocrState=null;clearInterval(ocrTimer);ocrTimer=null;updateLive()} // CORS/blocked: fall back to stream detection
+ }
+}
+let ocrMiss=0;
 function isLive(){
+ if(isSports&&ocrState!==null)return ocrState;
  try{
   if(player.duration()===Infinity)return true;
   if(player.liveTracker&&player.liveTracker.isLive&&player.liveTracker.isLive())return true;
@@ -332,8 +393,10 @@ function positionWatermark(){
  if(!v||!v.videoWidth)return;
  const el=player.el(),cw=el.clientWidth,ch=el.clientHeight,sc=Math.min(cw/v.videoWidth,ch/v.videoHeight),dw=v.videoWidth*sc,dh=v.videoHeight*sc;
  const left=(cw-dw)/2,top=(ch-dh)/2,st=w.style;
- st.setProperty("left",(left+dw*0.895)+"px","important");st.setProperty("top",(top+dh*0.077)+"px","important");
+ st.setProperty("left",(left+dw*0.90)+"px","important");st.setProperty("top",(top+dh*0.076)+"px","important");
  st.setProperty("right","auto","important");st.setProperty("transform","translate(-50%,-50%)","important");
+ st.fontSize=Math.max(dw*0.0115,6)+"px";st.padding=".65em .5em";st.borderRadius=".4em";st.background="rgba(15,23,42,.96)";
+ if(w.firstChild)w.firstChild.style.fontSize="1em";
 }
 function parseChannels(csv){
  const out=[];
@@ -345,11 +408,18 @@ function parseChannels(csv){
  });
  return out;
 }
+const ALL="گشتی",KIDS_RE=/منداڵ|مندال|کارتۆن|کارتون|اطفال|أطفال|kid|cartoon|child|baby|junior/i,SPORT_RE=/sport|وەرزش|سپۆرت|ریاضە|ڕیاضە|bein/i;
+function tier(c){return SPORT_RE.test(c)?2:KIDS_RE.test(c)?1:0} // 0 = Kurdish/other, 1 = kids, 2 = sports
+function groupList(){
+ const u=[...new Set(channels.map(x=>x.cat))].filter(c=>c!==ALL);
+ return [ALL,...u.map((c,i)=>[c,i]).sort((a,b)=>tier(a[0])-tier(b[0])||a[1]-b[1]).map(x=>x[0])];
+}
+function allOrder(){return channels.map((c,i)=>i).sort((a,b)=>tier(channels[a].cat)-tier(channels[b].cat)||a-b)}
 function setData(list,fromCache){
- channels=list;categories=[...new Set(list.map(x=>x.cat))];
- if(!categories.includes(currentCat))currentCat=categories[0]||"";
+ channels=list;categories=groupList();
+ if(!categories.includes(currentCat))currentCat=categories[0];
  renderTabs();renderChannels();
- if(!currentUrl&&list.length){const f=list.find(x=>x.cat===categories[0]);if(f)playChannel(f)}
+ if(!currentUrl&&list.length)playChannel(channels[allOrder()[0]]);
 }
 async function loadPlaylist(){
  try{
@@ -366,15 +436,15 @@ function renderChannels(){
  if(view==="groups"||!currentCat){
   $("panelTitle").textContent="گروپەکان";back.style.display="none";$("groupTabs").style.display="none";
   categories.forEach(c=>{
-   const n=channels.filter(x=>x.cat===c).length,d=document.createElement("div");
+   const n=c===ALL?channels.length:channels.filter(x=>x.cat===c).length,d=document.createElement("div");
    d.className="group-card";d.dataset.cat=c;
    d.innerHTML='<i class="fas fa-layer-group gi"></i><span class="gn"></span><span class="gc">'+n+'</span><i class="fas fa-chevron-left"></i>';
    d.querySelector(".gn").textContent=c;f.appendChild(d);
   });
  }else{
   $("panelTitle").textContent=currentCat;back.style.display="";showTabs();
-  channels.forEach((ch,i)=>{
-   if(ch.cat!==currentCat)return;
+  (currentCat===ALL?allOrder():channels.map((c,i)=>i)).forEach(i=>{
+   const ch=channels[i];if(currentCat!==ALL&&ch.cat!==currentCat)return;
    const d=document.createElement("div");d.className="playlist-item"+(ch.url===currentUrl?" active":"");d.dataset.i=i;
    d.innerHTML='<span class="item-name"></span><div class="channel-action-icons"><span class="rec-timer-badge" style="display:none">00:00</span><button class="icon-btn rec-btn" data-rec="1" title="Record"><i class="fas fa-circle"></i></button></div>';
    d.firstChild.textContent=ch.name;
@@ -413,6 +483,7 @@ $("playlist-items").addEventListener("click",e=>{
 });
 function playChannel(ch){
  currentUrl=ch.url;isSports=/sport|وەرزش|سپۆرت|ریاضە|bein|ڕیاضە/i.test(ch.cat);updateWatermark();
+ ocrState=null;ocrMiss=0;ocrFails=0;if(!ocrTimer)ocrTimer=setInterval(ocrCheck,4000);setTimeout(ocrCheck,2500);updateLive();
  const type=/\.m3u8|\/hls|m3u8/i.test(ch.url)?"application/x-mpegURL":/\.mp4/i.test(ch.url)?"video/mp4":"application/x-mpegURL";
  showWait(true);
  player.muted(false);player.src({src:ch.url,type});
@@ -425,11 +496,11 @@ function playChannel(ch){
 let rec=null;
 function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()}
 function drawLogo(c,w,h,sports,live){
- const fs=Math.max(Math.round(w*0.0156),8),px=fs*.75,py=fs*.45;
+ const fs=Math.max(Math.round(w*0.0115),8),px=fs*.5,py=fs*.65;
  c.font="900 "+fs+"px Arial";c.textBaseline="middle";c.direction="ltr";c.textAlign="left";
  const a=sports?"ARA SPORT ":"ARA ",b=sports?"HD":"TV";
  const wa=c.measureText(a).width,wb=c.measureText(b).width,bw=wa+wb+px*2,bh=fs+py*2;
- const bx=sports?w*0.895-bw/2:w-fs*1.2-bw,by=sports?h*0.077-bh/2:fs*1.2;
+ const bx=sports?w*0.90-bw/2:w-fs*1.2-bw,by=sports?h*0.076-bh/2:fs*1.2;
  c.fillStyle="rgba(15,23,42,.97)";c.strokeStyle="rgba(56,189,248,.6)";c.lineWidth=Math.max(1,fs/14);
  rr(c,bx,by,bw,bh,fs*.4);c.fill();c.stroke();
  c.fillStyle="#fff";c.fillText(a,bx+px,by+bh/2);c.fillStyle="#38bdf8";c.fillText(b,bx+px+wa,by+bh/2);
