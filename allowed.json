@@ -158,5 +158,9 @@
   {
     "mac": "ئاینی",
     "expire": "http://bangawaztv.ddns.net:40/live/bangawaztv/playlist.m3u8"
+  },
+  {
+    "mac": "ئاینی",
+    "expire": "https://live20.bozztv.com/giatv/giatv-ESRAHD/ESRAHD/chunks.m3u8"
   }
 ]
