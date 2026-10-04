@@ -184,7 +184,7 @@ body{height:100vh;height:100dvh;padding:max(10px,env(safe-area-inset-top)) 10px 
   <div class="header-right">
    <div id="trialBadge" class="badge trial-badge" style="display:none">⏱️ <span id="trialTimer">05:00</span></div>
    <div id="countdownBox" class="badge expire-countdown-badge" style="display:none">⏳ <span id="countdownTimer">--</span></div>
-   <button id="installBtn" class="badge install-btn" style="display:none"><i class="fas fa-download"></i> ئینستاڵ</button>
+   <button id="installBtn" class="badge install-btn" style="display:none"><i class="fas fa-download"></i> دابەزاندن</button>
    <div class="live-badge">ڕاستەوخۆ</div>
   </div>
  </div>
@@ -646,9 +646,21 @@ window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();dip=e});
 window.addEventListener("appinstalled",()=>{dip=null;$("installBtn").style.display="none"});
 if(!isStandalone())$("installBtn").style.display="flex";
 $("installBtn").addEventListener("click",async()=>{
- if(dip){dip.prompt();try{await dip.userChoice}catch(e){}dip=null;return}
- const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
- alert(ios?"لە Safari دوگمەی Share (⬆️) دابگرە و «Add to Home Screen» هەڵبژێرە.":"لە مێنیوی براوسەرەکەت (⋮) «Install app» یان «Add to Home screen» هەڵبژێرە.");
+ // ئۆفلاین: هیچ نەکاتەوە، تەنها پەیامی ئینتەرنێت
+ if(!navigator.onLine){alert("تکایە ئینتەرنێتەکەت کارا بکە");return}
+ // ئۆنلاین: ئەگەر براوسەر هێشتا ئامادە نەبوو، تۆزێک چاوەڕێ بکە
+ if(!dip){
+  await new Promise(r=>{
+   window.addEventListener("beforeinstallprompt",()=>r(),{once:true});
+   setTimeout(r,1500);
+  });
+ }
+ // دابەزاندنی ڕاستەوخۆ
+ if(dip){
+  const p=dip;dip=null;
+  p.prompt();
+  try{await p.userChoice}catch(e){}
+ }
 });
 if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
 
