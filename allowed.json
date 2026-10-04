@@ -114,5 +114,9 @@
   {
     "mac": "خێزانی",
     "expire": "http://bblserver.ddns.net:1935/stream/khakhd/playlist.m3u8"
+  },
+  {
+    "mac": "هەواڵ",
+    "expire": "https://live.kwikmotion.com/waarmedialive/waarmedia.smil/playlist.m3u8"
   }
 ]
