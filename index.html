@@ -174,7 +174,7 @@ body{height:100vh;height:100dvh;padding:max(10px,env(safe-area-inset-top)) 10px 
 .ch-left{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
 .ch-logo{width:38px;height:38px;flex-shrink:0;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:var(--ac);font-size:15px}
 .ch-logo img{width:100%;height:100%;object-fit:cover;display:block;background:transparent;padding:0}
-.ch-logo img.raw{transform:scale(2.1)}
+.ch-logo img.raw{transform:scale(1.7)}
 </style>
 </head>
 <body>
@@ -573,7 +573,7 @@ function trimLogo(im){
  let x0=w,y0=h,x1=-1,y1=-1;
  for(let y=0;y<h;y++)for(let x=0;x<w;x++){if(!bg((y*w+x)*4)){if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y}}
  if(x1<0)throw 0;
- const cw=x1-x0+1,chh=y1-y0+1,side=Math.min(cw,chh),inset=side*.16;
+ const cw=x1-x0+1,chh=y1-y0+1,side=Math.min(cw,chh),inset=side*.09;
  const sx=x0+(cw-side)/2+inset,sy=y0+(chh-side)/2+inset,ss=side-inset*2;
  // edge colour (fills the rounded corners)
  let r=0,g=0,b=0,n=0;
