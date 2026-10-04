@@ -98,5 +98,9 @@
   {
     "mac": "وەرزشی",
     "expire": "https://pac12-roku-us.amagi.tv/playlist.m3u8"
+  },
+  {
+    "mac": "وەرزشی",
+    "expire": "https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8"
   }
 ]
