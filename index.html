@@ -23,11 +23,11 @@
 :root{--ac:#38bdf8;--ac2:#8b5cf6;--g:rgba(255,255,255,.07);--gb:rgba(255,255,255,.14)}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{width:100%;height:100%;color:#fff;font-family:'GoranFontRegular-Regular',Tahoma,Arial,sans-serif;overflow:hidden;-webkit-font-smoothing:antialiased}
-body{background:#070b16;display:flex;justify-content:center;align-items:center;padding:10px;position:relative;height:100vh;height:100dvh;padding:max(10px,env(safe-area-inset-top)) 10px max(10px,env(safe-area-inset-bottom))}
+body{background:#070b16;display:flex;justify-content:center;align-items:center;position:relative;height:100vh;height:100dvh;padding:max(10px,env(safe-area-inset-top)) 10px max(10px,env(safe-area-inset-bottom))}
 body::before,body::after{content:"";position:fixed;width:55vmax;height:55vmax;border-radius:50%;filter:blur(90px);opacity:.45;z-index:0;pointer-events:none}
 body::before{background:#0ea5e9;top:-25vmax;right:-15vmax}
 body::after{background:var(--ac2);bottom:-25vmax;left:-15vmax}
-.glass{background:var(--g);backdrop-filter:blur(18px) saturate(160%);-webkit-backdrop-filter:blur(18px) saturate(160%);border:1px solid var(--gb)}
+.glass{background:var(--g);backdrop-filter:blur(16px) saturate(150%);-webkit-backdrop-filter:blur(16px) saturate(150%);border:1px solid var(--gb)}
 .main-wrapper{position:relative;z-index:1;width:100%;height:100%;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 50px rgba(0,0,0,.55)}
 .player-header{display:flex;justify-content:space-between;align-items:center;padding:10px 18px;gap:8px;flex-shrink:0;border-width:0 0 1px;border-style:solid}
 .brand-title{font-size:22px;font-weight:bold;background:linear-gradient(90deg,var(--ac),var(--ac2));-webkit-background-clip:text;background-clip:text;color:transparent}
@@ -42,8 +42,8 @@ body::after{background:var(--ac2);bottom:-25vmax;left:-15vmax}
 .video-js{width:100%!important;height:100%!important;font-family:Arial,sans-serif!important}
 .video-js,.video-js .vjs-tech{background-color:transparent!important}
 .video-container .video-js{position:absolute!important;inset:0}
-.stream-status-overlay{position:absolute;inset:0;display:flex;justify-content:center;align-items:center;z-index:1001;font-size:32px;color:var(--ac);background:rgba(7,11,22,.55);pointer-events:none}
-.vjs-watermark-logo{position:absolute!important;top:42px;right:18px;z-index:1000;pointer-events:none;display:none;padding:4px 10px;border-radius:6px;background:rgba(15,23,42,.8);border:.07em solid rgba(56,189,248,.6);box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;line-height:1}
+.stream-status-overlay{position:absolute;inset:0;display:flex;justify-content:center;align-items:center;z-index:1001;font-size:32px;color:var(--ac);background:rgba(7,11,22,.45);pointer-events:none}
+.vjs-watermark-logo{position:absolute!important;top:42px;right:18px;z-index:1000;pointer-events:none;display:none;padding:4px 10px;border-radius:6px;background:rgba(15,23,42,.8);border:.07em solid rgba(56,189,248,.6);box-shadow:none;line-height:1}
 .vjs-watermark-logo.show-watermark{display:flex!important}
 .vjs-watermark-text{font:900 15px Arial;letter-spacing:0;line-height:1}
 .vjs-watermark-text span{color:var(--ac)}
@@ -60,7 +60,7 @@ body::after{background:var(--ac2);bottom:-25vmax;left:-15vmax}
 #panelTitle{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:linear-gradient(90deg,var(--ac),var(--ac2));-webkit-background-clip:text;background-clip:text;color:transparent}
 .group-tabs{display:flex;gap:6px;padding:8px 10px;overflow-x:auto;direction:rtl;flex-shrink:0;scrollbar-width:none;touch-action:pan-x;-webkit-overflow-scrolling:touch;border-bottom:1px solid var(--gb);background:rgba(255,255,255,.03)}
 .group-tabs::-webkit-scrollbar{display:none}
-.category-tab{padding:7px 14px;font-size:13px;font-weight:bold;color:#cbd5e1;cursor:pointer;white-space:nowrap;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);transition:.15s;flex-shrink:0;display:flex;align-items:center;gap:5px}
+.category-tab{padding:7px 14px;font-size:13px;font-weight:bold;color:#cbd5e1;cursor:pointer;white-space:nowrap;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);transition:background .12s;flex-shrink:0;display:flex;align-items:center;gap:5px}
 .category-tab:hover{color:var(--ac);background:rgba(56,189,248,.14)}
 .category-tab.active{color:#fff;background:linear-gradient(135deg,rgba(56,189,248,.45),rgba(139,92,246,.45));border-color:rgba(255,255,255,.35);box-shadow:0 4px 16px rgba(56,189,248,.3)}
 
@@ -68,47 +68,46 @@ body::after{background:var(--ac2);bottom:-25vmax;left:-15vmax}
 .search-panel{display:none;flex-direction:column;gap:8px;padding:10px;border-bottom:1px solid var(--gb);background:rgba(15,23,42,.55);flex-shrink:0}
 .search-panel.show{display:flex}
 .search-box-wrap{position:relative;display:flex;align-items:center}
-.search-input{width:100%;padding:9px 36px 9px 32px;border-radius:12px;border:1px solid rgba(56,189,248,.35);background:rgba(7,11,22,.75);color:#fff;font-family:inherit;font-size:14px;outline:none;transition:border-color .2s}
+.search-input{width:100%;padding:9px 36px 9px 32px;border-radius:12px;border:1px solid rgba(56,189,248,.35);background:rgba(7,11,22,.75);color:#fff;font-family:inherit;font-size:14px;outline:none}
 .search-input:focus{border-color:var(--ac);box-shadow:0 0 12px rgba(56,189,248,.25)}
 .search-icon{position:absolute;right:12px;color:var(--ac);font-size:14px;pointer-events:none}
 .clear-search{position:absolute;left:10px;color:#94a3b8;font-size:14px;cursor:pointer;display:none}
 .clear-search.show{display:block}
 .az-bar{display:flex;gap:5px;overflow-x:auto;direction:ltr;padding-bottom:3px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .az-bar::-webkit-scrollbar{display:none}
-.az-btn{min-width:30px;height:28px;padding:0 8px;border-radius:8px;font:bold 12px Arial,sans-serif;color:#cbd5e1;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:.15s;user-select:none}
+.az-btn{min-width:30px;height:28px;padding:0 8px;border-radius:8px;font:bold 12px Arial,sans-serif;color:#cbd5e1;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;user-select:none}
 .az-btn:hover{border-color:var(--ac);color:#fff}
 .az-btn.active{background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;border-color:transparent;box-shadow:0 2px 10px rgba(56,189,248,.35)}
 
 /* ---- Playlist & Cards ---- */
-.playlist-items-wrapper{flex:1;overflow-y:auto;padding:8px;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.2) transparent}
-.group-card{display:flex;align-items:center;gap:12px;padding:13px 14px;margin-bottom:8px;border-radius:14px;cursor:pointer;font-size:15px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);transition:background .15s,transform .15s}
+.playlist-items-wrapper{flex:1;overflow-y:auto;padding:8px;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.2) transparent;will-change:scroll-position}
+.group-card{display:flex;align-items:center;gap:12px;padding:13px 14px;margin-bottom:8px;border-radius:14px;cursor:pointer;font-size:15px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);transition:background .12s,transform .12s}
 .group-card:hover,.group-card:active{background:rgba(56,189,248,.18);transform:translateX(-3px)}
 .group-card .gi{color:var(--ac);font-size:18px;width:24px;text-align:center}
 .group-card .gn{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:bold}
 .group-card .gc{font-size:12px;padding:2px 9px;border-radius:999px;background:rgba(255,255,255,.12);color:#e2e8f0}
-.playlist-item{padding:9px 12px;margin-bottom:6px;border-radius:12px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);transition:background .15s,transform .15s;content-visibility:auto;contain-intrinsic-size:auto 54px}
-.playlist-item:hover{background:rgba(255,255,255,.12);transform:translateX(-3px)}
+.playlist-item{padding:9px 12px;margin-bottom:6px;border-radius:12px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);content-visibility:auto;contain-intrinsic-size:auto 54px}
+.playlist-item:hover{background:rgba(255,255,255,.12)}
 .playlist-item.active{background:linear-gradient(135deg,rgba(37,99,235,.65),rgba(139,92,246,.55));border-color:rgba(255,255,255,.3);box-shadow:0 4px 16px rgba(37,99,235,.35)}
 .ch-left{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
-.ch-logo{width:38px;height:38px;flex-shrink:0;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:var(--ac);font-size:15px}
-.ch-logo img{width:100%;height:100%;object-fit:cover;display:block;background:transparent;padding:0}
-.ch-logo img.raw{transform:scale(1.65)}
+.ch-logo{width:38px;height:38px;flex-shrink:0;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#0f172a;border:1px solid rgba(255,255,255,.18);color:var(--ac);font-size:15px}
+.ch-logo img{width:100%;height:100%;object-fit:contain;display:block;padding:2px}
 .ch-info{display:flex;flex-direction:column;min-width:0;flex:1}
 .item-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:bold}
 .item-subcat{font-size:11px;color:#94a3b8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .channel-action-icons{display:flex;align-items:center;gap:8px;flex-shrink:0}
-.icon-btn{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;color:#fff;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);transition:.2s}
+.icon-btn{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;color:#fff;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2)}
 .icon-btn:hover,.icon-btn.active-btn{background:rgba(56,189,248,.28);border-color:var(--ac);color:var(--ac)}
 .icon-btn.recording{background:rgba(239,68,68,.85);border-color:#ef4444;color:#fff;animation:pulse 1.2s infinite}
 .rec-timer-badge{font:900 11px monospace;color:#fca5a5;background:rgba(15,23,42,.85);padding:3px 7px;border-radius:4px;border:1px solid rgba(239,68,68,.4);direction:ltr}
 .empty-msg{text-align:center;padding:30px 15px;color:#94a3b8;font-size:14px}
 
 /* ---- Ticker & Modals ---- */
-.ticker-bar{background:linear-gradient(90deg,rgba(255,255,255,.06),rgba(255,255,255,.12),rgba(255,255,255,.06));backdrop-filter:blur(18px) saturate(170%);-webkit-backdrop-filter:blur(18px) saturate(170%);border-top:1px solid rgba(255,255,255,.2);box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 -6px 20px rgba(0,0,0,.25);color:#e2e8f0;padding:8px 0;overflow:hidden;white-space:nowrap;flex-shrink:0}
+.ticker-bar{background:linear-gradient(90deg,rgba(255,255,255,.06),rgba(255,255,255,.12),rgba(255,255,255,.06));border-top:1px solid rgba(255,255,255,.2);color:#e2e8f0;padding:8px 0;overflow:hidden;white-space:nowrap;flex-shrink:0}
 .ticker-text{display:inline-block;padding-right:100%;animation:ticker 45s linear infinite;font-size:13px}
 @keyframes ticker{to{transform:translate3d(100%,0,0)}}
-.auth-overlay{position:fixed;inset:0;background:rgba(7,11,22,.8);display:none;justify-content:center;align-items:center;z-index:9999;backdrop-filter:blur(14px)}
-.auth-card{padding:25px;border-radius:20px;text-align:center;max-width:460px;width:90%;background:rgba(30,41,59,.7);box-shadow:0 20px 40px rgba(0,0,0,.6)}
+.auth-overlay{position:fixed;inset:0;background:rgba(7,11,22,.85);display:none;justify-content:center;align-items:center;z-index:9999;backdrop-filter:blur(12px)}
+.auth-card{padding:25px;border-radius:20px;text-align:center;max-width:460px;width:90%;background:rgba(30,41,59,.85);box-shadow:0 20px 40px rgba(0,0,0,.6)}
 .auth-card h2{color:var(--ac);margin-bottom:12px;font-size:20px}
 .mac-box{background:rgba(15,23,42,.8);border:1px dashed rgba(56,189,248,.6);padding:12px;border-radius:10px;font-size:16px;font-weight:bold;color:#ef4444;letter-spacing:1px;margin:12px 0 15px;user-select:all;display:flex;justify-content:space-between;align-items:center;direction:ltr}
 .copy-btn{background:#2563eb;color:#fff;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px}
@@ -120,20 +119,20 @@ body::after{background:var(--ac2);bottom:-25vmax;left:-15vmax}
 .contact-box{margin-top:18px;padding-top:15px;border-top:1px solid var(--gb);font-size:13px;color:#cbd5e1}
 .contact-phones{margin-top:6px;font-weight:bold;color:var(--ac);direction:ltr;font-size:14px}
 .cooldown-box{display:none;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.4);color:#fca5a5;padding:10px;border-radius:8px;font-size:13px;margin-bottom:15px}
-.install-btn{cursor:pointer;color:#fff;font-family:inherit;background:linear-gradient(135deg,rgba(56,189,248,.35),rgba(139,92,246,.35));border:1px solid rgba(255,255,255,.3);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.install-btn{cursor:pointer;color:#fff;font-family:inherit;background:linear-gradient(135deg,rgba(56,189,248,.35),rgba(139,92,246,.35));border:1px solid rgba(255,255,255,.3)}
 .side-zone,.menu-fab,.drawer-backdrop{display:none}
-.menu-fab{position:absolute;top:12px;right:12px;z-index:1003;width:42px;height:42px;border-radius:50%;align-items:center;justify-content:center;cursor:pointer;color:#fff;background:rgba(15,23,42,.55);border:1px solid var(--gb);backdrop-filter:blur(10px);transition:opacity .3s}
+.menu-fab{position:absolute;top:12px;right:12px;z-index:1003;width:42px;height:42px;border-radius:50%;align-items:center;justify-content:center;cursor:pointer;color:#fff;background:rgba(15,23,42,.55);border:1px solid var(--gb);transition:opacity .3s}
 .menu-fab.idle{opacity:0;pointer-events:none}
-.ios-guide{position:fixed;inset:0;z-index:10000;display:none;align-items:flex-end;justify-content:center;background:rgba(7,11,22,.7);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.ios-guide{position:fixed;inset:0;z-index:10000;display:none;align-items:flex-end;justify-content:center;background:rgba(7,11,22,.7)}
 .ios-guide.show{display:flex}
-.ios-card{width:100%;max-width:460px;margin:0 10px calc(14px + env(safe-area-inset-bottom));padding:20px;border-radius:20px;background:rgba(30,41,59,.92);border:1px solid var(--gb);box-shadow:0 20px 40px rgba(0,0,0,.6);text-align:center}
+.ios-card{width:100%;max-width:460px;margin:0 10px calc(14px + env(safe-area-inset-bottom));padding:20px;border-radius:20px;background:rgba(30,41,59,.95);border:1px solid var(--gb);box-shadow:0 20px 40px rgba(0,0,0,.6);text-align:center}
 .ios-card h3{color:var(--ac);font-size:18px;margin-bottom:14px}
 .ios-step{display:flex;align-items:center;gap:12px;text-align:right;padding:10px 12px;margin-bottom:8px;border-radius:12px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);font-size:15px;line-height:1.6}
 .ios-step b{flex-shrink:0;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--ac),var(--ac2));font-size:14px}
 .ios-step i{color:var(--ac);margin:0 4px}
 .ios-close{margin-top:6px;width:100%;padding:12px;border:none;border-radius:10px;background:#2563eb;color:#fff;font-family:inherit;font-size:15px;font-weight:bold;cursor:pointer}
 .ios-arrow{margin-top:10px;color:var(--ac);font-size:22px;animation:pulse 1.2s infinite}
-.toast{position:fixed;left:50%;bottom:calc(30px + env(safe-area-inset-bottom));transform:translate(-50%,20px);z-index:20000;max-width:90%;padding:12px 20px;border-radius:14px;background:rgba(30,41,59,.95);border:1px solid var(--gb);color:#fff;font-size:15px;text-align:center;line-height:1.6;box-shadow:0 10px 30px rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s}
+.toast{position:fixed;left:50%;bottom:calc(30px + env(safe-area-inset-bottom));transform:translate(-50%,20px);z-index:20000;max-width:90%;padding:12px 20px;border-radius:14px;background:rgba(30,41,59,.95);border:1px solid var(--gb);color:#fff;font-size:15px;text-align:center;line-height:1.6;box-shadow:0 10px 30px rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 
 @media(max-width:900px){
@@ -153,7 +152,7 @@ body::after{background:var(--ac2);bottom:-25vmax;left:-15vmax}
  .video-js,.video-js .vjs-tech{background-color:#000!important}
  .side-zone{display:block;position:absolute;top:0;right:0;bottom:56px;width:22%;z-index:1002}
  .menu-fab{display:flex}
- .playlist-sidebar{position:fixed;top:0;bottom:0;right:0;width:min(360px,78vw);z-index:3000;transform:translateX(105%);transition:transform .25s;border-width:0 0 0 1px;background:rgba(15,23,42,.88)}
+ .playlist-sidebar{position:fixed;top:0;bottom:0;right:0;width:min(360px,78vw);z-index:3000;transform:translateX(105%);transition:transform .2s;border-width:0 0 0 1px;background:rgba(15,23,42,.92)}
  body.drawer-open .playlist-sidebar{transform:none}
  .drawer-backdrop{position:fixed;inset:0;z-index:2999;background:rgba(0,0,0,.35)}
  body:not(.drawer-open) .drawer-backdrop{display:none}
@@ -206,7 +205,7 @@ body::after{background:var(--ac2);bottom:-25vmax;left:-15vmax}
  <div id="drawerBackdrop" class="drawer-backdrop"></div>
  <div class="content-area">
   <div class="video-container">
-   <video id="ara-sport-player" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="auto" crossorigin="anonymous" playsinline></video>
+   <video id="ara-sport-player" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="auto" playsinline></video>
    <div id="sideZone" class="side-zone"></div>
    <div id="menuFab" class="menu-fab"><i class="fas fa-list"></i></div>
    <div id="streamStatusOverlay" class="stream-status-overlay"><i class="fas fa-spinner fa-spin"></i></div>
@@ -240,7 +239,13 @@ body::after{background:var(--ac2);bottom:-25vmax;left:-15vmax}
 const CH_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vRgvWrahp_pwJWRnX4QCE4KmuhUb6gl5Rk_rDpjA2ODuCNH1nyLUcD-L0g0I6PrD45F0hb7odKi_zbW/pub?gid=250464113&single=true&output=csv";
 const MAC_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vRgvWrahp_pwJWRnX4QCE4KmuhUb6gl5Rk_rDpjA2ODuCNH1nyLUcD-L0g0I6PrD45F0hb7odKi_zbW/pub?gid=0&single=true&output=csv";
 const PROXY_URL="https://ara-proxy.onrender.com/";
-const viaProxy=u=>PROXY_URL&&/^http:\/\//i.test(u)?PROXY_URL+"?url="+encodeURIComponent(u):u;
+const isHttpsPage=location.protocol==="https:";
+// Only force proxy if page is HTTPS and stream is HTTP (mixed content), or when explicitly needed
+const viaProxy=(u,force=false)=>{
+ if(!PROXY_URL)return u;
+ if(force||(/^http:\/\//i.test(u)&&isHttpsPage))return PROXY_URL+"?url="+encodeURIComponent(u);
+ return u;
+};
 const $=id=>document.getElementById(id);
 const ls=(k,v)=>{try{if(v===undefined)return localStorage.getItem(k);if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){return null}};
 
@@ -268,8 +273,8 @@ function copyMac(){
 
 /* ---------- Fast Fetch ---------- */
 function fetchText(url){
- const u=url+"&t="+Math.floor(Date.now()/15000);
- const go=x=>Promise.race([fetch(x,{cache:"no-store"}).then(r=>{if(!r.ok)throw 0;return r.text()}),new Promise((_,j)=>setTimeout(j,4500))]);
+ const u=url+"&t="+Math.floor(Date.now()/20000);
+ const go=x=>Promise.race([fetch(x,{cache:"no-store"}).then(r=>{if(!r.ok)throw 0;return r.text()}),new Promise((_,j)=>setTimeout(j,4000))]);
  return go(u).catch(()=>go("https://api.allorigins.win/raw?url="+encodeURIComponent(u)));
 }
 function parseCSVLine(t){let r=[],c="",q=false;for(const ch of t){if(ch==='"')q=!q;else if(ch===","&&!q){r.push(c.trim());c=""}else c+=ch}r.push(c.trim());return r}
@@ -291,7 +296,7 @@ function startCountdown(exp){
  clearInterval(timerInterval);
  const tick=()=>{
   const dist=end-Date.now();
-  if(dist<=0||isNaN(dist)){clearInterval(timerInterval);activated=false;$("countdownTimer").innerText="ئێکسپایەر بووە";if(player)player.pause();ls("ara_auth_exp",null);$("statusMsg").innerText="ئابوونەکەت بەسەرچوو!";$("authOverlay").style.display="flex";return}
+  if(dist<=0||isNaN(dist)){clearInterval(timerInterval);activated=false;$("countdownTimer").innerText="ئێکسپایەر بووە";if(player)player.pause();destroyTs();ls("ara_auth_exp",null);$("statusMsg").innerText="ئابوونەکەت بەسەرچوو!";$("authOverlay").style.display="flex";return}
   const D=Math.floor(dist/864e5),H=Math.floor(dist%864e5/36e5),M=Math.floor(dist%36e5/6e4),S=Math.floor(dist%6e4/1e3);
   $("countdownTimer").innerText=`${D}d ${H}h ${M}m ${S}s`;
  };
@@ -352,10 +357,11 @@ async function checkActivation(manual=false,silent=false){
  return true;
 }
 
-/* ---------- AI Smart Channel Classifier ---------- */
+/* ---------- Accurate AI Smart Channel Classifier ---------- */
 const CAT_ALL = "گشتی";
 const CAT_KURD = "کەناڵە کوردییەکان";
 const CAT_SPORT = "کەناڵە وەرزشییەکان";
+const CAT_DOC = "دۆکیومێنتاری و ئاژەڵان";
 const CAT_ARAB = "کەناڵە عەرەبییەکان";
 const CAT_FOREIGN = "کەناڵە بیانییەکان";
 const CAT_KIDS = "کەناڵەکانی منداڵان";
@@ -364,28 +370,64 @@ const SMART_GROUPS = [
  { name: CAT_ALL, icon: "fa-globe" },
  { name: CAT_KURD, icon: "fa-sun" },
  { name: CAT_SPORT, icon: "fa-futbol" },
+ { name: CAT_DOC, icon: "fa-paw" },
  { name: CAT_ARAB, icon: "fa-tv" },
  { name: CAT_FOREIGN, icon: "fa-satellite-dish" },
  { name: CAT_KIDS, icon: "fa-child-reaching" }
 ];
 
-const RE_SPORT = /sport|وەرزش|سپۆرت|ریاض|رياض|bein|بى ئين|بی ئین|ssc|alkass|الکاس|كأس|dazn|espn|sky\s*sport|eurosport|arena|match|liga|premier|calcio|bundesliga|ufc|wwe|nba|f1|motor|fight|golf|tennis|olymp|starzplay\s*sport|abu\s*dhabi\s*sport|dubai\s*sport|sharjah\s*sport|iraqia\s*sport|korek\s*sport|kurd\s*sport|ara\s*sport/i;
-const RE_KIDS = /منداڵ|مندال|کارتۆن|کارتون|اطفال|أطفال|kid|cartoon|child|baby|junior|spacetoon|سپەیستوون|سبيستون|mbc\s*3|cn\s|nickelodeon|nick\s|disney|boomerang|peppa|pj\s*masks|pelistank|پەلیستانک|ئافەرین|afarin|kurdmax\s*pepul|پەپوولە|ماجد|majid|طيور\s*الجنة|toyoraljana|karameesh|كراميش|سمسم|배|baraem|براعم|jeem|جيم/i;
-const RE_KURD = /kurd|کورد|كورد|rudaw|ڕووداو|رووداو|k24|nrt|kurdsat|کوردسات|kurdmax|کوردماکس|gk\s|gali\s*kurdistan|گەلی\s*کوردستان|zagros|زاگرۆس|waartv|waar|وار|speda|سپێدە|payam|پەیام|komal|کۆمەڵ|amozhgary|ئامۆژگاری|افين|avin|net\s*tv|نێت|kanal4|کەناڵ\s*4|کەنال\s*4|kirkuk|کەرکووک|کەرکوک|badinan|بادینان|slemani|سلێمانی|hawler|هەولێر|duhok|دهۆک|halabja|هەڵەبجە|xendan|خەندان|chra|چرا|bangawaz|بانگەواز|newroz|نەورۆز|sterk|ستێرک|med\s*muzik|rojava|ڕۆژئاوا|jin\s*tv|شەفەق|ریگا|ڕێگا|rega|azadi|ئازادی|ئاشتی|ashti|biaban|بیابان|tishk|تیشک|aryentv|aryen|ئاریەن|vin\s*tv|ڤین|korek|کۆڕەک|ava\s|ئاڤا|zoom\s|زووم|8\s*channel|کەناڵ\s*8|channel\s*8|kurdistan/i;
-const RE_KURD_CHARS = /[ڕڵڤۆێە]/;
-const RE_ARAB = /عەرەب|عرب|arab|mbc|rotana|ڕۆتانا|روتانا|al\s*jazeera|الجزيرة|جەزیرە|al\s*arabiya|العربية|عەرەبیە|al\s*hadath|الحدث|sky\s*news\s*arabia|سکای\s*نیوز|osn|shahid|شاهد|art\s|نگم|lbc|mtv\s*lebanon|al\s*jadeed|الجديد|future\s*tv|المستقبل|al\s*manar|المنار|al\s*mayadeen|الميادين|syria|سوريا|دامەشق|al\s*sharqiya|الشرقية|شەرقیە|al\s*sumaria|السومرية|سۆمەریە|al\s*iraqia|العراقية|عیراقیە|al\s*rasheed|الرشيد|utv|dijlah|دجلة|دجلە|al\s*fallujah|الفلوجة|al\s*ghad|الغد|al\s*hurra|الحرة|bbc\s*arabic|فرانس\s*24|france\s*24\s*arab|dw\s*arab|rt\s*arab|روسيا\s*اليوم|cbc|dmc|on\s*tv|on\s*drama|al\s*nahar|النهار|سەدا\s*ئەلبەلەد|sada\s*el\s*balad|صدى\s*البلد|al\s*hayat|الحياة|dubai|دبي|دوبەی|abu\s*dhabi|ابوظبي|ئەبوزەبی|sama\s*dubai|sharjah|الشارقة|oman|عمان|kuwait|الكويت|bahrain|البحرين|qatar|قطر|saudi|السعودية|سعودیە|iqraa|اقرأ|al\s*majd|المجد|al\s*resalah|الرسالة|مكة|مدين|قرآن|quran|sunnah|سنة|zee\s*alwan|زي\s*الوان|b4u\s*aflam/i;
-const RE_FOREIGN = /بیانی|ئینگلیزی|تورکی|فارسی|اجنبي|أجنبي|foreign|english|turk|persian|iran|farsi|movie|film|cinema|action|drama|comedy|horror|sci-fi|docu|discovery|nat\s*geo|national\s*geographic|animal\s*planet|history|crime|tlc|hbo|cinemax|starz|showtime|fx\s|amc\s|tnt\s|tbs\s|usa\s*network|syfy|paramount|universal|sony|axn|fox|bbc|cnn|cnbc|bloomberg|msnbc|sky\s*news|euronews|france\s*24|dw\s|nhk|cgtn|trt|atv|show\s*tv|star\s*tv|kanal\s*d|now\s*tv|tv8|beyaz|haberturk|ntv|cnn\s*turk|manoto|iran\s*intl|bbc\s*persian|gem\s|pmc|radio\s*javan|bollywood|zee\s*tv|star\s*plus|colors|sony\s*sab|mtv|vh1|mezzo|fashion|travel|food\s*network|hgtv/i;
+// 1. Sports
+const RE_SPORT = /\b(sport|sports|bein|ssc|alkass|dazn|espn|eurosport|skysport|sky\s*sports|tnsport|tnt\s*sports|btsport|bt\s*sport|premier\s*sports|mutv|lfctv|realmadrid\s*tv|nba|ufc|wwe|f1|motogp|calcio|bundesliga|liga|laliga|arena\s*sport|match\s*tv|dubai\s*sports|ad\s*sports|abu\s*dhabi\s*sports|sharjah\s*sports|korek\s*sport|kurd\s*sport|ara\s*sport)\b|وەرزش|سپۆرت|ریاض|رياض|بى ئين|بی ئین|الکاس|كأس/i;
+
+// 2. Documentary, Nature & Animals (including UK/US Doc & Animal channels)
+const RE_DOC = /\b(doc|docs|documentary|docu|documentaries|nat\s*geo|national\s*geographic|natgeo|wild|animal|animals|animal\s*planet|discovery|disc\s*science|investigation\s*discovery|id\s*xtra|history|history\s*2|h2|crime|investigation|ci\s*network|smithsonian|curiosity|love\s*nature|bbc\s*earth|bbc\s*four|eden|yesterday|alibi|blaze|pbs\s*america|quest|dmax|tlc|hgtv|food\s*network|travel|planet\s*earth|water\s*planet|terra|viasat\s*nature|viasat\s*explore|viasat\s*history|da\s*vinci|asharq\s*discovery|al\s*jazeera\s*doc)\b|دۆکیومێنت|دۆکیۆمێنت|ئاژەڵ|ئەنیمەڵ|وثائق|الوثائقية|ناشيونال|جيوغرافيك|أنيمال|انيمل|ديسكفري|تاريخ|طبيعة/i;
+
+// 3. Kids
+const RE_KIDS = /\b(kid|kids|cartoon|child|children|baby|junior|nick|nickelodeon|nicktoons|nick\s*jr|disney|boomerang|cartoonito|cbeebies|cbbc|citv|pop|tiny\s*pop|kix|spacetoon|mbc\s*3|cn\s*arabia|peppa|pj\s*masks|pelistank|afarin|majid|toyoraljana|karameesh|baraem|jeem|gulli|teletoon|treehouse|pbs\s*kids|universal\s*kids)\b|منداڵ|مندال|کارتۆن|کارتون|اطفال|أطفال|سپەیستوون|سبيستون|پەلیستانک|ئافەرین|پەپوولە|ماجد|طيور\s*الجنة|كراميش|سمسم|براعم|جيم/i;
+
+// 4. Explicit UK / US / European / International Country Prefixes & Networks (Prevents false Kurdish matches!)
+const RE_FOREIGN_STRICT = /\b(uk|us|usa|ca|de|fr|it|es|pt|nl|be|ch|at|pl|ru|tr|ir|in|pk|af|az|gr|ro|bg|hu|cz|sk|se|no|dk|fi|ie|au|nz|br|mx|ar|za)\b|\b(bbc|itv|itv1|itv2|itv3|itv4|itvbe|channel\s*4|channel\s*5|ch4|ch5|more4|film4|e4|4seven|5usa|5star|5select|5action|sky\s*arts|sky\s*witness|sky\s*atlantic|sky\s*max|sky\s*showcase|sky\s*comedy|sky\s*crime|sky\s*cinemas?|sky\s*movies?|sky\s*news|virgin|freeview|freesat|dave|gold|w\s*channel|drama|pick|challenge|great!|talking\s*pictures|gb\s*news|talktv|rte|tg4|stv|utv\s*ulster|cnn|fox|nbc|cbs|abc|msnbc|cnbc|bloomberg|cw|pbs|hbo|cinemax|showtime|starz|encore|epix|mgm|amc|fx|fxx|tnt|tbs|usa\s*network|syfy| Bravo|oxygen|lifetime|hallmark|paramount|universal|sony|axn|warner|tcm|euronews|france\s*24|dw|nhk|cgtn|rt\s*news|trt|atv|show\s*tv|star\s*tv|kanal\s*d|now\s*tv|tv8|beyaz|haberturk|ntv|manoto|iran\s*intl|gem|pmc|radio\s*javan|bollywood|zee\s*tv|star\s*plus|colors|mtv|vh1|mezzo|fashion)\b|بیانی|ئینگلیزی|تورکی|فارسی|اجنبي|أجنبي/i;
+
+// 5. Strict Kurdish (Strict word boundaries for Latin words so "uk" or "drama" never match Kurdish)
+const RE_KURD_LATIN = /\b(kurd|kurdi|kurdish|kurdistan|rudaw|roodaw|k24|kurdistan24|nrt|nrt2|nrt3|nrt4|kurdsat|kurdmax|gali\s*kurdistan|gk\s*tv|zagros|waar|waartv|speda|payam|komal|amozhgary|avin|net\s*tv|kanal4|kanal\s*4|kirkuk|badinan|slemani|suli|hawler|erbil|duhok|halabja|xendan|chra|bangawaz|newroz|sterk|rojava|jin\s*tv|rega|azadi|ashti|biaban|tishk|aryen|vin\s*tv|korek|ava\s*tv|ava\s*entertainment|ava\s*media|zoom\s*tv|channel\s*8|8\s*channel|kurd\s*1|cihan|pelistank|afarin|hawar|ronahi|medya\s*haber|welat|zarok)\b/i;
+const RE_KURD_SCRIPT = /کورد|كورد|ڕووداو|رووداو|کوردسات|کوردماکس|گەلی\s*کوردستان|زاگرۆس|وار|سپێدە|پەیام|کۆمەڵ|ئامۆژگاری|افين|نێت|کەناڵ\s*4|کەنال\s*4|کەرکووک|کەرکوک|بادینان|سلێمانی|هەولێر|دهۆک|هەڵەبجە|خەندان|چرا|بانگەواز|نەورۆز|ستێرک|ڕۆژئاوا|شەفەق|ریگا|ڕێگا|ئازادی|ئاشتی|بیابان|تیشک|ئاریەن|ڤین|کۆڕەک|ئاڤا|زووم|کەناڵ\s*8|[ڕڵڤۆێەپچژگ]/;
+
+// 6. Arabic
+const RE_ARAB = /\b(arab|arabic|arabiya|mbc|rotana|jazeera|hadath|osn|shahid|art\s*aflam|art\s*hekayat|lbc|lbci|mtv\s*lebanon|jadeed|future\s*tv|manar|mayadeen|syria|sharqiya|sumaria|iraqia|rasheed|dijlah|fallujah|ghad|hurra|cbc|dmc|on\s*tv|on\s*drama|nahar|sada\s*el\s*balad|hayat|dubai|sama\s*dubai|abu\s*dhabi|sharjah|oman|kuwait|bahrain|qatar|saudi|sbc|iqraa|majd|resalah|quran|sunnah|zee\s*alwan|b4u\s*aflam|nile|maspero|wataniya|nessma|hannibal|echourouk|ennahar|medi1|2m\s*maroc|al\s*oula|royatv|roya|mamlaka)\b|عەرەب|عرب|ڕۆتانا|روتانا|الجزيرة|جەزیرە|العربية|عەرەبیە|الحدث|سکای\s*نیوز|شاهد|الجديد|المستقبل|المنار|الميادين|سوريا|الشرقية|شەرقیە|السومرية|سۆمەریە|العراقية|عیراقیە|الرشيد|دجلة|دجلە|الفلوجة|الغد|الحرة|فرانس\s*24|روسيا\s*اليوم|النهار|صدى\s*البلد|الحياة|دبي|دوبەی|ابوظبي|ئەبوزەبی|الشارقة|عمان|الكويت|البحرين|قطر|السعودية|سعودیە|اقرأ|المجد|الرسالة|مكة|قرآن|سنة|زي\s*الوان/i;
 
 function smartCategorize(name, origCat){
- const txt = `${name} ${origCat}`;
- if(RE_SPORT.test(txt)) return CAT_SPORT;
- if(RE_KIDS.test(txt)) return CAT_KIDS;
- if(RE_KURD.test(txt) || RE_KURD_CHARS.test(txt)) return CAT_KURD;
- if(RE_ARAB.test(txt)) return CAT_ARAB;
- if(RE_FOREIGN.test(txt)) return CAT_FOREIGN;
- // Fallback based on script: if pure Latin letters -> Foreign, otherwise Kurdish/Arabic
- if(/^[A-Za-z0-9\s\-_.:+&/()!]+$/.test(name.trim())) return CAT_FOREIGN;
- if(/[پچژگڤ]/.test(txt)) return CAT_KURD;
+ const n = (name || "").trim();
+ const c = (origCat || "").trim();
+ const full = `${n} ${c}`;
+
+ // 1. Sports first
+ if(RE_SPORT.test(full)) return CAT_SPORT;
+
+ // 2. Documentary & Animals second (catches NatGeo, Discovery, Animal Planet, UK Doc channels, etc.)
+ if(RE_DOC.test(full)) return CAT_DOC;
+
+ // 3. Kids third
+ if(RE_KIDS.test(full)) return CAT_KIDS;
+
+ // 4. If channel name explicitly has UK/US/Foreign network tags, classify as Foreign BEFORE Kurdish check
+ if(RE_FOREIGN_STRICT.test(n) && !RE_KURD_LATIN.test(n)) return CAT_FOREIGN;
+
+ // 5. Explicit Kurdish check on channel name first
+ if(RE_KURD_LATIN.test(n) || RE_KURD_SCRIPT.test(n)) return CAT_KURD;
+
+ // 6. Explicit Arabic check
+ if(RE_ARAB.test(full)) return CAT_ARAB;
+
+ // 7. Explicit Foreign check on category
+ if(RE_FOREIGN_STRICT.test(c)) return CAT_FOREIGN;
+
+ // 8. If original sheet category was Kurdish AND channel name is not pure English/Latin
+ const isPureLatinName = /^[A-Za-z0-9\s\-_.:+&/()!|[\]]+$/.test(n);
+ if(!isPureLatinName && (RE_KURD_LATIN.test(c) || RE_KURD_SCRIPT.test(c))) return CAT_KURD;
+
+ // 9. Final fallback: Pure Latin names go to Foreign, Arabic/Kurdish script goes to Arabic/Kurdish
+ if(isPureLatinName) return CAT_FOREIGN;
+ if(RE_KURD_SCRIPT.test(n)) return CAT_KURD;
  return CAT_ARAB;
 }
 
@@ -405,9 +447,7 @@ function initPlayer(){
     enableLowInitialPlaylist:true,
     fastQualityChange:true,
     handlePartialData:true,
-    experimentalBufferBasedABR:true,
-    backBufferLength:15,
-    maxPlaylistRetries:2
+    backBufferLength:12
    }
   }
  });
@@ -449,7 +489,7 @@ function initPlayer(){
 function showWait(w){$("streamStatusOverlay").style.display=w?"flex":"none"}
 function updateWatermark(){const w=$("playerWatermark");if(w)w.classList.toggle("show-watermark",isSports)}
 
-/* ---------- Throttled Lightweight OCR ---------- */
+/* ---------- Lightweight OCR (Only runs on Sports when CORS allows) ---------- */
 let ocrState=null,ocrWorker=null,ocrLoading=null,ocrFails=0,ocrTimer=null,ocrMiss=0;
 function loadTess(){
  if(window.Tesseract)return Promise.resolve();
@@ -471,7 +511,7 @@ async function ocrCheck(){
  let v;try{v=player.tech(true).el()}catch(e){return}
  if(!v||!v.videoWidth)return;
  try{
-  const sx=v.videoWidth*0.70,sw=v.videoWidth*0.30,sh=v.videoHeight*0.14,k=Math.min(2,600/sw);
+  const sx=v.videoWidth*0.70,sw=v.videoWidth*0.30,sh=v.videoHeight*0.14,k=Math.min(2,500/sw);
   const cv=document.createElement("canvas");cv.width=Math.round(sw*k);cv.height=Math.round(sh*k);
   const c=cv.getContext("2d",{willReadFrequently:true});
   c.drawImage(v,sx,0,sw,sh,0,0,cv.width,cv.height);
@@ -523,14 +563,13 @@ function findCode(lines,W,H){
  }
  return null;
 }
-/* Throttled to 1800ms so UI & Video stay ultra-fast */
 function codeLoop(){
  if(codeLoopOn)return;codeLoopOn=true;
- const run=async()=>{try{if(isSports)await codeScan()}catch(e){}setTimeout(run,1800)};
- setTimeout(run,2000);
+ const run=async()=>{try{if(isSports)await codeScan()}catch(e){}setTimeout(run,2500)};
+ setTimeout(run,3000);
 }
 async function codeScan(){
- if(!player||player.paused()||document.hidden||(codeFail[currentUrl]||0)>=2)return;
+ if(!player||!isSports||player.paused()||document.hidden||(codeFail[currentUrl]||0)>=1)return;
  let v;try{v=player.tech(true).el()}catch(e){return}
  if(!v||!v.videoWidth)return;
  const url=currentUrl,vw=v.videoWidth,vh=v.videoHeight;
@@ -542,7 +581,7 @@ async function codeScan(){
    const x0=Math.max(0,codeBox.x0-bw*.35),x1=Math.min(1,codeBox.x1+bw*.35),y0=Math.max(0,codeBox.y0-bh*1.2),y1=Math.min(1,codeBox.y1+bh*1.2);
    sx=x0*vw;sy=y0*vh;sw=(x1-x0)*vw;sh=(y1-y0)*vh;
   }
-  const k=region?Math.min(2.2,Math.max(1,500/sw)):Math.min(1,960/vw),W=Math.round(sw*k),H=Math.round(sh*k);
+  const k=region?Math.min(2,Math.max(1,450/sw)):Math.min(1,850/vw),W=Math.round(sw*k),H=Math.round(sh*k);
   const cv=document.createElement("canvas");cv.width=W;cv.height=H;
   const c=cv.getContext("2d",{willReadFrequently:true});
   c.drawImage(v,sx,sy,sw,sh,0,0,W,H);c.getImageData(0,0,1,1);
@@ -600,7 +639,6 @@ function parseChannels(csv){
   const origCat=c[0]||"گشتی";
   const name=c[1];
   const smartCat=smartCategorize(name,origCat);
-  // Extract first English letter if present for A-Z filtering
   const mLetter=name.match(/[A-Za-z]/);
   const firstLetter=mLetter?mLetter[0].toUpperCase():"#";
   out.push({
@@ -618,17 +656,18 @@ function parseChannels(csv){
 const GROUP_PRIORITY = {
  [CAT_KURD]: 0,
  [CAT_SPORT]: 1,
- [CAT_ARAB]: 2,
- [CAT_FOREIGN]: 3,
- [CAT_KIDS]: 4
+ [CAT_DOC]: 2,
+ [CAT_ARAB]: 3,
+ [CAT_FOREIGN]: 4,
+ [CAT_KIDS]: 5
 };
 
 function setData(list){
- // Re-ensure smart categorization even if loaded from old localStorage cache
  channels=list.map(ch=>{
-  const sc=smartCategorize(ch.name,ch.origCat||ch.cat||"");
+  const orig=ch.origCat||ch.cat||"";
+  const sc=smartCategorize(ch.name,orig);
   const mL=ch.name.match(/[A-Za-z]/);
-  return {...ch,cat:sc,origCat:ch.origCat||ch.cat||"",letter:mL?mL[0].toUpperCase():"#"};
+  return {...ch,cat:sc,origCat:orig,letter:mL?mL[0].toUpperCase():"#"};
  });
  categories=SMART_GROUPS.map(g=>g.name);
  if(!categories.includes(currentCat))currentCat=CAT_ALL;
@@ -662,51 +701,19 @@ async function loadPlaylist(){
  }catch(e){if(!channels.length)$("playlist-items").innerHTML='<div class="playlist-item">هەڵە لە بارکردنی لیستی کەناڵەکان</div>'}
 }
 
-/* ---------- Non-Blocking Logo Loader ---------- */
-const logoCache={},LOGO_PH='<i class="fas fa-tv"></i>';
-const idleJob=window.requestIdleCallback||function(cb){return setTimeout(cb,30)};
-
-function trimLogo(im){
- const k=Math.min(1,160/Math.max(im.naturalWidth,im.naturalHeight)),w=Math.max(1,Math.round(im.naturalWidth*k)),h=Math.max(1,Math.round(im.naturalHeight*k));
- const cv=document.createElement("canvas");cv.width=w;cv.height=h;
- const c=cv.getContext("2d",{willReadFrequently:true});c.drawImage(im,0,0,w,h);
- const d=c.getImageData(0,0,w,h).data;
- const bg=i=>d[i+3]<25||(d[i]>232&&d[i+1]>232&&d[i+2]>232);
- let x0=w,y0=h,x1=-1,y1=-1;
- for(let y=0;y<h;y++)for(let x=0;x<w;x++){if(!bg((y*w+x)*4)){if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y}}
- if(x1<0)throw 0;
- const cw=x1-x0+1,chh=y1-y0+1,side=Math.min(cw,chh),inset=side*.09;
- const sx=x0+(cw-side)/2+inset,sy=y0+(chh-side)/2+inset,ss=side-inset*2;
- let r=0,g=0,b=0,n=0;
- [[sx+ss/2,sy+2],[sx+ss/2,sy+ss-3],[sx+2,sy+ss/2],[sx+ss-3,sy+ss/2]].forEach(([px,py])=>{const i=(Math.round(py)*w+Math.round(px))*4;if(i>=0&&i<d.length&&!bg(i)){r+=d[i];g+=d[i+1];b+=d[i+2];n++}});
- const o=document.createElement("canvas");o.width=o.height=84;const oc=o.getContext("2d");
- oc.fillStyle=n?`rgb(${r/n|0},${g/n|0},${b/n|0})`:"#0f172a";oc.fillRect(0,0,84,84);
- oc.drawImage(cv,sx,sy,ss,ss,0,0,84,84);
- return o.toDataURL("image/png");
-}
-function showPlainLogo(box,url){
- const im=new Image();im.className="raw";im.loading="lazy";im.decoding="async";im.referrerPolicy="no-referrer";im.alt="";
- im.onerror=()=>{box.innerHTML=LOGO_PH};
- im.onload=()=>{box.innerHTML="";box.appendChild(im)};
- im.src=url;
-}
+/* ---------- Instant Zero-CPU Logo Loader ---------- */
+const LOGO_PH='<i class="fas fa-tv"></i>';
 function setLogo(box,url){
- box.innerHTML=LOGO_PH;
- if(!url)return;
- const c=logoCache[url];
- if(c){if(c.v)box.innerHTML='<img src="'+c.v+'" loading="lazy" decoding="async" alt="">';else showPlainLogo(box,url);return}
- showPlainLogo(box,url);
- idleJob(()=>{
-  if(logoCache[url])return;
-  const im=new Image();im.crossOrigin="anonymous";im.referrerPolicy="no-referrer";
-  im.onload=()=>{
-   let v=null;try{v=trimLogo(im)}catch(e){}
-   logoCache[url]={v};
-   if(v&&box.isConnected)box.innerHTML='<img src="'+v+'" loading="lazy" decoding="async" alt="">';
-  };
-  im.onerror=()=>{logoCache[url]={v:null}};
-  im.src=url;
- });
+ if(!url){box.innerHTML=LOGO_PH;return}
+ const im=new Image();
+ im.loading="lazy";
+ im.decoding="async";
+ im.referrerPolicy="no-referrer";
+ im.alt="";
+ im.onerror=()=>{box.innerHTML=LOGO_PH};
+ box.innerHTML="";
+ box.appendChild(im);
+ im.src=url;
 }
 
 /* ---------- Views, Tabs & A-Z Search ---------- */
@@ -743,7 +750,7 @@ function toggleSearch(force){
  if(searchOpen){
   if(view==="groups"){view="channels";if(!currentCat)currentCat=CAT_ALL}
   renderChannels();
-  setTimeout(()=>$("searchInput").focus(),50);
+  setTimeout(()=>$("searchInput").focus(),40);
  }else{
   searchQuery="";selectedLetter="ALL";
   $("searchInput").value="";
@@ -791,7 +798,6 @@ function renderChannels(){
     if(selectedLetter==="#"){
      if(/[A-Z]/i.test(startsWithEn))return;
     }else{
-     // Match either first character or first English word character
      if(startsWithEn!==selectedLetter && ch.letter!==selectedLetter)return;
     }
    }
@@ -823,7 +829,6 @@ function showTabs(){
  const key=categories.join("|")+"|search";
  if(key!==tabsKey){
   tabsKey=key;gt.innerHTML="";const f=document.createDocumentFragment();
-  // Quick A-Z Search Pill inside Group Tabs
   const st=document.createElement("div");
   st.className="category-tab";
   st.dataset.action="search";
@@ -871,55 +876,89 @@ $("playlist-items").addEventListener("click",e=>{  const g=e.target.closest(".gr
  playChannel(ch);closeDrawer();
 });
 
-/* ---------- Ultra-Fast Stream Engine: HLS + MPEG-TS + MP4 ---------- */
-let tsPlayer=null,hlsErrHandler=null,tsRetries=0;
+/* ---------- Rock-Solid Stream Engine: MPEG-TS (.ts) + HLS (.m3u8) + MP4 ---------- */
+let tsPlayer=null,hlsErrHandler=null,tsRetries=0,tsFallbackTimer=null;
 
 function destroyTs(){
+ clearTimeout(tsFallbackTimer);
  if(tsPlayer){
   try{tsPlayer.pause();tsPlayer.unload();tsPlayer.detachMediaElement();tsPlayer.destroy()}catch(e){}
   tsPlayer=null;
  }
 }
+
 function detectType(url){
- const u=url.toLowerCase(),path=u.split("?")[0];
- if(/m3u8/.test(u))return "hls";
- if(/\.mp4$/.test(path))return "mp4";
- if(/\.(ts|mpegts)$/.test(path)||/extension=ts|output=ts|type=ts|\/play\/live\.php/.test(u))return "ts";
+ const u=url.trim().toLowerCase(),path=u.split("?")[0];
+ if(/\.m3u8($|\?)|format=m3u8|output=m3u8|type=m3u8|\/hls\//i.test(u))return "hls";
+ if(/\.(mp4|mkv|webm)($|\?)/i.test(path))return "mp4";
+ if(/\.(ts|mpegts)($|\?)|extension=ts|output=ts|type=ts|\/play\/live\.php|\/live\/\d+/i.test(u))return "ts";
  const last=path.split("/").pop();
- if(!/\.[a-z0-9]{2,5}$/.test(last))return "ts";
+ if(!/\.[a-z0-9]{2,5}$/i.test(last))return "ts";
  return "hls";
 }
-function playTs(url){
+
+function playTs(url,useProxy=false){
  destroyTs();
  let v;try{v=player.tech(true).el()}catch(e){return}
- if(!window.mpegts||!mpegts.getFeatureList().mseLivePlayback){
-  player.src({src:viaProxy(url),type:"video/mp2t"});
+ // Removing crossorigin attribute prevents CORS preflight blocks on raw IPTV TS servers
+ v.removeAttribute("crossorigin");
+ const streamUrl=viaProxy(url,useProxy);
+
+ if(!window.mpegts||!mpegts.isSupported()){
+  player.src({src:streamUrl,type:"video/mp2t"});
   const p=player.play();if(p&&p.catch)p.catch(()=>{});
   return;
  }
+
  tsPlayer=mpegts.createPlayer(
-  {type:"mpegts",isLive:true,url:viaProxy(url),cors:true},
+  {
+   type:"mpegts",
+   isLive:true,
+   url:streamUrl,
+   cors:true
+  },
   {
    enableWorker:true,
-   enableStashBuffer:false,
-   stashInitialSize:65536,
+   enableStashBuffer:true,
+   stashInitialSize:131072, // 128KB smooth & instant TS start
    liveBufferLatencyChasing:true,
    liveBufferLatencyChasingOnPaused:true,
-   liveBufferLatencyMaxLatency:2.5,
-   liveBufferLatencyMinRemain:0.5,
-   lazyLoadMaxDuration:15,
+   liveBufferLatencyMaxLatency:4.5,
+   liveBufferLatencyMinRemain:1.0,
+   lazyLoad:false,
    autoCleanupSourceBuffer:true,
-   autoCleanupMaxBackwardDuration:12,
-   autoCleanupMinBackwardDuration:6
+   autoCleanupMaxBackwardDuration:20,
+   autoCleanupMinBackwardDuration:10
   }
  );
+
  const me=tsPlayer;
  me.attachMediaElement(v);
  me.load();
- me.on(mpegts.Events.ERROR,()=>{
-  if(tsPlayer!==me||currentUrl!==url||++tsRetries>3)return;
-  setTimeout(()=>{if(tsPlayer===me&&currentUrl===url){try{me.unload();me.load();const q=me.play();if(q&&q.catch)q.catch(()=>{})}catch(e){}}},1200);
+
+ me.on(mpegts.Events.ERROR,(errType)=>{
+  if(tsPlayer!==me||currentUrl!==url)return;
+  tsRetries++;
+  // Step 1: If direct HTTP/HTTPS failed, try through proxy
+  if(tsRetries===1&&!useProxy&&PROXY_URL){
+   playTs(url,true);
+   return;
+  }
+  // Step 2: Retry stream reconnect up to 3 times
+  if(tsRetries<=3){
+   setTimeout(()=>{
+    if(tsPlayer===me&&currentUrl===url){
+     try{me.unload();me.load();const q=me.play();if(q&&q.catch)q.catch(()=>{})}catch(e){}
+    }
+   },1200);
+  }else if(tsRetries===4){
+   // Step 3: Some extensionless IPTV URLs actually redirect to HLS (.m3u8)
+   destroyTs();
+   player.src({src:viaProxy(url),type:"application/x-mpegURL"});
+   const q=player.play();if(q&&q.catch)q.catch(()=>{});
+  }
  });
+
  const p=me.play();
  if(p&&p.catch)p.catch(()=>{v.muted=true;const q=me.play();if(q&&q.catch)q.catch(()=>{})});
 }
@@ -944,9 +983,10 @@ function playChannel(ch){
  if(hlsErrHandler){player.off("error",hlsErrHandler);hlsErrHandler=null}
  destroyTs();
  player.muted(false);
+
  if(kind==="ts"){
-  player.pause();
-  playTs(ch.url);
+  try{player.pause();player.reset()}catch(e){}
+  playTs(ch.url,false);
  }else{
   player.src({src:viaProxy(ch.url),type:kind==="mp4"?"video/mp4":"application/x-mpegURL"});
   const p=player.play();
@@ -956,8 +996,8 @@ function playChannel(ch){
    hlsErrHandler=()=>{
     player.off("error",hlsErrHandler);hlsErrHandler=null;
     if(currentUrl!==url)return;
-    try{player.error(null)}catch(e){}
-    player.pause();playTs(url);
+    try{player.error(null);player.pause()}catch(e){}
+    playTs(url,false);
    };
    player.on("error",hlsErrHandler);
   }
