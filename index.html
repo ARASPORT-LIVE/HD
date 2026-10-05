@@ -20,7 +20,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 @font-face{font-family:'GoranFontRegular-Regular';src:url('GoranFontRegular-Regular.ttf') format('truetype'),url('GoranFontRegular-Regular.woff') format('woff');font-display:swap}
-:root{--ac:#38bdf8;--ac2:#8b5cf6;--g:rgba(255,255,255,.07);--gb:rgba(255,255,255,.14)}
+:root{--ac:#38bdf8;--ac2:#8b5cf6;--bein:#4f1d96;--bein2:#1e1b4b;--g:rgba(255,255,255,.07);--gb:rgba(255,255,255,.14)}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{width:100%;height:100%;color:#fff;font-family:'GoranFontRegular-Regular',Tahoma,Arial,sans-serif;overflow:hidden;-webkit-font-smoothing:antialiased}
 body{background:#070b16;display:flex;justify-content:center;align-items:center;position:relative;height:100vh;height:100dvh;padding:max(10px,env(safe-area-inset-top)) 10px max(10px,env(safe-area-inset-bottom))}
@@ -30,7 +30,15 @@ body::after{background:var(--ac2);bottom:-25vmax;left:-15vmax}
 .glass{background:var(--g);backdrop-filter:blur(16px) saturate(150%);-webkit-backdrop-filter:blur(16px) saturate(150%);border:1px solid var(--gb)}
 .main-wrapper{position:relative;z-index:1;width:100%;height:100%;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 50px rgba(0,0,0,.55)}
 .player-header{display:flex;justify-content:space-between;align-items:center;padding:10px 18px;gap:8px;flex-shrink:0;border-width:0 0 1px;border-style:solid}
-.brand-title{font-size:22px;font-weight:bold;background:linear-gradient(90deg,var(--ac),var(--ac2));-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* ---- Brand Title with Soft Periodic Light Glow & Shimmer ---- */
+.brand-wrap{position:relative;display:inline-flex;align-items:center;gap:8px;padding:3px 12px;border-radius:10px;overflow:hidden;background:linear-gradient(135deg,rgba(15,23,42,.85),rgba(30,27,75,.85));border:1px solid rgba(56,189,248,.35);box-shadow:0 0 18px rgba(56,189,248,.18);animation:brandGlow 5s ease-in-out infinite}
+.brand-title{font:900 20px Arial,sans-serif;letter-spacing:1px;color:#fff;text-shadow:0 0 10px rgba(56,189,248,.45);direction:ltr}
+.brand-title span{color:var(--ac);background:linear-gradient(90deg,#38bdf8,#a78bfa);-webkit-background-clip:text;background-clip:text;color:transparent}
+.brand-wrap::after{content:"";position:absolute;top:0;left:-130%;width:75%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-25deg);animation:lightSweep 5.5s ease-in-out infinite;pointer-events:none}
+@keyframes lightSweep{0%,62%{left:-130%}88%,100%{left:160%}}
+@keyframes brandGlow{0%,100%{box-shadow:0 0 12px rgba(56,189,248,.15);border-color:rgba(56,189,248,.3)}50%{box-shadow:0 0 24px rgba(56,189,248,.5),0 0 10px rgba(139,92,246,.35);border-color:rgba(56,189,248,.75)}}
+
 .header-right{display:flex;align-items:center;gap:8px}
 .badge{padding:5px 12px;border-radius:20px;font-size:13px;font-weight:bold;display:flex;align-items:center;gap:6px;direction:ltr}
 .trial-badge{background:rgba(245,158,11,.35);border:1px solid rgba(245,158,11,.6)}
@@ -43,15 +51,32 @@ body::after{background:var(--ac2);bottom:-25vmax;left:-15vmax}
 .video-js,.video-js .vjs-tech{background-color:transparent!important}
 .video-container .video-js{position:absolute!important;inset:0}
 .stream-status-overlay{position:absolute;inset:0;display:flex;justify-content:center;align-items:center;z-index:1001;font-size:32px;color:var(--ac);background:rgba(7,11,22,.45);pointer-events:none}
-.vjs-watermark-logo{position:absolute!important;top:42px;right:18px;z-index:1000;pointer-events:none;display:none;padding:4px 10px;border-radius:6px;background:rgba(15,23,42,.8);border:.07em solid rgba(56,189,248,.6);box-shadow:none;line-height:1}
+
+/* ---- Wide beIN SPORTS HD Style Watermark with Soft Light Sweep ---- */
+.vjs-watermark-logo{position:absolute!important;z-index:1000;pointer-events:none;display:none;flex-direction:column;align-items:flex-end;direction:ltr;user-select:none}
 .vjs-watermark-logo.show-watermark{display:flex!important}
-.vjs-watermark-text{font:900 15px Arial;letter-spacing:0;line-height:1}
-.vjs-watermark-text span{color:var(--ac)}
-.vjs-live-tag{position:absolute;top:100%;left:auto;right:0;transform:none;display:none;align-items:center;gap:.3em;padding:.2em .6em;margin-top:.4em;border-radius:4px;background:rgba(239,68,68,.92);font:900 .62em Arial;letter-spacing:0;line-height:1.1;color:#fff;white-space:nowrap}
-.vjs-live-tag i{width:.45em;height:.45em;border-radius:50%;background:#fff;animation:pulse 1.2s infinite}
+.bein-bar{position:relative;display:flex;align-items:stretch;width:100%;height:100%;border-radius:.28em;overflow:hidden;background:linear-gradient(135deg,#1e1136 0%,#3b136c 60%,#111827 100%);border:.08em solid rgba(56,189,248,.65);box-shadow:0 4px 16px rgba(0,0,0,.65),0 0 14px rgba(56,189,248,.22);animation:logoPulseGlow 6s ease-in-out infinite}
+.bein-bar::after{content:"";position:absolute;top:0;left:-140%;width:65%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.48),transparent);transform:skewX(-25deg);animation:lightSweep 6s ease-in-out infinite;pointer-events:none}
+@keyframes logoPulseGlow{0%,100%{box-shadow:0 4px 14px rgba(0,0,0,.65),0 0 10px rgba(56,189,248,.15)}50%{box-shadow:0 4px 18px rgba(0,0,0,.75),0 0 22px rgba(56,189,248,.5)}}
+.bein-main{flex:1;display:flex;align-items:center;justify-content:center;gap:.28em;padding:0 .65em;font:900 1em 'Arial Black',Impact,Arial,sans-serif;letter-spacing:.04em;color:#fff;white-space:nowrap;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+.bein-main b{color:#38bdf8;font-weight:900}
+.bein-hd{display:flex;align-items:center;justify-content:center;padding:0 .5em;background:linear-gradient(135deg,#38bdf8,#0284c7);color:#061326;font:900 .88em 'Arial Black',Arial,sans-serif;letter-spacing:.03em;border-left:.08em solid rgba(255,255,255,.35)}
+.vjs-live-tag{margin-top:.22em;display:none;align-items:center;justify-content:center;gap:.3em;padding:.14em .75em;border-radius:.22em;background:linear-gradient(90deg,#dc2626,#ef4444);font:900 .58em Arial,sans-serif;letter-spacing:.08em;line-height:1.1;color:#fff;white-space:nowrap;box-shadow:0 2px 8px rgba(239,68,68,.5)}
+.vjs-live-tag i{width:.45em;height:.45em;border-radius:50%;background:#fff;animation:pulse 1.1s infinite}
 .vjs-watermark-logo.is-live .vjs-live-tag{display:flex}
-.code-cover{position:absolute;z-index:999;display:none;align-items:center;justify-content:center;pointer-events:none;overflow:hidden;white-space:nowrap;color:#fff;font:900 1em Arial;background:rgba(15,23,42,.98);border:.07em solid rgba(56,189,248,.6);border-radius:.4em}
-.code-cover span{color:#38bdf8}
+
+/* ---- Instant Code Cover (beIN ARA SPORT HD Badge) ---- */
+.code-cover{position:absolute;z-index:1002;display:none;align-items:stretch;justify-content:center;overflow:hidden;white-space:nowrap;direction:ltr;border-radius:.28em;background:linear-gradient(135deg,#1e1136 0%,#3b136c 60%,#0f172a 100%);border:.08em solid rgba(56,189,248,.75);box-shadow:0 4px 16px rgba(0,0,0,.8);cursor:pointer;user-select:none}
+.code-cover::after{content:"";position:absolute;top:0;left:-140%;width:65%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-25deg);animation:lightSweep 5s ease-in-out infinite;pointer-events:none}
+.code-cover .cc-main{flex:1;display:flex;align-items:center;justify-content:center;gap:.25em;padding:0 .55em;font:900 1em 'Arial Black',Arial,sans-serif;color:#fff;letter-spacing:.03em}
+.code-cover .cc-main span{color:#38bdf8}
+.code-cover .cc-hd{display:flex;align-items:center;justify-content:center;padding:0 .42em;background:linear-gradient(135deg,#38bdf8,#0284c7);color:#061326;font:900 .85em 'Arial Black',Arial,sans-serif}
+
+/* ---- Manual Code Blocker Tool Button on Video ---- */
+.cover-tool-fab{position:absolute;top:12px;left:12px;z-index:1003;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#cbd5e1;background:rgba(15,23,42,.55);border:1px solid var(--gb);backdrop-filter:blur(8px);font-size:14px;transition:opacity .3s,background .2s,color .2s}
+.cover-tool-fab:hover,.cover-tool-fab.active{background:rgba(239,68,68,.85);color:#fff;border-color:#ef4444}
+.cover-tool-fab.idle{opacity:0;pointer-events:none}
+.video-container.pick-cover-mode{cursor:crosshair!important}
 
 /* ---- Sidebar & Groups ---- */
 .playlist-sidebar{width:390px;display:flex;flex-direction:column;height:100%;border-width:0 1px 0 0;border-style:solid}
@@ -102,10 +127,15 @@ body::after{background:var(--ac2);bottom:-25vmax;left:-15vmax}
 .rec-timer-badge{font:900 11px monospace;color:#fca5a5;background:rgba(15,23,42,.85);padding:3px 7px;border-radius:4px;border:1px solid rgba(239,68,68,.4);direction:ltr}
 .empty-msg{text-align:center;padding:30px 15px;color:#94a3b8;font-size:14px}
 
-/* ---- Ticker & Modals ---- */
-.ticker-bar{background:linear-gradient(90deg,rgba(255,255,255,.06),rgba(255,255,255,.12),rgba(255,255,255,.06));border-top:1px solid rgba(255,255,255,.2);color:#e2e8f0;padding:8px 0;overflow:hidden;white-space:nowrap;flex-shrink:0}
+/* ---- Broadcast Ticker Bar with Right-Side Digital Clock Shape ---- */
+.ticker-bar{position:relative;display:flex;align-items:center;height:38px;background:linear-gradient(90deg,rgba(15,23,42,.88),rgba(30,41,59,.92));border-top:1px solid rgba(56,189,248,.3);color:#e2e8f0;overflow:hidden;white-space:nowrap;flex-shrink:0}
+.ticker-clock-box{position:relative;z-index:3;height:100%;display:flex;align-items:center;gap:8px;padding:0 18px 0 24px;background:linear-gradient(135deg,#0284c7,#3b0764);color:#fff;font:900 14px 'Courier New',monospace;letter-spacing:1.2px;direction:ltr;box-shadow:-8px 0 18px rgba(0,0,0,.6);clip-path:polygon(14px 0,100% 0,100% 100%,0 100%);border-left:2px solid var(--ac)}
+.ticker-clock-box i{color:#38bdf8;font-size:13px;animation:pulse 2s infinite}
+.ticker-track{flex:1;overflow:hidden;position:relative;height:100%;display:flex;align-items:center}
 .ticker-text{display:inline-block;padding-right:100%;animation:ticker 45s linear infinite;font-size:13px}
 @keyframes ticker{to{transform:translate3d(100%,0,0)}}
+
+/* ---- Modals ---- */
 .auth-overlay{position:fixed;inset:0;background:rgba(7,11,22,.85);display:none;justify-content:center;align-items:center;z-index:9999;backdrop-filter:blur(12px)}
 .auth-card{padding:25px;border-radius:20px;text-align:center;max-width:460px;width:90%;background:rgba(30,41,59,.85);box-shadow:0 20px 40px rgba(0,0,0,.6)}
 .auth-card h2{color:var(--ac);margin-bottom:12px;font-size:20px}
@@ -141,7 +171,8 @@ body::after{background:var(--ac2);bottom:-25vmax;left:-15vmax}
  .content-area{flex-direction:column}
  .video-container{width:100%;height:auto;aspect-ratio:16/9;flex:none}
  .playlist-sidebar{width:100%;flex:1;border-width:1px 0 0;min-height:0}
- .vjs-watermark-logo{top:60px;right:10px;padding:2px 5px}.vjs-watermark-text{font-size:8px}
+ .ticker-bar{height:34px}
+ .ticker-clock-box{padding:0 12px 0 18px;font-size:12px}
 }
 @media(orientation:landscape) and (max-height:520px){
  body{padding:0}
@@ -194,7 +225,7 @@ body::after{background:var(--ac2);bottom:-25vmax;left:-15vmax}
 
 <div class="main-wrapper glass">
  <div class="player-header glass">
-  <div class="brand-title">ARA TV</div>
+  <div class="brand-wrap"><div class="brand-title">ARA <span>TV</span></div></div>
   <div class="header-right">
    <div id="trialBadge" class="badge trial-badge" style="display:none">⏱️ <span id="trialTimer">05:00</span></div>
    <div id="countdownBox" class="badge expire-countdown-badge" style="display:none">⏳ <span id="countdownTimer">--</span></div>
@@ -204,10 +235,11 @@ body::after{background:var(--ac2);bottom:-25vmax;left:-15vmax}
  </div>
  <div id="drawerBackdrop" class="drawer-backdrop"></div>
  <div class="content-area">
-  <div class="video-container">
+  <div id="videoContainer" class="video-container">
    <video id="ara-sport-player" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="auto" playsinline></video>
    <div id="sideZone" class="side-zone"></div>
    <div id="menuFab" class="menu-fab"><i class="fas fa-list"></i></div>
+   <div id="coverToolFab" class="cover-tool-fab" title="شاردنەوەی دەستبەجێی کۆدی سەر شاشە"><i class="fas fa-eye-slash"></i></div>
    <div id="streamStatusOverlay" class="stream-status-overlay"><i class="fas fa-spinner fa-spin"></i></div>
   </div>
   <div class="playlist-sidebar glass">
@@ -230,17 +262,22 @@ body::after{background:var(--ac2);bottom:-25vmax;left:-15vmax}
    <div class="playlist-items-wrapper"><div id="playlist-items"><div class="playlist-item">تکایە چاوەڕێ بکە...</div></div></div>
   </div>
  </div>
- <div class="ticker-bar glass"><div class="ticker-text">بەخێر بێن بۆ سیستمی پەخشی ARA TV، تکایە لەکاتی بوونی هەر کێشە و گرفتێکدا پەیوەندی بکەن بە ژمارە تەلەفۆنی 07748134314 یان 07501224994 &nbsp;&nbsp;|&nbsp;&nbsp; ئەم ماک ئەدرێسە تایبەتە بە ئامێرەکەت: <b id="tickerMac" style="direction:ltr;unicode-bidi:isolate;color:#38bdf8"></b> &nbsp;—&nbsp; لەکاتی کێشەی تەکنیکی پەیوەندیمان پێوەبکە و ماک ئەدرێسەکەت بنێرە بۆ تیمی تەکنیکی ARA TV</div></div>
+ <div class="ticker-bar glass">
+  <div class="ticker-clock-box"><i class="far fa-clock"></i><span id="digitalClock">00:00:00</span></div>
+  <div class="ticker-track">
+   <div class="ticker-text">بەخێر بێن بۆ سیستمی پەخشی ARA TV، تکایە لەکاتی بوونی هەر کێشە و گرفتێکدا پەیوەندی بکەن بە ژمارە تەلەفۆنی 07748134314 یان 07501224994 &nbsp;&nbsp;|&nbsp;&nbsp; ئەم ماک ئەدرێسە تایبەتە بە ئامێرەکەت: <b id="tickerMac" style="direction:ltr;unicode-bidi:isolate;color:#38bdf8"></b> &nbsp;—&nbsp; لەکاتی کێشەی تەکنیکی پەیوەندیمان پێوەبکە و ماک ئەدرێسەکەت بنێرە بۆ تیمی تەکنیکی ARA TV</div>
+  </div>
+ </div>
 </div>
 
 <script src="https://vjs.zencdn.net/7.20.3/video.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.8/dist/hls.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/mpegts.js@1.7.3/dist/mpegts.min.js"></script>
 <script>
 const CH_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vRgvWrahp_pwJWRnX4QCE4KmuhUb6gl5Rk_rDpjA2ODuCNH1nyLUcD-L0g0I6PrD45F0hb7odKi_zbW/pub?gid=250464113&single=true&output=csv";
 const MAC_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vRgvWrahp_pwJWRnX4QCE4KmuhUb6gl5Rk_rDpjA2ODuCNH1nyLUcD-L0g0I6PrD45F0hb7odKi_zbW/pub?gid=0&single=true&output=csv";
 const PROXY_URL="https://ara-proxy.onrender.com/";
 const isHttpsPage=location.protocol==="https:";
-// Only force proxy if page is HTTPS and stream is HTTP (mixed content), or when explicitly needed
 const viaProxy=(u,force=false)=>{
  if(!PROXY_URL)return u;
  if(force||(/^http:\/\//i.test(u)&&isHttpsPage))return PROXY_URL+"?url="+encodeURIComponent(u);
@@ -248,6 +285,17 @@ const viaProxy=(u,force=false)=>{
 };
 const $=id=>document.getElementById(id);
 const ls=(k,v)=>{try{if(v===undefined)return localStorage.getItem(k);if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){return null}};
+const pad=n=>n<10?"0"+n:n;
+
+/* ---------- Live Electronic Clock on Ticker ---------- */
+function updateClock(){
+ const now=new Date();
+ let h=now.getHours(),m=now.getMinutes(),s=now.getSeconds();
+ h=h%12||12;
+ $("digitalClock").textContent=`${pad(h)}:${pad(m)}:${pad(s)}`;
+}
+updateClock();
+setInterval(updateClock,1000);
 
 function getDeviceMac(){
  let m=ls("ara_device_mac");
@@ -262,7 +310,7 @@ $("waLink1").href=`https://wa.me/9647748134314?text=${msg}`;
 $("smsLink").href=`sms:9647748134314?body=${msg}`;
 
 let toastTimer;
-function showToast(t){const el=$("toast");el.textContent=t;el.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove("show"),2200)}
+function showToast(t){const el=$("toast");el.textContent=t;el.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove("show"),2400)}
 window.alert=showToast;
 
 function copyMac(){
@@ -296,13 +344,12 @@ function startCountdown(exp){
  clearInterval(timerInterval);
  const tick=()=>{
   const dist=end-Date.now();
-  if(dist<=0||isNaN(dist)){clearInterval(timerInterval);activated=false;$("countdownTimer").innerText="ئێکسپایەر بووە";if(player)player.pause();destroyTs();ls("ara_auth_exp",null);$("statusMsg").innerText="ئابوونەکەت بەسەرچوو!";$("authOverlay").style.display="flex";return}
+  if(dist<=0||isNaN(dist)){clearInterval(timerInterval);activated=false;$("countdownTimer").innerText="ئێکسپایەر بووە";if(player)player.pause();destroyEngines();ls("ara_auth_exp",null);$("statusMsg").innerText="ئابوونەکەت بەسەرچوو!";$("authOverlay").style.display="flex";return}
   const D=Math.floor(dist/864e5),H=Math.floor(dist%864e5/36e5),M=Math.floor(dist%36e5/6e4),S=Math.floor(dist%6e4/1e3);
   $("countdownTimer").innerText=`${D}d ${H}h ${M}m ${S}s`;
  };
  tick();timerInterval=setInterval(tick,1000);
 }
-const pad=n=>n<10?"0"+n:n;
 function startTrialTimer(){
  if(trialInterval)return;
  $("trialBadge").style.display="flex";
@@ -312,7 +359,7 @@ function startTrialTimer(){
   const left=Math.ceil((end-Date.now())/1000);
   if(left<=0){
    clearInterval(trialInterval);trialInterval=null;$("trialBadge").style.display="none";
-   if(player)player.pause();destroyTs();ls("ara_trial_end_time",null);
+   if(player)player.pause();destroyEngines();ls("ara_trial_end_time",null);
    const ce=Date.now()+300000;ls("ara_trial_cooldown",ce);showCooldownOverlay(ce);
   }else $("trialTimer").innerText=pad(Math.floor(left/60))+":"+pad(left%60);
  },1000);
@@ -342,13 +389,13 @@ async function checkActivation(manual=false,silent=false){
  const now=Date.now(),dev=list.find(x=>x.mac===currentMac);
  if(!dev){
   if(silent)return false;
-  if(startedFromCache){startedFromCache=false;activated=false;ls("ara_auth_exp",null);if(player)player.pause();destroyTs();$("authOverlay").style.display="flex";st.innerText="ئەم ماک ئادرێسە لە شیتەکەدا نەدۆزرایەوە!";return false}
+  if(startedFromCache){startedFromCache=false;activated=false;ls("ara_auth_exp",null);if(player)player.pause();destroyEngines();$("authOverlay").style.display="flex";st.innerText="ئەم ماک ئادرێسە لە شیتەکەدا نەدۆزرایەوە!";return false}
   if(manual){st.innerText="ئەم ماک ئادرێسە لە شیتەکەدا نەدۆزرایەوە!";st.style.color="#ef4444"}
   else{const c=parseInt(ls("ara_trial_cooldown"))||0;if(c>now)showCooldownOverlay(c);else{initPlayer();startTrialTimer()}}
   return false;
  }
  const d=parseFlexibleDate(dev.expire),exp=d&&!isNaN(d)?d.getTime():0;
- if(now>exp){activated=false;if(silent)return false;ls("ara_auth_exp",null);st.innerText="ئابوونەکەت بەسەرچوو!";st.style.color="#f59e0b";if(player)player.pause();destroyTs();$("authOverlay").style.display="flex";return false}
+ if(now>exp){activated=false;if(silent)return false;ls("ara_auth_exp",null);st.innerText="ئابوونەکەت بەسەرچوو!";st.style.color="#f59e0b";if(player)player.pause();destroyEngines();$("authOverlay").style.display="flex";return false}
  clearInterval(trialInterval);trialInterval=null;clearInterval(cooldownInterval);
  ls("ara_trial_cooldown",null);ls("ara_trial_end_time",null);ls("ara_auth_exp",dev.expire);
  $("cooldownNotice").style.display="none";$("authOverlay").style.display="none";
@@ -357,81 +404,38 @@ async function checkActivation(manual=false,silent=false){
  return true;
 }
 
-/* ---------- Accurate AI Smart Channel Classifier ---------- */
+/* ---------- Custom Tailored Channel Classifier ---------- */
 const CAT_ALL = "گشتی";
 const CAT_KURD = "کەناڵە کوردییەکان";
 const CAT_SPORT = "کەناڵە وەرزشییەکان";
 const CAT_DOC = "دۆکیومێنتاری و ئاژەڵان";
-const CAT_ARAB = "کەناڵە عەرەبییەکان";
-const CAT_FOREIGN = "کەناڵە بیانییەکان";
 const CAT_KIDS = "کەناڵەکانی منداڵان";
+const CAT_ARAB = "کەناڵە عەرەبییەکان";
 
 const SMART_GROUPS = [
  { name: CAT_ALL, icon: "fa-globe" },
  { name: CAT_KURD, icon: "fa-sun" },
  { name: CAT_SPORT, icon: "fa-futbol" },
  { name: CAT_DOC, icon: "fa-paw" },
- { name: CAT_ARAB, icon: "fa-tv" },
- { name: CAT_FOREIGN, icon: "fa-satellite-dish" },
- { name: CAT_KIDS, icon: "fa-child-reaching" }
+ { name: CAT_KIDS, icon: "fa-child-reaching" },
+ { name: CAT_ARAB, icon: "fa-tv" }
 ];
 
-// 1. Sports
-const RE_SPORT = /\b(sport|sports|bein|ssc|alkass|dazn|espn|eurosport|skysport|sky\s*sports|tnsport|tnt\s*sports|btsport|bt\s*sport|premier\s*sports|mutv|lfctv|realmadrid\s*tv|nba|ufc|wwe|f1|motogp|calcio|bundesliga|liga|laliga|arena\s*sport|match\s*tv|dubai\s*sports|ad\s*sports|abu\s*dhabi\s*sports|sharjah\s*sports|korek\s*sport|kurd\s*sport|ara\s*sport)\b|وەرزش|سپۆرت|ریاض|رياض|بى ئين|بی ئین|الکاس|كأس/i;
-
-// 2. Documentary, Nature & Animals (including UK/US Doc & Animal channels)
-const RE_DOC = /\b(doc|docs|documentary|docu|documentaries|nat\s*geo|national\s*geographic|natgeo|wild|animal|animals|animal\s*planet|discovery|disc\s*science|investigation\s*discovery|id\s*xtra|history|history\s*2|h2|crime|investigation|ci\s*network|smithsonian|curiosity|love\s*nature|bbc\s*earth|bbc\s*four|eden|yesterday|alibi|blaze|pbs\s*america|quest|dmax|tlc|hgtv|food\s*network|travel|planet\s*earth|water\s*planet|terra|viasat\s*nature|viasat\s*explore|viasat\s*history|da\s*vinci|asharq\s*discovery|al\s*jazeera\s*doc)\b|دۆکیومێنت|دۆکیۆمێنت|ئاژەڵ|ئەنیمەڵ|وثائق|الوثائقية|ناشيونال|جيوغرافيك|أنيمال|انيمل|ديسكفري|تاريخ|طبيعة/i;
-
-// 3. Kids
-const RE_KIDS = /\b(kid|kids|cartoon|child|children|baby|junior|nick|nickelodeon|nicktoons|nick\s*jr|disney|boomerang|cartoonito|cbeebies|cbbc|citv|pop|tiny\s*pop|kix|spacetoon|mbc\s*3|cn\s*arabia|peppa|pj\s*masks|pelistank|afarin|majid|toyoraljana|karameesh|baraem|jeem|gulli|teletoon|treehouse|pbs\s*kids|universal\s*kids)\b|منداڵ|مندال|کارتۆن|کارتون|اطفال|أطفال|سپەیستوون|سبيستون|پەلیستانک|ئافەرین|پەپوولە|ماجد|طيور\s*الجنة|كراميش|سمسم|براعم|جيم/i;
-
-// 4. Explicit UK / US / European / International Country Prefixes & Networks (Prevents false Kurdish matches!)
-const RE_FOREIGN_STRICT = /\b(uk|us|usa|ca|de|fr|it|es|pt|nl|be|ch|at|pl|ru|tr|ir|in|pk|af|az|gr|ro|bg|hu|cz|sk|se|no|dk|fi|ie|au|nz|br|mx|ar|za)\b|\b(bbc|itv|itv1|itv2|itv3|itv4|itvbe|channel\s*4|channel\s*5|ch4|ch5|more4|film4|e4|4seven|5usa|5star|5select|5action|sky\s*arts|sky\s*witness|sky\s*atlantic|sky\s*max|sky\s*showcase|sky\s*comedy|sky\s*crime|sky\s*cinemas?|sky\s*movies?|sky\s*news|virgin|freeview|freesat|dave|gold|w\s*channel|drama|pick|challenge|great!|talking\s*pictures|gb\s*news|talktv|rte|tg4|stv|utv\s*ulster|cnn|fox|nbc|cbs|abc|msnbc|cnbc|bloomberg|cw|pbs|hbo|cinemax|showtime|starz|encore|epix|mgm|amc|fx|fxx|tnt|tbs|usa\s*network|syfy| Bravo|oxygen|lifetime|hallmark|paramount|universal|sony|axn|warner|tcm|euronews|france\s*24|dw|nhk|cgtn|rt\s*news|trt|atv|show\s*tv|star\s*tv|kanal\s*d|now\s*tv|tv8|beyaz|haberturk|ntv|manoto|iran\s*intl|gem|pmc|radio\s*javan|bollywood|zee\s*tv|star\s*plus|colors|mtv|vh1|mezzo|fashion)\b|بیانی|ئینگلیزی|تورکی|فارسی|اجنبي|أجنبي/i;
-
-// 5. Strict Kurdish (Strict word boundaries for Latin words so "uk" or "drama" never match Kurdish)
-const RE_KURD_LATIN = /\b(kurd|kurdi|kurdish|kurdistan|rudaw|roodaw|k24|kurdistan24|nrt|nrt2|nrt3|nrt4|kurdsat|kurdmax|gali\s*kurdistan|gk\s*tv|zagros|waar|waartv|speda|payam|komal|amozhgary|avin|net\s*tv|kanal4|kanal\s*4|kirkuk|badinan|slemani|suli|hawler|erbil|duhok|halabja|xendan|chra|bangawaz|newroz|sterk|rojava|jin\s*tv|rega|azadi|ashti|biaban|tishk|aryen|vin\s*tv|korek|ava\s*tv|ava\s*entertainment|ava\s*media|zoom\s*tv|channel\s*8|8\s*channel|kurd\s*1|cihan|pelistank|afarin|hawar|ronahi|medya\s*haber|welat|zarok)\b/i;
-const RE_KURD_SCRIPT = /کورد|كورد|ڕووداو|رووداو|کوردسات|کوردماکس|گەلی\s*کوردستان|زاگرۆس|وار|سپێدە|پەیام|کۆمەڵ|ئامۆژگاری|افين|نێت|کەناڵ\s*4|کەنال\s*4|کەرکووک|کەرکوک|بادینان|سلێمانی|هەولێر|دهۆک|هەڵەبجە|خەندان|چرا|بانگەواز|نەورۆز|ستێرک|ڕۆژئاوا|شەفەق|ریگا|ڕێگا|ئازادی|ئاشتی|بیابان|تیشک|ئاریەن|ڤین|کۆڕەک|ئاڤا|زووم|کەناڵ\s*8|[ڕڵڤۆێەپچژگ]/;
-
-// 6. Arabic
-const RE_ARAB = /\b(arab|arabic|arabiya|mbc|rotana|jazeera|hadath|osn|shahid|art\s*aflam|art\s*hekayat|lbc|lbci|mtv\s*lebanon|jadeed|future\s*tv|manar|mayadeen|syria|sharqiya|sumaria|iraqia|rasheed|dijlah|fallujah|ghad|hurra|cbc|dmc|on\s*tv|on\s*drama|nahar|sada\s*el\s*balad|hayat|dubai|sama\s*dubai|abu\s*dhabi|sharjah|oman|kuwait|bahrain|qatar|saudi|sbc|iqraa|majd|resalah|quran|sunnah|zee\s*alwan|b4u\s*aflam|nile|maspero|wataniya|nessma|hannibal|echourouk|ennahar|medi1|2m\s*maroc|al\s*oula|royatv|roya|mamlaka)\b|عەرەب|عرب|ڕۆتانا|روتانا|الجزيرة|جەزیرە|العربية|عەرەبیە|الحدث|سکای\s*نیوز|شاهد|الجديد|المستقبل|المنار|الميادين|سوريا|الشرقية|شەرقیە|السومرية|سۆمەریە|العراقية|عیراقیە|الرشيد|دجلة|دجلە|الفلوجة|الغد|الحرة|فرانس\s*24|روسيا\s*اليوم|النهار|صدى\s*البلد|الحياة|دبي|دوبەی|ابوظبي|ئەبوزەبی|الشارقة|عمان|الكويت|البحرين|قطر|السعودية|سعودیە|اقرأ|المجد|الرسالة|مكة|قرآن|سنة|زي\s*الوان/i;
+const RE_SPORT = /\b(sport|sports|bein|dazn|ssc|alkass|espn|eurosport|skysport|sky\s*sports|tnt\s*sports|bt\s*sport|premier\s*sports|nba|ufc|wwe|f1|motogp|calcio|bundesliga|laliga|arena|match)\b|وەرزش|سپۆرت|ریاض|رياض|بى\s*ئين|بی\s*ئین|بێن\s*سپۆرت|بین\s*سپۆرت|دەزن|دازن|الکاس|كأس/i;
+const RE_DOC = /\b(uk|doc|docs|documentary|docu|documentaries|nat\s*geo|national\s*geographic|natgeo|wild|animal|animals|animal\s*planet|discovery|disc\s*science|id\s*xtra|history|h2|crime|smithsonian|curiosity|love\s*nature|bbc\s*earth|bbc\s*four|eden|yesterday|alibi|blaze|pbs|quest|dmax|tlc|hgtv|food\s*network|travel|planet\s*earth|water\s*planet|terra|viasat)\b|دۆکیومێنت|دۆکیۆمێنت|ئاژەڵ|ئەنیمەڵ|وثائق|الوثائقية|ناشيونال|جيوغرافيك|أنيمال|انيمل|ديسكفري|تاريخ|طبيعة/i;
+const RE_KIDS = /\b(kid|kids|cartoon|child|children|baby|junior|nick|nickelodeon|nicktoons|disney|boomerang|cartoonito|cbeebies|cbbc|pop|spacetoon|mbc\s*3|cn\s|peppa|pelistank|afarin|majid|toyoraljana|karameesh|baraem|jeem)\b|منداڵ|مندال|کارتۆن|کارتون|اطفال|أطفال|سپەیستوون|سبيستون|پەلیستانک|ئافەرین|پەپوولە|ماجد|طيور\s*الجنة|كراميش|سمسم|براعم|جيم/i;
+const RE_ARAB = /\b(alwan|zee\s*alwan|zee|oman|arab|arabic|arabiya|mbc|rotana|jazeera|hadath|osn|shahid|art\s|lbc|mtv\s*lebanon|jadeed|future|manar|mayadeen|syria|sharqiya|sumaria|iraqia|rasheed|dijlah|fallujah|ghad|hurra|cbc|dmc|nahar|hayat|dubai|abu\s*dhabi|sharjah|kuwait|bahrain|qatar|saudi|sbc|iqraa|majd|resalah|quran|sunnah|b4u|nile|wataniya|nessma|echourouk|roya)\b|ئەلوان|ئەڵوان|الوان|ألوان|زي\s*الوان|عومان|عمان|عەرەب|عرب|ڕۆتانا|روتانا|الجزيرة|جەزیرە|العربية|عەرەبیە|الحدث|شاهد|الشرقية|السومرية|العراقية|الرشيد|دجلة|دبي|ابوظبي|الشارقة|الكويت|البحرين|قطر|السعودية|اقرأ|المجد|قرآن/i;
 
 function smartCategorize(name, origCat){
- const n = (name || "").trim();
- const c = (origCat || "").trim();
- const full = `${n} ${c}`;
-
- // 1. Sports first
+ const full = `${name || ""} ${origCat || ""}`;
  if(RE_SPORT.test(full)) return CAT_SPORT;
-
- // 2. Documentary & Animals second (catches NatGeo, Discovery, Animal Planet, UK Doc channels, etc.)
- if(RE_DOC.test(full)) return CAT_DOC;
-
- // 3. Kids third
  if(RE_KIDS.test(full)) return CAT_KIDS;
-
- // 4. If channel name explicitly has UK/US/Foreign network tags, classify as Foreign BEFORE Kurdish check
- if(RE_FOREIGN_STRICT.test(n) && !RE_KURD_LATIN.test(n)) return CAT_FOREIGN;
-
- // 5. Explicit Kurdish check on channel name first
- if(RE_KURD_LATIN.test(n) || RE_KURD_SCRIPT.test(n)) return CAT_KURD;
-
- // 6. Explicit Arabic check
+ if(RE_DOC.test(full)) return CAT_DOC;
  if(RE_ARAB.test(full)) return CAT_ARAB;
-
- // 7. Explicit Foreign check on category
- if(RE_FOREIGN_STRICT.test(c)) return CAT_FOREIGN;
-
- // 8. If original sheet category was Kurdish AND channel name is not pure English/Latin
- const isPureLatinName = /^[A-Za-z0-9\s\-_.:+&/()!|[\]]+$/.test(n);
- if(!isPureLatinName && (RE_KURD_LATIN.test(c) || RE_KURD_SCRIPT.test(c))) return CAT_KURD;
-
- // 9. Final fallback: Pure Latin names go to Foreign, Arabic/Kurdish script goes to Arabic/Kurdish
- if(isPureLatinName) return CAT_FOREIGN;
- if(RE_KURD_SCRIPT.test(n)) return CAT_KURD;
- return CAT_ARAB;
+ return CAT_KURD;
 }
 
-/* ---------- Ultra-Fast Player ---------- */
+/* ---------- VLC-Grade Multi-Engine Player ---------- */
 var player,channels=[],categories=[],currentCat=CAT_ALL,currentUrl="",isSports=false;
 function initPlayer(){
  if(player)return;
@@ -447,14 +451,26 @@ function initPlayer(){
     enableLowInitialPlaylist:true,
     fastQualityChange:true,
     handlePartialData:true,
-    backBufferLength:12
+    backBufferLength:15
    }
   }
  });
  player.ready(function(){
+  // Wide beIN SPORTS HD style logo overlay
   const w=document.createElement("div");w.className="vjs-watermark-logo";w.id="playerWatermark";
-  w.innerHTML='<div class="vjs-watermark-text">ARA SPORT <span>HD</span></div><div class="vjs-live-tag"><i></i>LIVE</div>';this.el().appendChild(w);
-  const cc=document.createElement("div");cc.id="codeCover";cc.className="code-cover";cc.innerHTML="ARA SPORT&nbsp;<span>HD</span>";this.el().appendChild(cc);
+  w.innerHTML='<div class="bein-bar"><div class="bein-main">ARA <b>SPORT</b></div><div class="bein-hd">HD</div></div><div class="vjs-live-tag"><i></i>LIVE</div>';
+  this.el().appendChild(w);
+  // Instant Code Cover Badge (also styled as ARA SPORT HD)
+  const cc=document.createElement("div");cc.id="codeCover";cc.className="code-cover";
+  cc.title="کلیک بکە بۆ لادانی شاردنەوەی کۆد";
+  cc.innerHTML='<div class="cc-main">ARA <span>SPORT</span></div><div class="cc-hd">HD</div>';
+  cc.addEventListener("click",e=>{
+   e.stopPropagation();
+   codeBox=null;saveCodeBox(currentUrl,null);positionWatermark();
+   showToast("شاردنەوەی کۆد لادرا");
+  });
+  this.el().appendChild(cc);
+
   positionWatermark();
   if(window.ResizeObserver)new ResizeObserver(positionWatermark).observe(this.el());
   this.on("loadedmetadata",positionWatermark);
@@ -467,6 +483,8 @@ function initPlayer(){
   }catch(e){}
  });
  bindFab();
+ initManualCodeCover();
+ initVlcHotkeys();
  player.on(["waiting","stalled"],()=>showWait(true));
  player.on(["playing","canplay"],()=>showWait(false));
 
@@ -489,7 +507,58 @@ function initPlayer(){
 function showWait(w){$("streamStatusOverlay").style.display=w?"flex":"none"}
 function updateWatermark(){const w=$("playerWatermark");if(w)w.classList.toggle("show-watermark",isSports)}
 
-/* ---------- Lightweight OCR (Only runs on Sports when CORS allows) ---------- */
+/* ---------- VLC Keyboard Shortcuts ---------- */
+function initVlcHotkeys(){
+ document.addEventListener("keydown",e=>{
+  if(!player||e.target.tagName==="INPUT")return;
+  if(e.code==="Space"){e.preventDefault();player.paused()?player.play():player.pause()}
+  else if(e.key==="f"||e.key==="F"){e.preventDefault();player.isFullscreen()?player.exitFullscreen():player.requestFullscreen()}
+  else if(e.key==="m"||e.key==="M"){e.preventDefault();player.muted(!player.muted())}
+  else if(e.code==="ArrowUp"){e.preventDefault();player.volume(Math.min(1,player.volume()+0.1))}
+  else if(e.code==="ArrowDown"){e.preventDefault();player.volume(Math.max(0,player.volume()-0.1))}
+ });
+}
+
+/* ---------- Instant Manual + Auto Code Cover ---------- */
+let pickCoverMode=false;
+function initManualCodeCover(){
+ const btn=$("coverToolFab"),vc=$("videoContainer");
+ btn.addEventListener("click",e=>{
+  e.stopPropagation();
+  if(codeBox&&!pickCoverMode){
+   codeBox=null;saveCodeBox(currentUrl,null);positionWatermark();
+   showToast("شاردنەوەی کۆد لادرا");
+   return;
+  }
+  pickCoverMode=!pickCoverMode;
+  btn.classList.toggle("active",pickCoverMode);
+  vc.classList.toggle("pick-cover-mode",pickCoverMode);
+  if(pickCoverMode)showToast("کلیک لەسەر شوێنی کۆدەکە بکە بۆ داپۆشینی دەستبەجێ بە ARA SPORT HD");
+ });
+ vc.addEventListener("click",e=>{
+  if(!pickCoverMode||!player)return;
+  e.stopPropagation();e.preventDefault();
+  let v;try{v=player.tech(true).el()}catch(err){return}
+  const el=player.el(),rect=el.getBoundingClientRect();
+  const cw=el.clientWidth,ch=el.clientHeight;
+  const vw=v&&v.videoWidth?v.videoWidth:1280,vh=v&&v.videoHeight?v.videoHeight:720;
+  const sc=Math.min(cw/vw,ch/vh),dw=vw*sc,dh=vh*sc;
+  const left=(cw-dw)/2,top=(ch-dh)/2;
+  const cx=e.clientX-rect.left-left,cy=e.clientY-rect.top-top;
+  const rx=Math.max(0.05,Math.min(0.95,cx/dw)),ry=Math.max(0.04,Math.min(0.96,cy/dh));
+  // Wide badge covering the clicked code area
+  const hw=0.095,hh=0.028;
+  codeBox={x0:Math.max(0,rx-hw),y0:Math.max(0,ry-hh),x1:Math.min(1,rx+hw),y1:Math.min(1,ry+hh)};
+  saveCodeBox(currentUrl,codeBox);
+  pickCoverMode=false;
+  btn.classList.remove("active");
+  vc.classList.remove("pick-cover-mode");
+  positionWatermark();
+  showToast("کۆدەکە بە لۆگۆی ARA SPORT HD داپۆشرا");
+ },true);
+}
+
+/* ---------- Fast OCR: Instant Code Detection & LIVE Tag ---------- */
 let ocrState=null,ocrWorker=null,ocrLoading=null,ocrFails=0,ocrTimer=null,ocrMiss=0;
 function loadTess(){
  if(window.Tesseract)return Promise.resolve();
@@ -530,7 +599,7 @@ async function ocrCheck(){
 }
 function isLive(){
  if(isSports&&ocrState!==null)return ocrState;
- if(tsPlayer)return true;
+ if(tsPlayer||hlsPlayer)return true;
  try{
   if(player.duration()===Infinity)return true;
   if(player.liveTracker&&player.liveTracker.isLive&&player.liveTracker.isLive())return true;
@@ -549,7 +618,7 @@ async function getCodeWorker(){
  if(!codeLoading)codeLoading=(async()=>{
   await loadTess();
   const w=await Tesseract.createWorker("eng");
-  await w.setParameters({tessedit_char_whitelist:"0123456789",tessedit_pageseg_mode:"11"});
+  await w.setParameters({tessedit_char_whitelist:"0123456789ABCDEFabcdef-",tessedit_pageseg_mode:"11"});
   return w;
  })();
  try{codeWorker=await codeLoading}catch(e){codeLoading=null;throw e}
@@ -557,16 +626,23 @@ async function getCodeWorker(){
 }
 function findCode(lines,W,H){
  for(const ln of lines){
-  const ws=(ln.words||[]).filter(x=>/\d/.test(x.text)&&x.confidence>=55);
-  const n=ws.reduce((a,x)=>a+x.text.replace(/\D/g,"").length,0);
-  if(n>=10&&n<=12)return{x0:Math.min(...ws.map(x=>x.bbox.x0))/W,y0:Math.min(...ws.map(x=>x.bbox.y0))/H,x1:Math.max(...ws.map(x=>x.bbox.x1))/W,y1:Math.max(...ws.map(x=>x.bbox.y1))/H};
+  const ws=(ln.words||[]).filter(x=>/\d/.test(x.text)&&x.confidence>=48);
+  const digits=ws.reduce((a,x)=>a+x.text.replace(/\D/g,"").length,0);
+  if(digits>=8&&digits<=14){
+   return{
+    x0:Math.min(...ws.map(x=>x.bbox.x0))/W,
+    y0:Math.min(...ws.map(x=>x.bbox.y0))/H,
+    x1:Math.max(...ws.map(x=>x.bbox.x1))/W,
+    y1:Math.max(...ws.map(x=>x.bbox.y1))/H
+   };
+  }
  }
  return null;
 }
 function codeLoop(){
  if(codeLoopOn)return;codeLoopOn=true;
- const run=async()=>{try{if(isSports)await codeScan()}catch(e){}setTimeout(run,2500)};
- setTimeout(run,3000);
+ const run=async()=>{try{if(isSports)await codeScan()}catch(e){}setTimeout(run,1100)};
+ setTimeout(run,800);
 }
 async function codeScan(){
  if(!player||!isSports||player.paused()||document.hidden||(codeFail[currentUrl]||0)>=1)return;
@@ -578,10 +654,10 @@ async function codeScan(){
   let sx=0,sy=0,sw=vw,sh=vh;
   if(region){
    const bw=codeBox.x1-codeBox.x0,bh=codeBox.y1-codeBox.y0;
-   const x0=Math.max(0,codeBox.x0-bw*.35),x1=Math.min(1,codeBox.x1+bw*.35),y0=Math.max(0,codeBox.y0-bh*1.2),y1=Math.min(1,codeBox.y1+bh*1.2);
+   const x0=Math.max(0,codeBox.x0-bw*.4),x1=Math.min(1,codeBox.x1+bw*.4),y0=Math.max(0,codeBox.y0-bh*1.3),y1=Math.min(1,codeBox.y1+bh*1.3);
    sx=x0*vw;sy=y0*vh;sw=(x1-x0)*vw;sh=(y1-y0)*vh;
   }
-  const k=region?Math.min(2,Math.max(1,450/sw)):Math.min(1,850/vw),W=Math.round(sw*k),H=Math.round(sh*k);
+  const k=region?Math.min(2,Math.max(1,480/sw)):Math.min(1,900/vw),W=Math.round(sw*k),H=Math.round(sh*k);
   const cv=document.createElement("canvas");cv.width=W;cv.height=H;
   const c=cv.getContext("2d",{willReadFrequently:true});
   c.drawImage(v,sx,sy,sw,sh,0,0,W,H);c.getImageData(0,0,1,1);
@@ -593,39 +669,101 @@ async function codeScan(){
    codeMiss=0;codeFullMiss=0;codeNeedFull=false;saveCodeBox(url,codeBox);
   }else if(codeBox){
    if(region){if(++codeMiss>=3){codeMiss=0;codeNeedFull=true}}
-   else if(++codeFullMiss>=3){codeBox=null;codeFullMiss=0;codeNeedFull=false;saveCodeBox(url,null)}
+   else if(++codeFullMiss>=4){codeBox=null;codeFullMiss=0;codeNeedFull=false;saveCodeBox(url,null)}
   }
   positionWatermark();
  }catch(e){codeFail[url]=(codeFail[url]||0)+1}
 }
+
+/* ---------- Position Wide beIN Style Watermark Over Original beIN Logo ---------- */
 function positionCover(left,top,dw,dh){
  const el=$("codeCover");if(!el)return;
  if(!codeBox){el.style.display="none";return}
- const px=dw*.006,py=dh*.012,x=left+codeBox.x0*dw-px,y=top+codeBox.y0*dh-py,w=(codeBox.x1-codeBox.x0)*dw+px*2,h=(codeBox.y1-codeBox.y0)*dh+py*2;
- Object.assign(el.style,{display:"flex",left:x+"px",top:y+"px",width:w+"px",height:h+"px",fontSize:Math.max(Math.min(h*.6,w/9.6),5)+"px"});
+ const px=dw*.012,py=dh*.014;
+ const x=left+codeBox.x0*dw-px,y=top+codeBox.y0*dh-py;
+ const w=Math.max(dw*0.16,(codeBox.x1-codeBox.x0)*dw+px*2);
+ const h=Math.max(dh*0.048,(codeBox.y1-codeBox.y0)*dh+py*2);
+ Object.assign(el.style,{
+  display:"flex",
+  left:x+"px",
+  top:y+"px",
+  width:w+"px",
+  height:h+"px",
+  fontSize:Math.max(Math.min(h*.52,w/9.5),7)+"px"
+ });
 }
-function drawCover(c,w,h){
- if(!codeBox)return;
- const px=w*.006,py=h*.012,x=codeBox.x0*w-px,y=codeBox.y0*h-py,bw=(codeBox.x1-codeBox.x0)*w+px*2,bh=(codeBox.y1-codeBox.y0)*h+py*2,fs=Math.max(Math.min(bh*.6,bw/9.6),5);
- c.fillStyle="rgba(15,23,42,.98)";c.strokeStyle="rgba(56,189,248,.6)";c.lineWidth=Math.max(1,fs*.07);
- rr(c,x,y,bw,bh,fs*.4);c.fill();c.stroke();
- c.font="900 "+fs+"px Arial";c.textBaseline="middle";c.direction="ltr";c.textAlign="left";
- const a="ARA SPORT ",b="HD",wa=c.measureText(a).width,wb=c.measureText(b).width,sx=x+(bw-wa-wb)/2;
- c.fillStyle="#fff";c.fillText(a,sx,y+bh/2);c.fillStyle="#38bdf8";c.fillText(b,sx+wa,y+bh/2);
-}
-let logoRatio=.0115;
+
 function positionWatermark(){
  const w=$("playerWatermark");if(!w||!player)return;
  let v;try{v=player.tech(true).el()}catch(e){return}
  if(!v||!v.videoWidth)return;
  const el=player.el(),cw=el.clientWidth,ch=el.clientHeight,sc=Math.min(cw/v.videoWidth,ch/v.videoHeight),dw=v.videoWidth*sc,dh=v.videoHeight*sc;
  const left=(cw-dw)/2,top=(ch-dh)/2,st=w.style;
- logoRatio=Math.max(.0115,10/dw);
- st.setProperty("left",(left+dw*0.957)+"px","important");st.setProperty("top",(top+dh*0.076)+"px","important");
- st.setProperty("right","auto","important");st.setProperty("transform","translate(-100%,-50%)","important");
- st.fontSize=(dw*logoRatio)+"px";st.padding=".65em .5em";st.borderRadius=".4em";st.background="rgba(15,23,42,.96)";
- if(w.firstChild)w.firstChild.style.fontSize="1em";
+ // Wide beIN SPORTS HD dimensions covering top-right beIN logo completely (from ~76.5% to 96.5% width, 4.2% to 10.2% height)
+ const barW = dw * 0.195;
+ const barH = dh * 0.056;
+ const rightEdge = left + dw * 0.966;
+ const topEdge = top + dh * 0.042;
+ st.setProperty("left",(rightEdge - barW)+"px","important");
+ st.setProperty("top",topEdge+"px","important");
+ st.setProperty("right","auto","important");
+ st.setProperty("width",barW+"px","important");
+ st.setProperty("transform","none","important");
+ st.fontSize=Math.max(8, barH * 0.48)+"px";
+ const bar=w.querySelector(".bein-bar");
+ if(bar)bar.style.height=barH+"px";
  positionCover(left,top,dw,dh);
+}
+
+/* ---------- Canvas Drawing for Recording (Wide beIN Style + Code Cover) ---------- */
+function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()}
+function drawBeinBox(c,bx,by,bw,bh,mainA,mainB,sub){
+ const r=bh*0.2;
+ const hdW=bw*0.24;
+ // Main dark purple/navy box
+ const g1=c.createLinearGradient(bx,by,bx+bw,by+bh);
+ g1.addColorStop(0,"#1e1136");g1.addColorStop(0.6,"#3b136c");g1.addColorStop(1,"#0f172a");
+ c.fillStyle=g1;c.strokeStyle="rgba(56,189,248,.75)";c.lineWidth=Math.max(1.5,bh*0.06);
+ rr(c,bx,by,bw,bh,r);c.fill();c.stroke();
+ // HD cyan box on the right
+ c.save();
+ rr(c,bx,by,bw,bh,r);c.clip();
+ const g2=c.createLinearGradient(bx+bw-hdW,by,bx+bw,by+bh);
+ g2.addColorStop(0,"#38bdf8");g2.addColorStop(1,"#0284c7");
+ c.fillStyle=g2;
+ c.fillRect(bx+bw-hdW,by,hdW,bh);
+ c.restore();
+ // Text
+ const fs=Math.max(8,Math.round(bh*0.48));
+ c.font="900 "+fs+"px 'Arial Black',Arial";c.textBaseline="middle";c.direction="ltr";c.textAlign="left";
+ const wa=c.measureText(mainA).width,wb=c.measureText(mainB).width;
+ const tx=bx+(bw-hdW-wa-wb)/2;
+ c.fillStyle="#fff";c.fillText(mainA,tx,by+bh/2);
+ c.fillStyle="#38bdf8";c.fillText(mainB,tx+wa,by+bh/2);
+ c.font="900 "+Math.round(fs*0.86)+"px 'Arial Black',Arial";
+ c.fillStyle="#061326";c.textAlign="center";
+ c.fillText(sub,bx+bw-hdW/2,by+bh/2);
+}
+function drawCover(c,w,h){
+ if(!codeBox)return;
+ const px=w*.012,py=h*.014;
+ const x=codeBox.x0*w-px,y=codeBox.y0*h-py;
+ const bw=Math.max(w*0.16,(codeBox.x1-codeBox.x0)*w+px*2);
+ const bh=Math.max(h*0.048,(codeBox.y1-codeBox.y0)*h+py*2);
+ drawBeinBox(c,x,y,bw,bh,"ARA ","SPORT","HD");
+}
+function drawLogo(c,w,h,sports,live){
+ const bw=sports?w*0.195:w*0.14,bh=w*0.031;
+ const bx=w*0.966-bw,by=h*0.042;
+ drawBeinBox(c,bx,by,bw,bh,"ARA ",sports?"SPORT":"TV","HD");
+ if(live){
+  const lf=Math.max(7,Math.round(bh*0.38));
+  c.font="900 "+lf+"px Arial";c.textAlign="left";
+  const tw=c.measureText("LIVE").width,dot=lf*0.45,lw=tw+dot+lf*1.6,lh=lf*1.55,lx=bx+bw-lw,ly=by+bh+bh*0.15;
+  c.fillStyle="rgba(239,68,68,.94)";rr(c,lx,ly,lw,lh,lf*0.3);c.fill();
+  c.fillStyle="#fff";c.beginPath();c.arc(lx+lf*0.55+dot/2,ly+lh/2,dot/2,0,7);c.fill();
+  c.fillText("LIVE",lx+lf*0.55+dot+lf*0.3,ly+lh/2);
+ }
 }
 
 /* ---------- Channels Data & Smart Sorting ---------- */
@@ -657,9 +795,8 @@ const GROUP_PRIORITY = {
  [CAT_KURD]: 0,
  [CAT_SPORT]: 1,
  [CAT_DOC]: 2,
- [CAT_ARAB]: 3,
- [CAT_FOREIGN]: 4,
- [CAT_KIDS]: 5
+ [CAT_KIDS]: 3,
+ [CAT_ARAB]: 4
 };
 
 function setData(list){
@@ -876,14 +1013,18 @@ $("playlist-items").addEventListener("click",e=>{  const g=e.target.closest(".gr
  playChannel(ch);closeDrawer();
 });
 
-/* ---------- Rock-Solid Stream Engine: MPEG-TS (.ts) + HLS (.m3u8) + MP4 ---------- */
-let tsPlayer=null,hlsErrHandler=null,tsRetries=0,tsFallbackTimer=null;
+/* ---------- VLC-Like Triple Engine: HLS.js + mpegts.js + Video.js ---------- */
+let tsPlayer=null,hlsPlayer=null,hlsErrHandler=null,tsRetries=0,hlsRetries=0,watchdogTimer=null;
 
-function destroyTs(){
- clearTimeout(tsFallbackTimer);
+function destroyEngines(){
+ clearInterval(watchdogTimer);watchdogTimer=null;
  if(tsPlayer){
   try{tsPlayer.pause();tsPlayer.unload();tsPlayer.detachMediaElement();tsPlayer.destroy()}catch(e){}
   tsPlayer=null;
+ }
+ if(hlsPlayer){
+  try{hlsPlayer.stopLoad();hlsPlayer.detachMedia();hlsPlayer.destroy()}catch(e){}
+  hlsPlayer=null;
  }
 }
 
@@ -897,10 +1038,61 @@ function detectType(url){
  return "hls";
 }
 
-function playTs(url,useProxy=false){
- destroyTs();
+function playHls(url,useProxy=false){
+ destroyEngines();
  let v;try{v=player.tech(true).el()}catch(e){return}
- // Removing crossorigin attribute prevents CORS preflight blocks on raw IPTV TS servers
+ v.removeAttribute("crossorigin");
+ const streamUrl=viaProxy(url,useProxy);
+
+ if(window.Hls&&Hls.isSupported()){
+  hlsPlayer=new Hls({
+   enableWorker:true,
+   lowLatencyMode:true,
+   backBufferLength:15,
+   maxBufferLength:20,
+   maxMaxBufferLength:40,
+   liveSyncDurationCount:2,
+   liveMaxLatencyDurationCount:6,
+   manifestLoadingTimeOut:8000,
+   manifestLoadingMaxRetry:3,
+   levelLoadingTimeOut:8000,
+   fragLoadingTimeOut:10000,
+   fragLoadingMaxRetry:4
+  });
+  const hp=hlsPlayer;
+  hp.loadSource(streamUrl);
+  hp.attachMedia(v);
+  hp.on(Hls.Events.MANIFEST_PARSED,()=>{
+   if(hlsPlayer!==hp)return;
+   const p=v.play();
+   if(p&&p.catch)p.catch(()=>{v.muted=true;const q=v.play();if(q&&q.catch)q.catch(()=>{})});
+  });
+  hp.on(Hls.Events.ERROR,(ev,data)=>{
+   if(hlsPlayer!==hp||currentUrl!==url)return;
+   if(data.fatal){
+    hlsRetries++;
+    if(data.type===Hls.ErrorTypes.MEDIA_ERROR&&hlsRetries<=2){
+     hp.recoverMediaError();
+    }else if(hlsRetries===1&&!useProxy&&PROXY_URL){
+     playHls(url,true);
+    }else if(hlsRetries<=3){
+     hp.startLoad();
+    }else{
+     // Fallback to MPEG-TS engine if stream was actually raw TS
+     playTs(url,false);
+    }
+   }
+  });
+ }else{
+  player.src({src:streamUrl,type:"application/x-mpegURL"});
+  const p=player.play();
+  if(p&&p.catch)p.catch(()=>{player.muted(true);const q=player.play();if(q&&q.catch)q.catch(()=>{})});
+ }
+}
+
+function playTs(url,useProxy=false){
+ destroyEngines();
+ let v;try{v=player.tech(true).el()}catch(e){return}
  v.removeAttribute("crossorigin");
  const streamUrl=viaProxy(url,useProxy);
 
@@ -911,20 +1103,15 @@ function playTs(url,useProxy=false){
  }
 
  tsPlayer=mpegts.createPlayer(
-  {
-   type:"mpegts",
-   isLive:true,
-   url:streamUrl,
-   cors:true
-  },
+  {type:"mpegts",isLive:true,url:streamUrl,cors:true},
   {
    enableWorker:true,
    enableStashBuffer:true,
-   stashInitialSize:131072, // 128KB smooth & instant TS start
+   stashInitialSize:131072,
    liveBufferLatencyChasing:true,
    liveBufferLatencyChasingOnPaused:true,
-   liveBufferLatencyMaxLatency:4.5,
-   liveBufferLatencyMinRemain:1.0,
+   liveBufferLatencyMaxLatency:3.5,
+   liveBufferLatencyMinRemain:0.8,
    lazyLoad:false,
    autoCleanupSourceBuffer:true,
    autoCleanupMaxBackwardDuration:20,
@@ -936,26 +1123,21 @@ function playTs(url,useProxy=false){
  me.attachMediaElement(v);
  me.load();
 
- me.on(mpegts.Events.ERROR,(errType)=>{
+ me.on(mpegts.Events.ERROR,()=>{
   if(tsPlayer!==me||currentUrl!==url)return;
   tsRetries++;
-  // Step 1: If direct HTTP/HTTPS failed, try through proxy
   if(tsRetries===1&&!useProxy&&PROXY_URL){
    playTs(url,true);
    return;
   }
-  // Step 2: Retry stream reconnect up to 3 times
   if(tsRetries<=3){
    setTimeout(()=>{
     if(tsPlayer===me&&currentUrl===url){
      try{me.unload();me.load();const q=me.play();if(q&&q.catch)q.catch(()=>{})}catch(e){}
     }
-   },1200);
+   },1000);
   }else if(tsRetries===4){
-   // Step 3: Some extensionless IPTV URLs actually redirect to HLS (.m3u8)
-   destroyTs();
-   player.src({src:viaProxy(url),type:"application/x-mpegURL"});
-   const q=player.play();if(q&&q.catch)q.catch(()=>{});
+   playHls(url,false);
   }
  });
 
@@ -969,38 +1151,33 @@ function playChannel(ch){
  codeMiss=0;codeNeedFull=false;codeFullMiss=0;
  isSports=(ch.cat===CAT_SPORT)||RE_SPORT.test(ch.name);
  updateWatermark();
+ positionWatermark();
  codeLoop();
  ocrState=null;ocrMiss=0;ocrFails=0;
  if(isSports){
-  if(!ocrTimer)ocrTimer=setInterval(ocrCheck,5000);
-  setTimeout(ocrCheck,2500);
+  if(!ocrTimer)ocrTimer=setInterval(ocrCheck,4000);
+  setTimeout(ocrCheck,1500);
+  setTimeout(codeScan,900);
  }else if(ocrTimer){
   clearInterval(ocrTimer);ocrTimer=null;
  }
 
  const kind=detectType(ch.url);
- showWait(true);tsRetries=0;
+ showWait(true);tsRetries=0;hlsRetries=0;
  if(hlsErrHandler){player.off("error",hlsErrHandler);hlsErrHandler=null}
- destroyTs();
+ destroyEngines();
  player.muted(false);
 
  if(kind==="ts"){
-  try{player.pause();player.reset()}catch(e){}
+  try{player.pause()}catch(e){}
   playTs(ch.url,false);
+ }else if(kind==="hls"){
+  try{player.pause()}catch(e){}
+  playHls(ch.url,false);
  }else{
-  player.src({src:viaProxy(ch.url),type:kind==="mp4"?"video/mp4":"application/x-mpegURL"});
+  player.src({src:viaProxy(ch.url),type:"video/mp4"});
   const p=player.play();
   if(p&&p.catch)p.catch(()=>{player.muted(true);const q=player.play();if(q&&q.catch)q.catch(()=>{})});
-  if(kind==="hls"){
-   const url=ch.url;
-   hlsErrHandler=()=>{
-    player.off("error",hlsErrHandler);hlsErrHandler=null;
-    if(currentUrl!==url)return;
-    try{player.error(null);player.pause()}catch(e){}
-    playTs(url,false);
-   };
-   player.on("error",hlsErrHandler);
-  }
  }
  updateLive();
  document.querySelectorAll(".playlist-item").forEach(x=>x.classList.toggle("active",channels[x.dataset.i]&&channels[x.dataset.i].url===ch.url));
@@ -1008,24 +1185,6 @@ function playChannel(ch){
 
 /* ---------- Recording ---------- */
 let rec=null;
-function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()}
-function drawLogo(c,w,h,sports,live){
- const fs=Math.max(Math.round(w*logoRatio),8),px=fs*.5,py=fs*.65;
- c.font="900 "+fs+"px Arial";c.textBaseline="middle";c.direction="ltr";c.textAlign="left";
- const a=sports?"ARA SPORT ":"ARA ",b=sports?"HD":"TV";
- const wa=c.measureText(a).width,wb=c.measureText(b).width,bw=wa+wb+px*2,bh=fs+py*2;
- const bx=sports?w*0.957-bw:w-fs*1.2-bw,by=sports?h*0.076-bh/2:fs*1.2;
- c.fillStyle="rgba(15,23,42,.97)";c.strokeStyle="rgba(56,189,248,.6)";c.lineWidth=Math.max(1,fs/14);
- rr(c,bx,by,bw,bh,fs*.4);c.fill();c.stroke();
- c.fillStyle="#fff";c.fillText(a,bx+px,by+bh/2);c.fillStyle="#38bdf8";c.fillText(b,bx+px+wa,by+bh/2);
- if(live){
-  const lf=fs*.62;c.font="900 "+lf+"px Arial";
-  const tw=c.measureText("LIVE").width,dot=lf*.45,lw=tw+dot+lf*1.5,lh=lf*1.55,lx=bx+bw-lw,ly=by+bh+fs*.25;
-  c.fillStyle="rgba(239,68,68,.92)";rr(c,lx,ly,lw,lh,lf*.35);c.fill();
-  c.fillStyle="#fff";c.beginPath();c.arc(lx+lf*.6+dot/2,ly+lh/2,dot/2,0,7);c.fill();
-  c.fillText("LIVE",lx+lf*.6+dot+lf*.3,ly+lh/2);
- }
-}
 function toggleRec(ch){
  if(rec){stopRec();return}
  if(currentUrl!==ch.url)playChannel(ch);
@@ -1078,7 +1237,11 @@ $("sideZone").addEventListener("click",openDrawer);
 $("menuFab").addEventListener("click",openDrawer);
 $("drawerBackdrop").addEventListener("click",closeDrawer);
 window.addEventListener("orientationchange",closeDrawer);
-function bindFab(){if(!player)return;player.on("userinactive",()=>$("menuFab").classList.add("idle"));player.on("useractive",()=>$("menuFab").classList.remove("idle"))}
+function bindFab(){
+ if(!player)return;
+ player.on("userinactive",()=>{$("menuFab").classList.add("idle");$("coverToolFab").classList.add("idle")});
+ player.on("useractive",()=>{$("menuFab").classList.remove("idle");$("coverToolFab").classList.remove("idle")});
+}
 
 /* ---------- PWA Install ---------- */
 let dip=null;
