@@ -29,136 +29,130 @@ body::before{background:#0ea5e9;top:-25vmax;right:-15vmax}
 body::after{background:var(--ac2);bottom:-25vmax;left:-15vmax}
 .glass{background:var(--g);backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);border:1px solid var(--gb)}
 
-/* ---- Android TV Hardware Acceleration Mode (Disables heavy GPU blur on TV boxes) ---- */
+/* ---- Android TV Hardware Acceleration Mode ---- */
 body.tv-mode::before,body.tv-mode::after{display:none!important}
 body.tv-mode .glass{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:#0f172a!important}
 body.tv-mode{padding:0!important}
 body.tv-mode .main-wrapper{border-radius:0!important;border:none!important;box-shadow:none!important}
-
-/* ---- Android TV Remote D-Pad Focus Ring ---- */
-[tabindex]:focus,.tv-focus:focus,button:focus,a:focus,input:focus{
+body.tv-mode [tabindex]:focus,body.tv-mode button:focus,body.tv-mode a:focus,body.tv-mode input:focus{
  outline:3px solid #38bdf8!important;
  outline-offset:2px!important;
  box-shadow:0 0 0 4px rgba(56,189,248,.35),0 6px 20px rgba(0,0,0,.6)!important;
 }
-.playlist-item:focus,.group-card:focus,.category-tab:focus,.az-btn:focus{
+body.tv-mode .playlist-item:focus,body.tv-mode .group-card:focus,body.tv-mode .category-tab:focus,body.tv-mode .az-btn:focus{
  background:linear-gradient(135deg,rgba(56,189,248,.38),rgba(139,92,246,.38))!important;
  border-color:#38bdf8!important;
- transform:scale(1.01);
- z-index:5;
 }
 
 .main-wrapper{position:relative;z-index:1;width:100%;height:100%;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 50px rgba(0,0,0,.55)}
 
-/* ---- Header & Fixed Unclipped ARA TV Logo ---- */
-.player-header{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;gap:6px;flex-shrink:0;border-width:0 0 1px;border-style:solid;overflow-x:auto;scrollbar-width:none}
+/* ---- Header & Compact ARA TV Logo (Same size as badges) ---- */
+.player-header{display:flex;justify-content:space-between;align-items:center;padding:7px 10px;gap:6px;flex-shrink:0;border-width:0 0 1px;border-style:solid;overflow-x:auto;scrollbar-width:none}
 .player-header::-webkit-scrollbar{display:none}
-.brand-wrap{position:relative;display:inline-flex;align-items:center;justify-content:center;padding:5px 14px;border-radius:10px;overflow:hidden;flex-shrink:0;white-space:nowrap;background:linear-gradient(135deg,#0f172a,#2e1065);border:1.5px solid rgba(56,189,248,.55);box-shadow:0 0 15px rgba(56,189,248,.22);animation:brandGlow 5s ease-in-out infinite}
-.brand-title{font:900 18px 'Arial Black',Arial,sans-serif;letter-spacing:1px;color:#fff;white-space:nowrap;direction:ltr;line-height:1.1;display:flex;align-items:center;gap:5px}
+.brand-wrap{position:relative;display:inline-flex;align-items:center;justify-content:center;height:28px;padding:0 11px;border-radius:16px;overflow:hidden;flex-shrink:0;white-space:nowrap;background:linear-gradient(135deg,#0f172a,#2e1065);border:1px solid rgba(56,189,248,.55);box-shadow:0 0 10px rgba(56,189,248,.2);animation:brandGlow 5s ease-in-out infinite}
+.brand-title{font:900 13px 'Arial Black',Arial,sans-serif;letter-spacing:.6px;color:#fff;white-space:nowrap;direction:ltr;line-height:1;display:flex;align-items:center;gap:4px}
 .brand-title span{color:var(--ac)}
 .brand-wrap::after{content:"";position:absolute;top:0;left:-130%;width:70%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-25deg);animation:lightSweep 5s ease-in-out infinite;pointer-events:none}
 @keyframes lightSweep{0%,60%{left:-130%}88%,100%{left:160%}}
-@keyframes brandGlow{0%,100%{box-shadow:0 0 10px rgba(56,189,248,.18);border-color:rgba(56,189,248,.4)}50%{box-shadow:0 0 22px rgba(56,189,248,.55);border-color:rgba(56,189,248,.85)}}
+@keyframes brandGlow{0%,100%{box-shadow:0 0 8px rgba(56,189,248,.15);border-color:rgba(56,189,248,.4)}50%{box-shadow:0 0 16px rgba(56,189,248,.5);border-color:rgba(56,189,248,.8)}}
 
-.header-right{display:flex;align-items:center;gap:6px;flex-shrink:0;white-space:nowrap}
-.badge{padding:5px 10px;border-radius:18px;font-size:12px;font-weight:bold;display:inline-flex;align-items:center;gap:5px;direction:ltr;white-space:nowrap;flex-shrink:0}
+.header-right{display:flex;align-items:center;gap:5px;flex-shrink:0;white-space:nowrap}
+.badge{height:28px;padding:0 10px;border-radius:16px;font-size:11.5px;font-weight:bold;display:inline-flex;align-items:center;gap:5px;direction:ltr;white-space:nowrap;flex-shrink:0}
 .trial-badge{background:rgba(245,158,11,.35);border:1px solid rgba(245,158,11,.6)}
-.expire-countdown-badge{background:rgba(56,189,248,.16);border:1px solid rgba(56,189,248,.45);color:var(--ac);font-size:11.5px}
+.expire-countdown-badge{background:rgba(56,189,248,.16);border:1px solid rgba(56,189,248,.45);color:var(--ac);font-size:11px}
 .quality-btn{cursor:pointer;color:#fff;font-family:inherit;direction:rtl;background:rgba(139,92,246,.28);border:1px solid rgba(139,92,246,.6);transition:.15s}
 .quality-btn:hover{background:rgba(56,189,248,.3);border-color:var(--ac)}
 .install-btn{cursor:pointer;color:#fff;font-family:inherit;direction:rtl;background:linear-gradient(135deg,rgba(56,189,248,.35),rgba(139,92,246,.35));border:1px solid rgba(255,255,255,.3)}
-.live-badge{background:rgba(239,68,68,.88);padding:5px 10px;border-radius:18px;font-size:12px;font-weight:bold;white-space:nowrap;flex-shrink:0;animation:pulse 1.5s infinite}
+.live-badge{height:28px;background:rgba(239,68,68,.88);padding:0 10px;border-radius:16px;font-size:11.5px;font-weight:bold;display:inline-flex;align-items:center;white-space:nowrap;flex-shrink:0;animation:pulse 1.5s infinite}
 @keyframes pulse{50%{opacity:.5}}
 
 /* ---- Video Player Area ---- */
 .content-area{display:flex;flex:1;min-height:0;position:relative}
 .video-container{flex:1;position:relative;background:#000;overflow:hidden;outline:none}
-.video-container:focus{box-shadow:inset 0 0 0 3px #38bdf8!important}
 .video-js{width:100%!important;height:100%!important;font-family:Arial,sans-serif!important}
 .video-js,.video-js .vjs-tech{background-color:#000!important}
 .video-container .video-js{position:absolute!important;inset:0}
 .stream-status-overlay{position:absolute;inset:0;display:flex;justify-content:center;align-items:center;z-index:1001;font-size:32px;color:var(--ac);background:rgba(7,11,22,.45);pointer-events:none}
 
-/* ---- Wide Unclipped beIN SPORTS HD Style Watermark ---- */
+/* ---- Compact Authentic beIN SPORTS HD Style Watermark ---- */
 .vjs-watermark-logo{position:absolute!important;z-index:1000;pointer-events:none;display:none;flex-direction:column;align-items:flex-end;direction:ltr;user-select:none}
 .vjs-watermark-logo.show-watermark{display:flex!important}
-.bein-bar{position:relative;display:inline-flex;align-items:stretch;justify-content:space-between;min-width:100%;height:100%;border-radius:.28em;overflow:hidden;background:linear-gradient(135deg,#1e1136 0%,#3b136c 60%,#111827 100%);border:.08em solid rgba(56,189,248,.75);box-shadow:0 4px 14px rgba(0,0,0,.7),0 0 12px rgba(56,189,248,.25);animation:logoPulseGlow 6s ease-in-out infinite}
-.bein-bar::after{content:"";position:absolute;top:0;left:-140%;width:65%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-25deg);animation:lightSweep 5.5s ease-in-out infinite;pointer-events:none}
-@keyframes logoPulseGlow{0%,100%{box-shadow:0 4px 14px rgba(0,0,0,.65),0 0 10px rgba(56,189,248,.15)}50%{box-shadow:0 4px 18px rgba(0,0,0,.75),0 0 22px rgba(56,189,248,.5)}}
-.bein-main{flex:1;display:flex;align-items:center;justify-content:center;gap:.24em;padding:0 .55em;font:900 1em 'Arial Black',Impact,Arial,sans-serif;letter-spacing:.02em;color:#fff;white-space:nowrap;text-shadow:0 1px 3px rgba(0,0,0,.6);line-height:1}
+.bein-bar{position:relative;display:inline-flex;align-items:stretch;justify-content:space-between;width:100%;height:100%;border-radius:.22em;overflow:hidden;background:linear-gradient(135deg,#1b0f30 0%,#351261 65%,#0f172a 100%);border:1px solid rgba(56,189,248,.65);box-shadow:0 2px 8px rgba(0,0,0,.65);animation:logoPulseGlow 6s ease-in-out infinite}
+.bein-bar::after{content:"";position:absolute;top:0;left:-140%;width:65%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-25deg);animation:lightSweep 5.5s ease-in-out infinite;pointer-events:none}
+@keyframes logoPulseGlow{0%,100%{box-shadow:0 2px 8px rgba(0,0,0,.6),0 0 6px rgba(56,189,248,.12)}50%{box-shadow:0 2px 12px rgba(0,0,0,.7),0 0 14px rgba(56,189,248,.42)}}
+.bein-main{flex:1;display:flex;align-items:center;justify-content:center;gap:.2em;padding:0 .38em;font:900 1em 'Arial Black',Impact,Arial,sans-serif;letter-spacing:.01em;color:#fff;white-space:nowrap;text-shadow:0 1px 2px rgba(0,0,0,.6);line-height:1}
 .bein-main b{color:#38bdf8;font-weight:900}
-.bein-hd{flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:0 .48em;min-width:2.35em;background:linear-gradient(135deg,#38bdf8,#0284c7);color:#061326;font:900 .86em 'Arial Black',Arial,sans-serif;letter-spacing:.02em;border-left:.08em solid rgba(255,255,255,.4);line-height:1;white-space:nowrap}
-.vjs-live-tag{margin-top:.22em;display:none;align-items:center;justify-content:center;gap:.3em;padding:.14em .7em;border-radius:.22em;background:linear-gradient(90deg,#dc2626,#ef4444);font:900 .58em Arial,sans-serif;letter-spacing:.08em;line-height:1.1;color:#fff;white-space:nowrap;box-shadow:0 2px 8px rgba(239,68,68,.5)}
-.vjs-live-tag i{width:.45em;height:.45em;border-radius:50%;background:#fff;animation:pulse 1.1s infinite}
+.bein-hd{flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:0 .35em;min-width:2.05em;background:linear-gradient(135deg,#38bdf8,#0284c7);color:#061326;font:900 .82em 'Arial Black',Arial,sans-serif;letter-spacing:0;border-left:1px solid rgba(255,255,255,.35);line-height:1;white-space:nowrap}
+.vjs-live-tag{margin-top:.18em;display:none;align-items:center;justify-content:center;gap:.28em;padding:.12em .55em;border-radius:.2em;background:linear-gradient(90deg,#dc2626,#ef4444);font:bold .62em 'GoranFontRegular-Regular',Tahoma,Arial,sans-serif;line-height:1.15;color:#fff;white-space:nowrap;direction:rtl;box-shadow:0 2px 6px rgba(239,68,68,.5)}
+.vjs-live-tag i{width:.42em;height:.42em;border-radius:50%;background:#fff;flex-shrink:0;animation:pulse 1.1s infinite}
 .vjs-watermark-logo.is-live .vjs-live-tag{display:flex}
 
-/* ---- Instant Code Cover (ARA SPORT HD Badge) ---- */
-.code-cover{position:absolute;z-index:1002;display:none;align-items:stretch;justify-content:space-between;overflow:hidden;white-space:nowrap;direction:ltr;border-radius:.28em;background:linear-gradient(135deg,#1e1136 0%,#3b136c 60%,#0f172a 100%);border:.08em solid rgba(56,189,248,.8);box-shadow:0 4px 16px rgba(0,0,0,.85);cursor:pointer;user-select:none}
-.code-cover::after{content:"";position:absolute;top:0;left:-140%;width:65%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.48),transparent);transform:skewX(-25deg);animation:lightSweep 5s ease-in-out infinite;pointer-events:none}
-.code-cover .cc-main{flex:1;display:flex;align-items:center;justify-content:center;gap:.24em;padding:0 .5em;font:900 1em 'Arial Black',Arial,sans-serif;color:#fff;white-space:nowrap;line-height:1}
+/* ---- Compact Instant Code Cover (ARA SPORT HD Badge) ---- */
+.code-cover{position:absolute;z-index:1002;display:none;align-items:stretch;justify-content:space-between;overflow:hidden;white-space:nowrap;direction:ltr;border-radius:.22em;background:linear-gradient(135deg,#1b0f30 0%,#351261 65%,#0f172a 100%);border:1px solid rgba(56,189,248,.75);box-shadow:0 2px 10px rgba(0,0,0,.8);cursor:pointer;user-select:none}
+.code-cover::after{content:"";position:absolute;top:0;left:-140%;width:65%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-25deg);animation:lightSweep 5s ease-in-out infinite;pointer-events:none}
+.code-cover .cc-main{flex:1;display:flex;align-items:center;justify-content:center;gap:.2em;padding:0 .38em;font:900 1em 'Arial Black',Arial,sans-serif;color:#fff;white-space:nowrap;line-height:1}
 .code-cover .cc-main span{color:#38bdf8}
-.code-cover .cc-hd{flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:0 .45em;min-width:2.3em;background:linear-gradient(135deg,#38bdf8,#0284c7);color:#061326;font:900 .85em 'Arial Black',Arial,sans-serif;white-space:nowrap;line-height:1}
+.code-cover .cc-hd{flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:0 .35em;min-width:2.05em;background:linear-gradient(135deg,#38bdf8,#0284c7);color:#061326;font:900 .82em 'Arial Black',Arial,sans-serif;white-space:nowrap;line-height:1}
 
-.cover-tool-fab{position:absolute;top:12px;left:12px;z-index:1003;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#cbd5e1;background:rgba(15,23,42,.55);border:1px solid var(--gb);font-size:14px;transition:opacity .3s,background .2s}
+.cover-tool-fab{position:absolute;top:12px;left:12px;z-index:1003;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#cbd5e1;background:rgba(15,23,42,.65);border:1px solid var(--gb);font-size:13px;transition:opacity .3s,background .2s}
 .cover-tool-fab:hover,.cover-tool-fab.active{background:rgba(239,68,68,.85);color:#fff;border-color:#ef4444}
 .cover-tool-fab.idle{opacity:0;pointer-events:none}
 .video-container.pick-cover-mode{cursor:crosshair!important}
 
 /* ---- Sidebar & Groups ---- */
-.playlist-sidebar{width:390px;display:flex;flex-direction:column;height:100%;min-height:0;border-width:0 1px 0 0;border-style:solid;touch-action:pan-y;user-select:none}
-.panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;flex-shrink:0;font-weight:bold;font-size:16px;border-bottom:1px solid var(--gb);background:rgba(255,255,255,.04)}
+.playlist-sidebar{width:380px;display:flex;flex-direction:column;height:100%;min-height:0;border-width:0 1px 0 0;border-style:solid;user-select:none}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 14px;flex-shrink:0;font-weight:bold;font-size:15px;border-bottom:1px solid var(--gb);background:rgba(255,255,255,.04)}
 .panel-head-left{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
 #panelTitle{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:linear-gradient(90deg,var(--ac),var(--ac2));-webkit-background-clip:text;background-clip:text;color:transparent}
-.group-tabs{display:flex;gap:6px;padding:8px 10px;overflow-x:auto;overflow-y:hidden;direction:rtl;flex-shrink:0;scrollbar-width:none;touch-action:pan-x;-webkit-overflow-scrolling:touch;border-bottom:1px solid var(--gb);background:rgba(255,255,255,.03)}
+.group-tabs{display:flex;gap:6px;padding:7px 10px;overflow-x:auto;overflow-y:hidden;direction:rtl;flex-shrink:0;scrollbar-width:none;touch-action:pan-x;-webkit-overflow-scrolling:touch;border-bottom:1px solid var(--gb);background:rgba(255,255,255,.03)}
 .group-tabs::-webkit-scrollbar{display:none}
-.category-tab{padding:7px 14px;font-size:13px;font-weight:bold;color:#cbd5e1;cursor:pointer;white-space:nowrap;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);transition:background .12s;flex-shrink:0;display:flex;align-items:center;gap:5px}
+.category-tab{padding:6px 13px;font-size:12.5px;font-weight:bold;color:#cbd5e1;cursor:pointer;white-space:nowrap;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);flex-shrink:0;display:flex;align-items:center;gap:5px}
 .category-tab:hover{color:var(--ac);background:rgba(56,189,248,.14)}
-.category-tab.active{color:#fff;background:linear-gradient(135deg,rgba(56,189,248,.45),rgba(139,92,246,.45));border-color:rgba(255,255,255,.35);box-shadow:0 4px 16px rgba(56,189,248,.3)}
+.category-tab.active{color:#fff;background:linear-gradient(135deg,rgba(56,189,248,.45),rgba(139,92,246,.45));border-color:rgba(255,255,255,.35);box-shadow:0 4px 14px rgba(56,189,248,.28)}
 
 /* ---- Search & A-Z Filter Panel ---- */
-.search-panel{display:none;flex-direction:column;gap:8px;padding:10px;border-bottom:1px solid var(--gb);background:rgba(15,23,42,.55);flex-shrink:0}
+.search-panel{display:none;flex-direction:column;gap:7px;padding:9px;border-bottom:1px solid var(--gb);background:rgba(15,23,42,.65);flex-shrink:0}
 .search-panel.show{display:flex}
 .search-box-wrap{position:relative;display:flex;align-items:center}
-.search-input{width:100%;padding:9px 36px 9px 32px;border-radius:12px;border:1px solid rgba(56,189,248,.35);background:rgba(7,11,22,.75);color:#fff;font-family:inherit;font-size:14px;outline:none}
-.search-input:focus{border-color:var(--ac);box-shadow:0 0 12px rgba(56,189,248,.25)}
-.search-icon{position:absolute;right:12px;color:var(--ac);font-size:14px;pointer-events:none}
-.clear-search{position:absolute;left:10px;color:#94a3b8;font-size:14px;cursor:pointer;display:none}
+.search-input{width:100%;padding:8px 34px 8px 30px;border-radius:10px;border:1px solid rgba(56,189,248,.35);background:rgba(7,11,22,.85);color:#fff;font-family:inherit;font-size:13.5px;outline:none}
+.search-input:focus{border-color:var(--ac)}
+.search-icon{position:absolute;right:11px;color:var(--ac);font-size:13px;pointer-events:none}
+.clear-search{position:absolute;left:10px;color:#94a3b8;font-size:13px;cursor:pointer;display:none}
 .clear-search.show{display:block}
-.az-bar{display:flex;gap:5px;overflow-x:auto;direction:ltr;padding-bottom:3px;scrollbar-width:none;touch-action:pan-x;-webkit-overflow-scrolling:touch}
+.az-bar{display:flex;gap:5px;overflow-x:auto;direction:ltr;padding-bottom:2px;scrollbar-width:none;touch-action:pan-x;-webkit-overflow-scrolling:touch}
 .az-bar::-webkit-scrollbar{display:none}
-.az-btn{min-width:30px;height:28px;padding:0 8px;border-radius:8px;font:bold 12px Arial,sans-serif;color:#cbd5e1;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;user-select:none}
-.az-btn:hover{border-color:var(--ac);color:#fff}
-.az-btn.active{background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;border-color:transparent;box-shadow:0 2px 10px rgba(56,189,248,.35)}
+.az-btn{min-width:28px;height:26px;padding:0 7px;border-radius:7px;font:bold 11.5px Arial,sans-serif;color:#cbd5e1;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;user-select:none}
+.az-btn.active{background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;border-color:transparent}
 
-/* ---- Playlist Scrollable Wrapper ---- */
-.playlist-items-wrapper{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;padding:8px;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.2) transparent;-webkit-overflow-scrolling:touch;touch-action:pan-y;overscroll-behavior:contain}
-.group-card{display:flex;align-items:center;gap:12px;padding:13px 14px;margin-bottom:8px;border-radius:14px;cursor:pointer;font-size:15px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);transition:background .12s;touch-action:manipulation}
-.group-card:hover,.group-card:active{background:rgba(56,189,248,.18)}
-.group-card .gi{color:var(--ac);font-size:18px;width:24px;text-align:center}
+/* ---- Playlist Scrollable Wrapper (100% Native Touch Scroll in Portrait & Landscape) ---- */
+.playlist-items-wrapper{flex:1 1 0%;min-height:0;overflow-y:scroll;overflow-x:hidden;padding:8px;-webkit-overflow-scrolling:touch;touch-action:pan-y;overscroll-behavior-y:contain;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.2) transparent}
+.group-card{display:flex;align-items:center;gap:12px;padding:12px 14px;margin-bottom:7px;border-radius:13px;cursor:pointer;font-size:14.5px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14)}
+.group-card:active{background:rgba(56,189,248,.22)}
+.group-card .gi{color:var(--ac);font-size:17px;width:22px;text-align:center}
 .group-card .gn{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:bold}
-.group-card .gc{font-size:12px;padding:2px 9px;border-radius:999px;background:rgba(255,255,255,.12);color:#e2e8f0}
-.playlist-item{padding:9px 12px;margin-bottom:6px;border-radius:12px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);touch-action:manipulation}
-.playlist-item:hover{background:rgba(255,255,255,.12)}
-.playlist-item.active{background:linear-gradient(135deg,rgba(37,99,235,.65),rgba(139,92,246,.55));border-color:rgba(255,255,255,.3);box-shadow:0 4px 16px rgba(37,99,235,.35)}
-.ch-left{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
-.ch-logo{width:38px;height:38px;flex-shrink:0;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#0f172a;border:1px solid rgba(255,255,255,.18);color:var(--ac);font-size:15px}
+.group-card .gc{font-size:11.5px;padding:2px 8px;border-radius:999px;background:rgba(255,255,255,.12);color:#e2e8f0}
+.playlist-item{padding:8px 11px;margin-bottom:6px;border-radius:11px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:13.5px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08)}
+.playlist-item:active{background:rgba(255,255,255,.15)}
+.playlist-item.active{background:linear-gradient(135deg,rgba(37,99,235,.65),rgba(139,92,246,.55));border-color:rgba(255,255,255,.3);box-shadow:0 3px 12px rgba(37,99,235,.3)}
+.ch-left{display:flex;align-items:center;gap:9px;flex:1;min-width:0;pointer-events:none}
+.ch-logo{width:36px;height:36px;flex-shrink:0;border-radius:9px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#0f172a;border:1px solid rgba(255,255,255,.18);color:var(--ac);font-size:14px}
 .ch-logo img{width:100%;height:100%;object-fit:contain;display:block;padding:2px}
 .ch-info{display:flex;flex-direction:column;min-width:0;flex:1}
 .item-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:bold}
-.item-subcat{font-size:11px;color:#94a3b8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.channel-action-icons{display:flex;align-items:center;gap:8px;flex-shrink:0}
-.icon-btn{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;color:#fff;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2)}
+.item-subcat{font-size:10.5px;color:#94a3b8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.channel-action-icons{display:flex;align-items:center;gap:7px;flex-shrink:0}
+.icon-btn{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12.5px;color:#fff;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2)}
 .icon-btn:hover,.icon-btn.active-btn{background:rgba(56,189,248,.28);border-color:var(--ac);color:var(--ac)}
 .icon-btn.recording{background:rgba(239,68,68,.85);border-color:#ef4444;color:#fff;animation:pulse 1.2s infinite}
-.rec-timer-badge{font:900 11px monospace;color:#fca5a5;background:rgba(15,23,42,.85);padding:3px 7px;border-radius:4px;border:1px solid rgba(239,68,68,.4);direction:ltr}
-.empty-msg{text-align:center;padding:30px 15px;color:#94a3b8;font-size:14px}
+.rec-timer-badge{font:900 10.5px monospace;color:#fca5a5;background:rgba(15,23,42,.85);padding:2px 6px;border-radius:4px;border:1px solid rgba(239,68,68,.4);direction:ltr}
+.empty-msg{text-align:center;padding:30px 15px;color:#94a3b8;font-size:13.5px}
 
 /* ---- Broadcast Ticker Bar with Right-Side Digital Clock Shape ---- */
-.ticker-bar{position:relative;display:flex;align-items:center;height:38px;background:linear-gradient(90deg,rgba(15,23,42,.88),rgba(30,41,59,.92));border-top:1px solid rgba(56,189,248,.3);color:#e2e8f0;overflow:hidden;white-space:nowrap;flex-shrink:0}
-.ticker-clock-box{position:relative;z-index:3;height:100%;display:flex;align-items:center;gap:8px;padding:0 16px 0 22px;background:linear-gradient(135deg,#0284c7,#3b0764);color:#fff;font:900 14px 'Courier New',monospace;letter-spacing:1px;direction:ltr;box-shadow:-8px 0 18px rgba(0,0,0,.6);clip-path:polygon(14px 0,100% 0,100% 100%,0 100%);border-left:2px solid var(--ac);flex-shrink:0}
-.ticker-clock-box i{color:#38bdf8;font-size:13px;animation:pulse 2s infinite}
+.ticker-bar{position:relative;display:flex;align-items:center;height:36px;background:linear-gradient(90deg,rgba(15,23,42,.9),rgba(30,41,59,.94));border-top:1px solid rgba(56,189,248,.3);color:#e2e8f0;overflow:hidden;white-space:nowrap;flex-shrink:0}
+.ticker-clock-box{position:relative;z-index:3;height:100%;display:flex;align-items:center;gap:7px;padding:0 14px 0 20px;background:linear-gradient(135deg,#0284c7,#3b0764);color:#fff;font:900 13px 'Courier New',monospace;letter-spacing:1px;direction:ltr;box-shadow:-8px 0 18px rgba(0,0,0,.6);clip-path:polygon(12px 0,100% 0,100% 100%,0 100%);border-left:2px solid var(--ac);flex-shrink:0}
+.ticker-clock-box i{color:#38bdf8;font-size:12px;animation:pulse 2s infinite}
 .ticker-track{flex:1;overflow:hidden;position:relative;height:100%;display:flex;align-items:center}
-.ticker-text{display:inline-block;padding-right:100%;animation:ticker 45s linear infinite;font-size:13px}
+.ticker-text{display:inline-block;padding-right:100%;animation:ticker 45s linear infinite;font-size:12.5px}
 @keyframes ticker{to{transform:translate3d(100%,0,0)}}
 
 /* ---- Modals ---- */
@@ -176,7 +170,7 @@ body.tv-mode .main-wrapper{border-radius:0!important;border:none!important;box-s
 .contact-phones{margin-top:6px;font-weight:bold;color:var(--ac);direction:ltr;font-size:14px}
 .cooldown-box{display:none;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.4);color:#fca5a5;padding:10px;border-radius:8px;font-size:13px;margin-bottom:15px}
 .side-zone,.menu-fab,.drawer-backdrop{display:none}
-.menu-fab{position:absolute;top:12px;right:12px;z-index:1003;width:42px;height:42px;border-radius:50%;align-items:center;justify-content:center;cursor:pointer;color:#fff;background:rgba(15,23,42,.65);border:1px solid var(--gb);transition:opacity .3s}
+.menu-fab{position:absolute;top:12px;right:12px;z-index:1003;width:40px;height:40px;border-radius:50%;align-items:center;justify-content:center;cursor:pointer;color:#fff;background:rgba(15,23,42,.7);border:1px solid var(--gb);transition:opacity .3s}
 .menu-fab.idle{opacity:0;pointer-events:none}
 .ios-guide{position:fixed;inset:0;z-index:10000;display:none;align-items:flex-end;justify-content:center;background:rgba(7,11,22,.7)}
 .ios-guide.show{display:flex}
@@ -187,31 +181,37 @@ body.tv-mode .main-wrapper{border-radius:0!important;border:none!important;box-s
 .ios-step i{color:var(--ac);margin:0 4px}
 .ios-close{margin-top:6px;width:100%;padding:12px;border:none;border-radius:10px;background:#2563eb;color:#fff;font-family:inherit;font-size:15px;font-weight:bold;cursor:pointer}
 .ios-arrow{margin-top:10px;color:var(--ac);font-size:22px;animation:pulse 1.2s infinite}
-.toast{position:fixed;left:50%;bottom:calc(30px + env(safe-area-inset-bottom));transform:translate(-50%,20px);z-index:20000;max-width:90%;padding:12px 20px;border-radius:14px;background:rgba(30,41,59,.95);border:1px solid var(--gb);color:#fff;font-size:15px;text-align:center;line-height:1.6;box-shadow:0 10px 30px rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s}
+.toast{position:fixed;left:50%;bottom:calc(30px + env(safe-area-inset-bottom));transform:translate(-50%,20px);z-index:20000;max-width:90%;padding:11px 18px;border-radius:14px;background:rgba(30,41,59,.95);border:1px solid var(--gb);color:#fff;font-size:14px;text-align:center;line-height:1.5;box-shadow:0 10px 30px rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 
-/* ---- Mobile Portrait Layout (Excludes Android TV!) ---- */
+/* ---- Mobile Portrait Layout ---- */
 @media(max-width:900px) and (orientation:portrait){
  body{padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
  .main-wrapper{height:100%;border-radius:0}
  .content-area{flex-direction:column}
  .video-container{width:100%;height:auto;aspect-ratio:16/9;flex:none}
  .playlist-sidebar{width:100%;flex:1;border-width:1px 0 0;min-height:0}
- .ticker-bar{height:34px}
- .ticker-clock-box{padding:0 12px 0 18px;font-size:12px}
+ .ticker-bar{height:32px}
+ .ticker-clock-box{padding:0 10px 0 16px;font-size:11.5px}
 }
-/* ---- Mobile Landscape Drawer (Only on touch screens with small height, NOT Android TV!) ---- */
-@media(orientation:landscape) and (max-height:560px) and (pointer:coarse){
+/* ---- Mobile Landscape Layout (No backdrop-filter blur so touch scrolling works 100% smoothly!) ---- */
+@media(orientation:landscape) and (max-height:600px) and (pointer:coarse){
  body:not(.tv-mode){padding:0}
- body:not(.tv-mode) .main-wrapper{border-radius:0;border:0;background:#000}
+ body:not(.tv-mode) .main-wrapper{border-radius:0;border:0;background:#000;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
  body:not(.tv-mode) .player-header,body:not(.tv-mode) .ticker-bar{display:none}
  body:not(.tv-mode) .content-area{position:fixed;inset:0;display:block}
- body:not(.tv-mode) .video-container{position:fixed;inset:0;width:100%;height:100%;aspect-ratio:auto;background:#000}
- body:not(.tv-mode) .side-zone{display:block;position:absolute;top:0;right:0;bottom:56px;width:18%;z-index:1002}
+ body:not(.tv-mode) .video-container{position:fixed;inset:0;width:100%;height:100%;aspect-ratio:auto;background:#000;z-index:1}
+ body:not(.tv-mode) .side-zone{display:block;position:absolute;top:0;right:0;bottom:56px;width:16%;z-index:1002}
  body:not(.tv-mode) .menu-fab{display:flex}
- body:not(.tv-mode) .playlist-sidebar{position:fixed;top:0;bottom:0;right:0;height:100dvh;width:min(380px,78vw);z-index:3500;transform:translateX(105%);transition:transform .22s ease;border-width:0 0 0 1px;background:rgba(15,23,42,.96);pointer-events:auto;display:flex;flex-direction:column}
- body:not(.tv-mode).drawer-open .playlist-sidebar{transform:translateX(0)}
- body:not(.tv-mode) .drawer-backdrop{position:fixed;inset:0;z-index:3400;background:rgba(0,0,0,.45)}
+ body:not(.tv-mode) .playlist-sidebar{
+  position:fixed;top:0;bottom:0;right:0;height:100%;max-height:100dvh;width:min(350px,54vw);z-index:4000;
+  transform:translate3d(105%,0,0);transition:transform .2s ease-out;
+  border-width:0 0 0 1px;background:#0f172a!important;
+  backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+  pointer-events:auto;display:flex;flex-direction:column;overflow:hidden
+ }
+ body:not(.tv-mode).drawer-open .playlist-sidebar{transform:translate3d(0,0,0)}
+ body:not(.tv-mode) .drawer-backdrop{position:fixed;inset:0;z-index:3900;background:rgba(0,0,0,.5)}
  body:not(.tv-mode):not(.drawer-open) .drawer-backdrop{display:none}
  body:not(.tv-mode).drawer-open .drawer-backdrop{display:block}
 }
@@ -226,7 +226,7 @@ body.tv-mode .main-wrapper{border-radius:0!important;border:none!important;box-s
   <div class="ios-step"><b>2</b><span>«Add to Home Screen» <i class="fas fa-square-plus"></i> هەڵبژێرە</span></div>
   <div class="ios-step"><b>3</b><span>لە سەرەوە «Add» دابگرە</span></div>
   <div class="ios-arrow"><i class="fas fa-arrow-down"></i></div>
-  <button id="iosClose" class="ios-close" tabindex="0">باشە</button>
+  <button id="iosClose" class="ios-close">باشە</button>
  </div>
 </div>
 
@@ -235,14 +235,14 @@ body.tv-mode .main-wrapper{border-radius:0!important;border:none!important;box-s
   <h2>ئەکتیڤکردنی ئامێرەکەت</h2>
   <div id="cooldownNotice" class="cooldown-box">تایمەری ترایەڵ تەواو بوو! تکایە <b id="cooldownTimer">05:00</b> چاوەڕێ بکە بۆ ترایەڵی داهاتوو.</div>
   <p>بۆ بینینی بەردەوامی پەخشەکە، تەواوی ماک ئادرێسەکەت بۆ ئەدمین بنێرە:</p>
-  <div class="mac-box"><span id="deviceMac">...</span><button class="copy-btn" tabindex="0" onclick="copyMac()">کۆپی</button></div>
+  <div class="mac-box"><span id="deviceMac">...</span><button class="copy-btn" onclick="copyMac()">کۆپی</button></div>
   <div class="send-actions">
    <div class="send-row">
-    <a id="waLink1" href="#" class="send-btn whatsapp-btn" tabindex="0"><i class="fab fa-whatsapp"></i> واتسئاپ</a>
+    <a id="waLink1" href="#" class="send-btn whatsapp-btn"><i class="fab fa-whatsapp"></i> واتسئاپ</a>
    </div>
-   <div class="send-row"><a id="smsLink" href="#" class="send-btn sms-btn" tabindex="0"><i class="fas fa-comment-alt"></i> بە نامە (SMS)</a></div>
+   <div class="send-row"><a id="smsLink" href="#" class="send-btn sms-btn"><i class="fas fa-comment-alt"></i> بە نامە (SMS)</a></div>
   </div>
-  <button id="checkAuthBtn" onclick="checkActivation(true)" class="auth-btn" tabindex="0">پشکنینی ئەکتیڤبوون</button>
+  <button id="checkAuthBtn" onclick="checkActivation(true)" class="auth-btn">پشکنینی ئەکتیڤبوون</button>
   <div id="statusMsg" class="status-msg">ئەم ئامێرە ئەکتیڤ نەکراوە!</div>
   <div class="contact-box">بۆ زانیاری زیاتر یان نوێکردنەوەی سیستمەکە پەیوەندی بکەن بە:
    <div class="contact-phones">07501224994 &nbsp;|&nbsp; 07748134314</div></div>
@@ -253,36 +253,36 @@ body.tv-mode .main-wrapper{border-radius:0!important;border:none!important;box-s
  <div class="player-header glass">
   <div class="brand-wrap"><div class="brand-title">ARA <span>TV</span></div></div>
   <div class="header-right">
-   <button id="qualityBtn" class="badge quality-btn" tabindex="0" title="گۆڕینی کوالێتی بەپێی خێرایی ئینتەرنێت"><i class="fas fa-sliders"></i> <span id="qualityLabel">خۆکار</span></button>
+   <button id="qualityBtn" class="badge quality-btn" title="گۆڕینی کوالێتی بەپێی خێرایی ئینتەرنێت"><i class="fas fa-sliders"></i> <span id="qualityLabel">خۆکار</span></button>
    <div id="trialBadge" class="badge trial-badge" style="display:none">⏱️ <span id="trialTimer">05:00</span></div>
    <div id="countdownBox" class="badge expire-countdown-badge" style="display:none">⏳ <span id="countdownTimer">--</span></div>
-   <button id="installBtn" class="badge install-btn" tabindex="0" style="display:none"><i class="fas fa-download"></i> دابەزاندن</button>
+   <button id="installBtn" class="badge install-btn" style="display:none"><i class="fas fa-download"></i> دابەزاندن</button>
    <div class="live-badge">ڕاستەوخۆ</div>
   </div>
  </div>
  <div id="drawerBackdrop" class="drawer-backdrop"></div>
  <div class="content-area">
-  <div id="videoContainer" class="video-container" tabindex="0" title="پەنجە بنێ بە OK بۆ پڕشاشە">
+  <div id="videoContainer" class="video-container">
    <video id="ara-sport-player" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="auto" playsinline></video>
    <div id="sideZone" class="side-zone"></div>
-   <div id="menuFab" class="menu-fab" tabindex="0"><i class="fas fa-list"></i></div>
-   <div id="coverToolFab" class="cover-tool-fab" tabindex="0" title="شاردنەوەی دەستبەجێی کۆدی سەر شاشە"><i class="fas fa-eye-slash"></i></div>
+   <div id="menuFab" class="menu-fab"><i class="fas fa-list"></i></div>
+   <div id="coverToolFab" class="cover-tool-fab" title="شاردنەوەی دەستبەجێی کۆدی سەر شاشە"><i class="fas fa-eye-slash"></i></div>
    <div id="streamStatusOverlay" class="stream-status-overlay"><i class="fas fa-spinner fa-spin"></i></div>
   </div>
   <div id="playlistSidebar" class="playlist-sidebar glass">
    <div class="panel-head">
     <div class="panel-head-left">
-     <button id="backBtn" class="icon-btn" tabindex="0" style="display:none" aria-label="back"><i class="fas fa-chevron-right"></i></button>
+     <button id="backBtn" class="icon-btn" style="display:none" aria-label="back"><i class="fas fa-chevron-right"></i></button>
      <span id="panelTitle">گروپەکان</span>
     </div>
-    <button id="searchToggleBtn" class="icon-btn" tabindex="0" title="گەڕان بەپێی پیتەکان"><i class="fas fa-search"></i></button>
+    <button id="searchToggleBtn" class="icon-btn" title="گەڕان بەپێی پیتەکان"><i class="fas fa-search"></i></button>
    </div>
    <div id="groupTabs" class="group-tabs" style="display:none"></div>
    <div id="searchPanel" class="search-panel">
     <div class="search-box-wrap">
      <i class="fas fa-search search-icon"></i>
-     <input type="text" id="searchInput" class="search-input" tabindex="0" placeholder="گەڕان بۆ ناوی کەناڵ (A-Z یان کوردی)..." autocomplete="off">
-     <i id="clearSearch" class="fas fa-times-circle clear-search" tabindex="0"></i>
+     <input type="text" id="searchInput" class="search-input" placeholder="گەڕان بۆ ناوی کەناڵ (A-Z یان کوردی)..." autocomplete="off">
+     <i id="clearSearch" class="fas fa-times-circle clear-search"></i>
     </div>
     <div id="azBar" class="az-bar"></div>
    </div>
@@ -314,13 +314,13 @@ const $=id=>document.getElementById(id);
 const ls=(k,v)=>{try{if(v===undefined)return localStorage.getItem(k);if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){return null}};
 const pad=n=>n<10?"0"+n:n;
 
-/* ---------- Detect Android TV / Smart TV / Fire TV Box ---------- */
+/* ---------- Detect Android TV / Smart TV ---------- */
 const isTV = /Android\s+TV|SmartTV|SMART-TV|BRAVIA|AFTB|AFTT|AFTM|AFTS|AFTA|MiBOX|SHIELD|GoogleTV|HbbTV|Web0S|Tizen|CrKey|TV\s*Box/i.test(navigator.userAgent);
 if(isTV){
  document.body.classList.add("tv-mode");
 }
 
-/* ---------- Screen Wake Lock (Prevents Android TV & Mobile from sleeping while watching) ---------- */
+/* ---------- Screen Wake Lock ---------- */
 let wakeLock=null;
 async function requestWakeLock(){
  try{
@@ -459,7 +459,7 @@ function startCountdown(exp){
 }
 function showAuthOverlay(){
  $("authOverlay").style.display="flex";
- setTimeout(()=>$("checkAuthBtn").focus(),80);
+ if(isTV)setTimeout(()=>$("checkAuthBtn").focus(),80);
 }
 function startTrialTimer(){
  if(trialInterval)return;
@@ -574,7 +574,7 @@ function initPlayer(){
  });
  player.ready(function(){
   const w=document.createElement("div");w.className="vjs-watermark-logo";w.id="playerWatermark";
-  w.innerHTML='<div class="bein-bar"><div class="bein-main">ARA <b>SPORT</b></div><div class="bein-hd">HD</div></div><div class="vjs-live-tag"><i></i>LIVE</div>';
+  w.innerHTML='<div class="bein-bar"><div class="bein-main">ARA <b>SPORT</b></div><div class="bein-hd">HD</div></div><div class="vjs-live-tag"><i></i>ڕاستەوخۆ</div>';
   this.el().appendChild(w);
 
   const cc=document.createElement("div");cc.id="codeCover";cc.className="code-cover";
@@ -625,7 +625,7 @@ function initPlayer(){
 function showWait(w){$("streamStatusOverlay").style.display=w?"flex":"none"}
 function updateWatermark(){const w=$("playerWatermark");if(w)w.classList.toggle("show-watermark",isSports)}
 
-/* ---------- Android TV Back Button Trap (Prevents Accidental App Exit) ---------- */
+/* ---------- Android TV Back Button Trap ---------- */
 function initBackNavigationTrap(){
  try{history.pushState({ara:1},"",location.href)}catch(e){}
  window.addEventListener("popstate",()=>{
@@ -641,7 +641,7 @@ function handleTvBackAction(){
  if(view==="channels"){
   view="groups";
   renderChannels();
-  focusFirstListItem();
+  if(isTV)focusFirstListItem();
   return true;
  }
  return false;
@@ -661,6 +661,7 @@ function stepChannel(delta){
 }
 
 function focusFirstListItem(){
+ if(!isTV)return;
  setTimeout(()=>{
   const active=$("playlist-items").querySelector(".playlist-item.active") ||
                $("playlist-items").querySelector(".playlist-item, .group-card");
@@ -676,21 +677,17 @@ function initRemoteAndKeyboard(){
   const tag=(e.target&&e.target.tagName)||"";
   const isInput=tag==="INPUT"||tag==="TEXTAREA";
 
-  // Android TV Back / Escape key
   if(e.key==="Escape"||e.key==="Backspace"||e.key==="BrowserBack"||e.keyCode===4){
    if(isInput&&e.key==="Backspace")return;
    if(handleTvBackAction()){e.preventDefault();e.stopPropagation();return}
   }
 
-  // Channel Up / Down buttons on TV Remote (PageUp / PageDown / ChannelUp / ChannelDown)
   if(e.key==="PageUp"||e.key==="ChannelUp"||e.keyCode===427){
    e.preventDefault();stepChannel(-1);return;
   }
   if(e.key==="PageDown"||e.key==="ChannelDown"||e.keyCode===428){
    e.preventDefault();stepChannel(1);return;
   }
-
-  // Media Play/Pause buttons on TV Remote
   if(e.key==="MediaPlayPause"||e.keyCode===179){
    e.preventDefault();if(player)player.paused()?player.play():player.pause();return;
   }
@@ -709,7 +706,6 @@ function initRemoteAndKeyboard(){
   const inTabs=activeEl&&activeEl.closest&&activeEl.closest("#groupTabs");
   const inAz=activeEl&&activeEl.closest&&activeEl.closest("#azBar");
 
-  // OK / Enter button on focused item
   if(e.key==="Enter"||e.keyCode===13){
    if(activeEl===$("videoContainer")){
     e.preventDefault();
@@ -723,7 +719,6 @@ function initRemoteAndKeyboard(){
    }
   }
 
-  // D-Pad Up / Down inside playlist items or group cards
   if(inList&&(e.key==="ArrowDown"||e.key==="ArrowUp")){
    e.preventDefault();
    const items=[...$("playlist-items").querySelectorAll(".playlist-item, .group-card")];
@@ -748,7 +743,6 @@ function initRemoteAndKeyboard(){
    return;
   }
 
-  // D-Pad Left / Right inside Group Tabs (RTL aware)
   if(inTabs&&(e.key==="ArrowLeft"||e.key==="ArrowRight"||e.key==="ArrowDown"||e.key==="ArrowUp")){
    e.preventDefault();
    const tabs=[...$("groupTabs").querySelectorAll(".category-tab")];
@@ -765,7 +759,6 @@ function initRemoteAndKeyboard(){
    return;
   }
 
-  // D-Pad Left / Right inside A-Z Bar (LTR)
   if(inAz&&(e.key==="ArrowLeft"||e.key==="ArrowRight"||e.key==="ArrowDown"||e.key==="ArrowUp")){
    e.preventDefault();
    const btns=[...$("azBar").querySelectorAll(".az-btn")];
@@ -782,7 +775,6 @@ function initRemoteAndKeyboard(){
    return;
   }
 
-  // Switch between Video Player and Sidebar with Left/Right arrows on TV
   if(inList&&e.key==="ArrowLeft"){
    e.preventDefault();
    $("videoContainer").focus();
@@ -794,14 +786,12 @@ function initRemoteAndKeyboard(){
    return;
   }
 
-  // If nothing specific is focused and user presses D-Pad arrows, jump into the channel list
-  if((!activeEl||activeEl===document.body)&&(e.key==="ArrowDown"||e.key==="ArrowUp"||e.key==="ArrowLeft"||e.key==="ArrowRight")){
+  if(isTV&&(!activeEl||activeEl===document.body)&&(e.key==="ArrowDown"||e.key==="ArrowUp"||e.key==="ArrowLeft"||e.key==="ArrowRight")){
    e.preventDefault();
    focusFirstListItem();
    return;
   }
 
-  // VLC Desktop Shortcuts
   if(e.code==="Space"){e.preventDefault();player.paused()?player.play():player.pause()}
   else if(e.key==="f"||e.key==="F"){e.preventDefault();player.isFullscreen()?player.exitFullscreen():player.requestFullscreen()}
   else if(e.key==="m"||e.key==="M"){e.preventDefault();player.muted(!player.muted())}
@@ -835,7 +825,7 @@ function initManualCodeCover(){
   const left=(cw-dw)/2,top=(ch-dh)/2;
   const cx=e.clientX-rect.left-left,cy=e.clientY-rect.top-top;
   const rx=Math.max(0.05,Math.min(0.95,cx/dw)),ry=Math.max(0.04,Math.min(0.96,cy/dh));
-  const hw=0.105,hh=0.028;
+  const hw=0.072,hh=0.021;
   codeBox={x0:Math.max(0,rx-hw),y0:Math.max(0,ry-hh),x1:Math.min(1,rx+hw),y1:Math.min(1,ry+hh)};
   saveCodeBox(currentUrl,codeBox);
   pickCoverMode=false;
@@ -846,7 +836,7 @@ function initManualCodeCover(){
  },true);
 }
 
-/* ---------- Fast OCR (Auto-disabled on weak Android TV CPU to prevent lag) ---------- */
+/* ---------- Fast OCR ---------- */
 let ocrState=null,ocrWorker=null,ocrLoading=null,ocrFails=0,ocrTimer=null,ocrMiss=0;
 function loadTess(){
  if(window.Tesseract)return Promise.resolve();
@@ -963,15 +953,15 @@ async function codeScan(){
  }catch(e){codeFail[url]=(codeFail[url]||0)+1}
 }
 
-/* ---------- Position Wide Unclipped beIN Style Watermark Over Original Logo ---------- */
+/* ---------- Compact Authentic beIN SPORTS HD Proportions ---------- */
 function positionCover(left,top,dw,dh){
  const el=$("codeCover");if(!el)return;
  if(!codeBox){el.style.display="none";return}
- const px=dw*.012,py=dh*.014;
+ const px=dw*.008,py=dh*.01;
  const x=left+codeBox.x0*dw-px,y=top+codeBox.y0*dh-py;
- const w=Math.max(dw*0.185,(codeBox.x1-codeBox.x0)*dw+px*2);
- const h=Math.max(dh*0.048,(codeBox.y1-codeBox.y0)*dh+py*2);
- const fs=Math.max(Math.min(h*0.44,w/11.2),7);
+ const w=Math.max(76,Math.min(dw*0.145,(codeBox.x1-codeBox.x0)*dw+px*2));
+ const h=Math.max(15,Math.min(dh*0.042,(codeBox.y1-codeBox.y0)*dh+py*2));
+ const fs=Math.max(Math.min(h*0.48,w/10.5),6.5);
  Object.assign(el.style,{
   display:"flex",
   left:x+"px",
@@ -989,11 +979,12 @@ function positionWatermark(){
  const vw=(v&&v.videoWidth)?v.videoWidth:1280,vh=(v&&v.videoHeight)?v.videoHeight:720;
  const sc=Math.min(cw/vw,ch/vh),dw=vw*sc,dh=vh*sc;
  const left=(cw-dw)/2,top=(ch-dh)/2,st=w.style;
- const barW = Math.max(105, dw * 0.215);
- const barH = Math.max(20, dh * 0.056);
- const rightEdge = left + dw * 0.968;
- const topEdge = top + dh * 0.040;
- const fs = Math.max(7.5, Math.min(barH * 0.43, barW / 11.4));
+ // Compact beIN SPORTS HD size (13.8% width, 4.1% height) matching real broadcast logo
+ const barW = Math.max(78, Math.round(dw * 0.138));
+ const barH = Math.max(15, Math.round(dh * 0.041));
+ const rightEdge = left + dw * 0.965;
+ const topEdge = top + dh * 0.045;
+ const fs = Math.max(6.5, Math.min(barH * 0.48, barW / 10.5));
  st.setProperty("left",(rightEdge - barW)+"px","important");
  st.setProperty("top",topEdge+"px","important");
  st.setProperty("right","auto","important");
@@ -1005,14 +996,14 @@ function positionWatermark(){
  positionCover(left,top,dw,dh);
 }
 
-/* ---------- Canvas Drawing for Recording ---------- */
+/* ---------- Canvas Drawing for Recording (Compact beIN Style + Kurdish ڕاستەوخۆ) ---------- */
 function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()}
 function drawBeinBox(c,bx,by,bw,bh,mainA,mainB,sub){
- const r=bh*0.2;
- const hdW=bw*0.26;
+ const r=bh*0.18;
+ const hdW=bw*0.25;
  const g1=c.createLinearGradient(bx,by,bx+bw,by+bh);
- g1.addColorStop(0,"#1e1136");g1.addColorStop(0.6,"#3b136c");g1.addColorStop(1,"#0f172a");
- c.fillStyle=g1;c.strokeStyle="rgba(56,189,248,.8)";c.lineWidth=Math.max(1.5,bh*0.06);
+ g1.addColorStop(0,"#1b0f30");g1.addColorStop(0.65,"#351261");g1.addColorStop(1,"#0f172a");
+ c.fillStyle=g1;c.strokeStyle="rgba(56,189,248,.75)";c.lineWidth=Math.max(1,bh*0.05);
  rr(c,bx,by,bw,bh,r);c.fill();c.stroke();
  c.save();
  rr(c,bx,by,bw,bh,r);c.clip();
@@ -1021,35 +1012,36 @@ function drawBeinBox(c,bx,by,bw,bh,mainA,mainB,sub){
  c.fillStyle=g2;
  c.fillRect(bx+bw-hdW,by,hdW,bh);
  c.restore();
- const fs=Math.max(7.5,Math.min(bh*0.43,bw/11.4));
+ const fs=Math.max(6.5,Math.min(bh*0.48,bw/10.5));
  c.font="900 "+fs+"px 'Arial Black',Arial";c.textBaseline="middle";c.direction="ltr";c.textAlign="left";
  const wa=c.measureText(mainA).width,wb=c.measureText(mainB).width;
  const tx=bx+(bw-hdW-wa-wb)/2;
  c.fillStyle="#fff";c.fillText(mainA,tx,by+bh/2);
  c.fillStyle="#38bdf8";c.fillText(mainB,tx+wa,by+bh/2);
- c.font="900 "+Math.round(fs*0.85)+"px 'Arial Black',Arial";
+ c.font="900 "+Math.round(fs*0.82)+"px 'Arial Black',Arial";
  c.fillStyle="#061326";c.textAlign="center";
  c.fillText(sub,bx+bw-hdW/2,by+bh/2);
 }
 function drawCover(c,w,h){
  if(!codeBox)return;
- const px=w*.012,py=h*.014;
+ const px=w*.008,py=h*.01;
  const x=codeBox.x0*w-px,y=codeBox.y0*h-py;
- const bw=Math.max(w*0.185,(codeBox.x1-codeBox.x0)*w+px*2);
- const bh=Math.max(h*0.048,(codeBox.y1-codeBox.y0)*h+py*2);
+ const bw=Math.max(w*0.138,(codeBox.x1-codeBox.x0)*w+px*2);
+ const bh=Math.max(h*0.041,(codeBox.y1-codeBox.y0)*h+py*2);
  drawBeinBox(c,x,y,bw,bh,"ARA ","SPORT","HD");
 }
 function drawLogo(c,w,h,sports,live){
- const bw=sports?w*0.215:w*0.15,bh=h*0.056;
- const bx=w*0.968-bw,by=h*0.040;
+ const bw=sports?w*0.138:w*0.11,bh=h*0.041;
+ const bx=w*0.965-bw,by=h*0.045;
  drawBeinBox(c,bx,by,bw,bh,"ARA ",sports?"SPORT":"TV","HD");
  if(live){
-  const lf=Math.max(7,Math.round(bh*0.36));
-  c.font="900 "+lf+"px Arial";c.textAlign="left";
-  const tw=c.measureText("LIVE").width,dot=lf*0.45,lw=tw+dot+lf*1.6,lh=lf*1.55,lx=bx+bw-lw,ly=by+bh+bh*0.15;
-  c.fillStyle="rgba(239,68,68,.94)";rr(c,lx,ly,lw,lh,lf*0.3);c.fill();
-  c.fillStyle="#fff";c.beginPath();c.arc(lx+lf*0.55+dot/2,ly+lh/2,dot/2,0,7);c.fill();
-  c.fillText("LIVE",lx+lf*0.55+dot+lf*0.3,ly+lh/2);
+  const lf=Math.max(6.5,Math.round(bh*0.36));
+  c.font="bold "+lf+"px 'GoranFontRegular-Regular',Tahoma,Arial";c.textAlign="left";
+  const txt="ڕاستەوخۆ";
+  const tw=c.measureText(txt).width,dot=lf*0.42,lw=tw+dot+lf*1.5,lh=lf*1.55,lx=bx+bw-lw,ly=by+bh+bh*0.14;
+  c.fillStyle="rgba(239,68,68,.94)";rr(c,lx,ly,lw,lh,lf*0.28);c.fill();
+  c.fillStyle="#fff";c.beginPath();c.arc(lx+lw-lf*0.5-dot/2,ly+lh/2,dot/2,0,7);c.fill();
+  c.fillText(txt,lx+lf*0.5,ly+lh/2);
  }
 }
 
@@ -1168,7 +1160,7 @@ function initAZBar(){
  letters.forEach(l=>{
   const b=document.createElement("div");
   b.className="az-btn"+(l===selectedLetter?" active":"");
-  b.tabIndex=0;
+  if(isTV)b.tabIndex=0;
   b.textContent=l==="ALL"?"هەموو":l;
   b.dataset.l=l;
   f.appendChild(b);
@@ -1229,7 +1221,8 @@ function renderChannels(){
    const c=g.name;
    const n=c===CAT_ALL?channels.length:channels.filter(x=>x.cat===c).length;
    const d=document.createElement("div");
-   d.className="group-card";d.dataset.cat=c;d.tabIndex=0;
+   d.className="group-card";d.dataset.cat=c;
+   if(isTV)d.tabIndex=0;
    d.innerHTML=`<i class="fas ${g.icon} gi"></i><span class="gn"></span><span class="gc">${n}</span><i class="fas fa-chevron-left"></i>`;
    d.querySelector(".gn").textContent=c;
    f.appendChild(d);
@@ -1255,7 +1248,7 @@ function renderChannels(){
    const d=document.createElement("div");
    d.className="playlist-item"+(ch.url===currentUrl?" active":"");
    d.dataset.i=i;
-   d.tabIndex=0;
+   if(isTV)d.tabIndex=0;
    d.innerHTML='<div class="ch-left"><span class="ch-logo"></span><div class="ch-info"><span class="item-name"></span><span class="item-subcat"></span></div></div><div class="channel-action-icons"><span class="rec-timer-badge" style="display:none">00:00</span><button class="icon-btn rec-btn" data-rec="1" tabindex="-1" title="Record"><i class="fas fa-circle"></i></button></div>';
    d.querySelector(".item-name").textContent=ch.name;
    d.querySelector(".item-subcat").textContent=ch.cat;
@@ -1281,14 +1274,14 @@ function showTabs(){
   tabsKey=key;gt.innerHTML="";const f=document.createDocumentFragment();
   const st=document.createElement("div");
   st.className="category-tab";
-  st.tabIndex=0;
+  if(isTV)st.tabIndex=0;
   st.dataset.action="search";
   st.innerHTML='<i class="fas fa-search"></i> گەڕان A-Z';
   f.appendChild(st);
   SMART_GROUPS.forEach(g=>{
    const t=document.createElement("div");
    t.className="category-tab";
-   t.tabIndex=0;
+   if(isTV)t.tabIndex=0;
    t.innerHTML=`<i class="fas ${g.icon}"></i> <span></span>`;
    t.querySelector("span").textContent=g.name;
    t.dataset.cat=g.name;
@@ -1319,14 +1312,15 @@ $("groupTabs").addEventListener("click",e=>{
 $("groupTabs").addEventListener("wheel",e=>{if(Math.abs(e.deltaY)>Math.abs(e.deltaX)){e.currentTarget.scrollLeft+=e.deltaY;e.preventDefault()}},{passive:false});
 $("backBtn").addEventListener("click",()=>{
  if(searchOpen){toggleSearch(false)}
- view="groups";renderChannels();focusFirstListItem();
+ view="groups";renderChannels();
+ if(isTV)focusFirstListItem();
 });
 $("playlist-items").addEventListener("click",e=>{
  const g=e.target.closest(".group-card");
  if(g){
   currentCat=g.dataset.cat;view="channels";renderChannels();
   $("playlistWrapper").scrollTop=0;
-  focusFirstListItem();
+  if(isTV)focusFirstListItem();
   return;
  }
  const it=e.target.closest(".playlist-item");if(!it||it.dataset.i===undefined)return;
@@ -1571,7 +1565,7 @@ function stopRec(){
  if(!rec)return;clearInterval(rec.iv);if(rec.dv)clearInterval(rec.dv);try{rec.mr.stop()}catch(e){}rec=null;renderChannels();
 }
 
-/* ---------- Landscape Side Drawer ---------- */
+/* ---------- Landscape Side Drawer (Fixed Smooth Touch Scroll) ---------- */
 function openDrawer(){
  if(view==="groups"){
   const c=channels.find(x=>x.url===currentUrl);
@@ -1579,7 +1573,7 @@ function openDrawer(){
  }
  renderChannels();
  document.body.classList.add("drawer-open");
- focusFirstListItem();
+ if(isTV)focusFirstListItem();
 }
 function closeDrawer(){document.body.classList.remove("drawer-open")}
 $("sideZone").addEventListener("click",openDrawer);
