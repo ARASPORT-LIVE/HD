@@ -74,40 +74,42 @@ body::after{background:var(--ac2);bottom:-25vmax;left:-15vmax}
 .cover-tool-fab.idle{opacity:0;pointer-events:none}
 .video-container.pick-cover-mode{cursor:crosshair!important}
 
-.playlist-sidebar{width:370px;display:flex;flex-direction:column;height:100%;min-height:0;border-width:0 1px 0 0;border-style:solid;border-color:var(--gb);user-select:none;background:rgba(15,23,42,.55);backdrop-filter:blur(20px) saturate(165%);-webkit-backdrop-filter:blur(20px) saturate(165%)}
-.panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 12px;flex-shrink:0;font-weight:bold;font-size:15px;border-bottom:1px solid var(--gb);background:rgba(255,255,255,.06);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+/* تەنها ژێر لیستەکە بلەرە و شاشەی کەناڵەکە بە تەواوی ڕوونە */
+.playlist-sidebar{width:370px;display:flex;flex-direction:column;height:100%;min-height:0;border-width:0 1px 0 0;border-style:solid;border-color:var(--gb);user-select:none;background:rgba(15,23,42,.52);backdrop-filter:blur(20px) saturate(165%);-webkit-backdrop-filter:blur(20px) saturate(165%)}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 12px;flex-shrink:0;font-weight:bold;font-size:15px;border-bottom:1px solid var(--gb);background:rgba(255,255,255,.06)}
 .panel-head-left{display:flex;align-items:center;gap:8px;min-width:0;flex:1}
 #panelTitle{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:linear-gradient(90deg,var(--ac),var(--ac2));-webkit-background-clip:text;background-clip:text;color:transparent}
-.group-tabs{display:flex;gap:6px;padding:7px 10px;overflow-x:auto;overflow-y:hidden;direction:rtl;flex-shrink:0;scrollbar-width:none;touch-action:pan-x;-webkit-overflow-scrolling:touch;border-bottom:1px solid var(--gb);background:rgba(255,255,255,.04);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);cursor:grab}
+.group-tabs{display:flex;gap:6px;padding:7px 10px;overflow-x:auto;overflow-y:hidden;direction:rtl;flex-shrink:0;scrollbar-width:none;touch-action:pan-x;-webkit-overflow-scrolling:touch;border-bottom:1px solid var(--gb);background:rgba(255,255,255,.04);cursor:grab}
 .group-tabs.dragging{cursor:grabbing}
 .group-tabs::-webkit-scrollbar{display:none}
-.category-tab{padding:6px 12px;font-size:12px;font-weight:bold;color:#cbd5e1;cursor:pointer;white-space:nowrap;border-radius:999px;background:rgba(255,255,255,.09);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.16);flex-shrink:0;display:flex;align-items:center;gap:5px;transition:background .15s,border-color .15s}
+.category-tab{padding:6px 12px;font-size:12px;font-weight:bold;color:#cbd5e1;cursor:pointer;white-space:nowrap;border-radius:999px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16);flex-shrink:0;display:flex;align-items:center;gap:5px}
 .category-tab:hover{background:rgba(255,255,255,.15)}
 .category-tab.active{color:#fff;background:linear-gradient(135deg,rgba(56,189,248,.48),rgba(139,92,246,.48));border-color:rgba(255,255,255,.38)}
 
-.search-panel{display:none;flex-direction:column;gap:7px;padding:8px 10px;border-bottom:1px solid var(--gb);background:rgba(15,23,42,.55);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);flex-shrink:0}
+.search-panel{display:none;flex-direction:column;gap:7px;padding:8px 10px;border-bottom:1px solid var(--gb);background:rgba(15,23,42,.55);flex-shrink:0}
 .search-panel.show{display:flex}
 .search-box-wrap{position:relative;display:flex;align-items:center}
-.search-input{width:100%;padding:7px 32px 7px 28px;border-radius:10px;border:1px solid rgba(56,189,248,.35);background:rgba(7,11,22,.65);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:#fff;font-family:inherit;font-size:13px}
+.search-input{width:100%;padding:7px 32px 7px 28px;border-radius:10px;border:1px solid rgba(56,189,248,.35);background:rgba(7,11,22,.65);color:#fff;font-family:inherit;font-size:13px}
+.search-input.tv-sel{border-color:#fff!important;background:#0284c7!important}
 .search-icon{position:absolute;right:10px;color:var(--ac);font-size:12.5px;pointer-events:none}
 .clear-search{position:absolute;left:9px;color:#94a3b8;font-size:13px;cursor:pointer;display:none}
 .clear-search.show{display:block}
 .az-bar{display:flex;gap:4px;overflow-x:auto;direction:ltr;padding-bottom:2px;scrollbar-width:none;touch-action:pan-x;-webkit-overflow-scrolling:touch;cursor:grab}
 .az-bar.dragging{cursor:grabbing}
 .az-bar::-webkit-scrollbar{display:none}
-.az-btn{min-width:27px;height:25px;padding:0 6px;border-radius:6px;font:bold 11px Arial,sans-serif;color:#cbd5e1;background:rgba(255,255,255,.09);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.az-btn{min-width:27px;height:25px;padding:0 6px;border-radius:6px;font:bold 11px Arial,sans-serif;color:#cbd5e1;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
 .az-btn.active{background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;border-color:transparent}
 
 .playlist-items-wrapper{flex:1 1 0%;min-height:0;overflow-y:auto;overflow-x:hidden;padding:8px;-webkit-overflow-scrolling:touch;touch-action:pan-y;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:rgba(56,189,248,.35) transparent}
 .playlist-items-wrapper::-webkit-scrollbar{width:5px}
 .playlist-items-wrapper::-webkit-scrollbar-thumb{background:rgba(56,189,248,.35);border-radius:10px}
-.group-card{display:flex;align-items:center;gap:12px;padding:12px 14px;margin-bottom:7px;border-radius:13px;cursor:pointer;font-size:14.5px;background:rgba(255,255,255,.08);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.15);touch-action:manipulation;transition:background .15s,border-color .15s}
+.group-card{display:flex;align-items:center;gap:12px;padding:11px 14px;margin-bottom:7px;border-radius:13px;cursor:pointer;font-size:14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);touch-action:manipulation}
 .group-card:hover{background:rgba(255,255,255,.13);border-color:rgba(56,189,248,.4)}
 .group-card:active,.group-card.tv-sel{background:rgba(56,189,248,.25);border-color:var(--ac)}
-.group-card .gi{color:var(--ac);font-size:17px;width:22px;text-align:center}
+.group-card .gi{color:var(--ac);font-size:16px;width:22px;text-align:center}
 .group-card .gn{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:bold}
 .group-card .gc{font-size:11.5px;padding:2px 8px;border-radius:999px;background:rgba(255,255,255,.14);color:#e2e8f0}
-.playlist-item{padding:8px 11px;margin-bottom:6px;border-radius:11px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:13.5px;background:rgba(255,255,255,.07);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.12);touch-action:manipulation;transition:background .15s,border-color .15s}
+.playlist-item{padding:8px 11px;margin-bottom:6px;border-radius:11px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:13.5px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);touch-action:manipulation}
 .playlist-item:hover{background:rgba(255,255,255,.13);border-color:rgba(56,189,248,.35)}
 .playlist-item.active{background:linear-gradient(135deg,rgba(37,99,235,.6),rgba(139,92,246,.5));border-color:rgba(255,255,255,.35)}
 .playlist-item.tv-sel,.category-tab.tv-sel,.az-btn.tv-sel,.icon-btn.tv-sel,.badge.tv-sel{background:rgba(56,189,248,.35)!important;border-color:#38bdf8!important}
@@ -118,7 +120,7 @@ body::after{background:var(--ac2);bottom:-25vmax;left:-15vmax}
 .item-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:bold}
 .item-subcat{font-size:10.5px;color:#94a3b8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .channel-action-icons{display:flex;align-items:center;gap:7px;flex-shrink:0}
-.icon-btn{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;color:#fff;background:rgba(255,255,255,.1);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.2)}
+.icon-btn{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;color:#fff;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2)}
 .icon-btn.active-btn{background:rgba(56,189,248,.28);border-color:var(--ac);color:var(--ac)}
 .icon-btn.recording{background:rgba(239,68,68,.85);border-color:#ef4444;color:#fff;animation:pulse 1.2s infinite}
 .rec-timer-badge{font:900 10.5px monospace;color:#fca5a5;background:rgba(15,23,42,.85);padding:2px 6px;border-radius:4px;border:1px solid rgba(239,68,68,.4);direction:ltr}
@@ -175,12 +177,12 @@ body::after{background:var(--ac2);bottom:-25vmax;left:-15vmax}
  .video-container{position:fixed;inset:0;width:100%;height:100%;aspect-ratio:auto;background:#000;z-index:1}
  .side-zone{display:block;position:absolute;top:0;right:0;bottom:56px;width:14%;z-index:1002}
  .menu-fab{display:flex}
- .drawer-backdrop{position:fixed;inset:0;z-index:3900;background:rgba(7,11,22,.35);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+ .drawer-backdrop{position:fixed;inset:0;z-index:3900;background:transparent!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
  body:not(.drawer-open) .drawer-backdrop{display:none!important}
  body.drawer-open .drawer-backdrop{display:block!important}
  .playlist-sidebar{
   position:fixed;top:0;bottom:0;right:-105%;height:100%;width:min(360px,58vw);z-index:4000;
-  transition:right .24s cubic-bezier(.22,1,.36,1);
+  transition:right .22s cubic-bezier(.22,1,.36,1);
   border-width:0 0 0 1px;
   background:rgba(15,23,42,.48)!important;
   backdrop-filter:blur(22px) saturate(180%)!important;
@@ -194,18 +196,18 @@ body::after{background:var(--ac2);bottom:-25vmax;left:-15vmax}
 
 body.tv-mode{padding:0!important;background:#000!important}
 body.tv-mode::before,body.tv-mode::after{display:none!important}
-body.tv-mode *,body.tv-mode *::before,body.tv-mode *::after{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;box-shadow:none!important;text-shadow:none!important}
+body.tv-mode *,body.tv-mode *::before,body.tv-mode *::after{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;box-shadow:none!important;text-shadow:none!important;transition:none!important;animation:none!important}
 body.tv-mode .main-wrapper{border-radius:0!important;border:0!important;background:#000!important}
 body.tv-mode .player-header,body.tv-mode .ticker-bar,body.tv-mode .cover-tool-fab{display:none!important}
 body.tv-mode .content-area{position:fixed!important;inset:0!important;display:block!important;z-index:10!important}
 body.tv-mode .video-container{position:fixed!important;inset:0!important;width:100%!important;height:100%!important;aspect-ratio:auto!important;background:#000!important;z-index:1!important}
 body.tv-mode .menu-fab{display:flex!important;background:#1e293b!important}
-body.tv-mode .drawer-backdrop{position:fixed!important;inset:0!important;z-index:3900!important;background:rgba(0,0,0,.5)!important}
+body.tv-mode .drawer-backdrop{position:fixed!important;inset:0!important;z-index:3900!important;background:transparent!important}
 body.tv-mode:not(.drawer-open) .drawer-backdrop{display:none!important}
 body.tv-mode.drawer-open .drawer-backdrop{display:block!important}
 body.tv-mode .playlist-sidebar{
  position:fixed!important;top:0!important;bottom:0!important;right:-420px!important;height:100%!important;width:360px!important;z-index:4000!important;
- transition:none!important;background:#0f172a!important;border-left:2px solid #334155!important;display:flex!important;flex-direction:column!important
+ background:rgba(15,23,42,.92)!important;border-left:2px solid #334155!important;display:flex!important;flex-direction:column!important
 }
 body.tv-mode.drawer-open .playlist-sidebar{right:0!important}
 body.tv-mode .group-card,body.tv-mode .playlist-item,body.tv-mode .category-tab,body.tv-mode .az-btn{background:#1e293b!important;border:1px solid #334155!important}
@@ -309,7 +311,6 @@ const $=id=>document.getElementById(id);
 const ls=(k,v)=>{try{if(v===undefined)return localStorage.getItem(k);if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){return null}};
 const pad=n=>n<10?"0"+n:n;
 
-// ناسینەوەی تەنها تەلەفزیۆنە زیرەکەکان و TV Box (کۆمپیوتەر ناگرێتەوە)
 let isTV = /Android\s+TV|SmartTV|SMART-TV|BRAVIA|AFT[A-Z0-9]*|MiBOX|SHIELD|GoogleTV|HbbTV|Web0S|WebOS|Tizen|CrKey|TV\s*Box|Leanback|VIDAA|NetCast|Hisense|Viera|PhilipsTV|Opera\s*TV/i.test(navigator.userAgent);
 
 function enableTvMode(){
@@ -362,7 +363,6 @@ function copyMac(){
  try{navigator.clipboard.writeText(currentMac).then(done).catch(fb)}catch(e){fb()}
 }
 
-// جوڵاندن بە ماوس (Mouse Drag & Wheel Scroll) بۆ کۆمپیوتەر
 function enableMouseDragScroll(el, horizontal=false){
  if(!el)return;
  let isDown=false,startX=0,startY=0,scrollL=0,scrollT=0,moved=false;
@@ -543,42 +543,143 @@ async function checkActivation(manual=false,silent=false){
  return true;
 }
 
-const CAT_ALL = "گشتی";
-const CAT_KURD = "کەناڵە کوردییەکان";
-const CAT_SPORT = "کەناڵە وەرزشییەکان";
-const CAT_DOC = "دۆکیومێنتاری و ئاژەڵان";
-const CAT_KIDS = "کەناڵەکانی منداڵان";
-const CAT_ARAB = "کەناڵە عەرەبییەکان";
+// ناوی سەرجەم گروپەکان بەپێی داواکارییەکەت
+const CAT_KURD       = "کەناڵە کوردییەکان";
+const CAT_KIDS       = "کەناڵەکانی منداڵان";
+const CAT_DOC        = "دۆکیومێنتاری و ئاژەڵان";
+const CAT_ISLAM      = "ئایینی و قورئانی پیرۆز";
+const CAT_SPORT      = "کەناڵە وەرزشییەکان";
+const CAT_ARAB       = "کەناڵە عەرەبییەکان";
+const CAT_MOVIE      = "کەناڵەکانی فیلم";
+const CAT_FAMILY     = "خێزانی (فامیلی)";
+const CAT_EDU        = "پەروەردەیی";
+const CAT_NEWS_ARAB  = "سیاسی و هەواڵی عەرەبی";
+const CAT_NEWS_WORLD = "سیاسی و هەواڵی جیهانی";
+const CAT_DRAMA      = "کەناڵەکانی دراما";
+const CAT_ENT        = "تەرفیهی و کات بەسەربردن";
+const CAT_TECH       = "تەکنەلۆجیا و زانست";
+const CAT_MUSIC      = "کەناڵەکانی میوزیک";
+const CAT_ALL        = "گشتی";
 
+// ١. ڕیزبەندیی پیشاندانی گروپەکان لە لیستی گروپەکان و تابەکاندا
 const SMART_GROUPS = [
- { name: CAT_ALL, icon: "fa-globe" },
- { name: CAT_KURD, icon: "fa-sun" },
- { name: CAT_SPORT, icon: "fa-futbol" },
- { name: CAT_DOC, icon: "fa-paw" },
- { name: CAT_KIDS, icon: "fa-child-reaching" },
- { name: CAT_ARAB, icon: "fa-tv" }
+ { name: CAT_KURD,       icon: "fa-sun" },
+ { name: CAT_KIDS,       icon: "fa-child-reaching" },
+ { name: CAT_DOC,        icon: "fa-paw" },
+ { name: CAT_ISLAM,      icon: "fa-mosque" },
+ { name: CAT_SPORT,      icon: "fa-futbol" },
+ { name: CAT_ARAB,       icon: "fa-tv" },
+ { name: CAT_MOVIE,      icon: "fa-film" },
+ { name: CAT_FAMILY,     icon: "fa-people-roof" },
+ { name: CAT_EDU,        icon: "fa-graduation-cap" },
+ { name: CAT_NEWS_ARAB,  icon: "fa-newspaper" },
+ { name: CAT_NEWS_WORLD, icon: "fa-earth-americas" },
+ { name: CAT_DRAMA,      icon: "fa-masks-theater" },
+ { name: CAT_ENT,        icon: "fa-wand-magic-sparkles" },
+ { name: CAT_TECH,       icon: "fa-microchip" },
+ { name: CAT_MUSIC,      icon: "fa-music" },
+ { name: CAT_ALL,        icon: "fa-globe" }
 ];
 
-const RE_QURAN = /quran|quraan|koran|قورئان|قورئانی|قرآن|قران|تەفسیر|تفسير/i;
-const RE_SPORT = /\b(sport|sports|bein|dazn|ssc|alkass|espn|eurosport|skysport|sky\s*sports|tnt\s*sports|bt\s*sport|premier\s*sports|nba|ufc|wwe|f1|motogp|calcio|bundesliga|laliga|arena|match)\b|وەرزش|سپۆرت|ریاض|رياض|بى\s*ئين|بی\s*ئین|بێن\s*سپۆرت|بین\s*سپۆرت|دەزن|دازن|الکاس|كأس/i;
-const RE_DOC = /\b(uk|doc|docs|documentary|docu|documentaries|nat\s*geo|national\s*geographic|natgeo|wild|animal|animals|animal\s*planet|discovery|disc\s*science|id\s*xtra|history|h2|crime|smithsonian|curiosity|love\s*nature|bbc\s*earth|bbc\s*four|eden|yesterday|alibi|blaze|pbs|quest|dmax|tlc|hgtv|food\s*network|travel|planet\s*earth|water\s*planet|terra|viasat)\b|دۆکیومێنت|دۆکیۆمێنت|ئاژەڵ|ئەنیمەڵ|وثائق|الوثائقية|ناشيونال|جيوغرافيك|أنيمال|انيمل|ديسكفري|تاريخ|طبيعة/i;
-const RE_KIDS = /\b(kid|kids|cartoon|child|children|baby|junior|nick|nickelodeon|nicktoons|disney|boomerang|cartoonito|cbeebies|cbbc|pop|spacetoon|mbc\s*3|cn\s|peppa|pelistank|afarin|afrin|majid|toyoraljana|karameesh|baraem|jeem)\b|منداڵ|مندال|کارتۆن|کارتون|اطفال|أطفال|سپەیستوون|سبيستون|پەلیستانک|ئافەرین|پەپوولە|ماجد|طيور\s*الجنة|كراميش|سمسم|براعم|جيم/i;
-const RE_ARAB = /\b(alwan|zee\s*alwan|zee|oman|arab|arabic|arabiya|mbc|rotana|jazeera|jzeera|al\s*jzeera|hadath|osn|shahid|art\s|lbc|mtv\s*lebanon|jadeed|future|manar|mayadeen|syria|sharqiya|sumaria|iraqia|rasheed|dijlah|fallujah|ghad|hurra|cbc|dmc|nahar|hayat|dubai|abu\s*dhabi|sharjah|kuwait|bahrain|qatar|saudi|sbc|b4u|nile|wataniya|nessma|echourouk|roya)\b|ئەلوان|ئەڵوان|الوان|ألوان|زي\s*الوان|عومان|عمان|عەرەب|عرب|ڕۆتانا|روتانا|الجزيرة|جەزیرە|العربية|عەرەبیە|الحدث|شاهد|الشرقية|السومرية|العراقية|الرشيد|دجلة|دبي|ابوظبي|الشارقة|الكويت|البحرين|قطر|السعودية/i;
+// ٢. ڕیزبەندیی ناوخۆیی کەناڵەکان کاتێک لە ناو گروپی «گشتی»دایت:
+// کوردی -> منداڵان -> ئایینی و قورئان -> وەرزشی -> دۆکیومێنتاری -> عەرەبی -> سیاسی عەرەبی -> سیاسی جیهانی -> پەروەردەیی -> فیلم/فامیلی -> دراما -> تەکنەلۆجیا -> تەرفیهی -> میوزیک
+const ALL_TAB_PRIORITY = {
+ [CAT_KURD]:       0,
+ [CAT_KIDS]:       1,
+ [CAT_ISLAM]:      2,
+ [CAT_SPORT]:      3,
+ [CAT_DOC]:        4,
+ [CAT_ARAB]:       5,
+ [CAT_NEWS_ARAB]:  6,
+ [CAT_NEWS_WORLD]: 7,
+ [CAT_EDU]:        8,
+ [CAT_MOVIE]:      9,
+ [CAT_FAMILY]:     10,
+ [CAT_DRAMA]:      11,
+ [CAT_TECH]:       12,
+ [CAT_ENT]:        13,
+ [CAT_MUSIC]:      14
+};
+
+// ناسەرەوە زیرەکەکان (Regex) بۆ جیاکردنەوەی وردی کەناڵەکان
+const RE_KURD_PIN = /amozhgary|amozhgari|ئامۆژگاری|ئامۆژگاریی|\b4\s*kurd\b|4kurd/i;
+const RE_KURD_EXPLICIT = /kurd|kurdistan|rudaw|nrt|k24|ava\s*media|ava\s*entertainment|waartv|waar|speda|payam|komal|zagros|gk\s*sat|gali\s*kurdistan|kirkuk|sterk|ronahi|med\s*muzik|jin\s*tv|zarok|pelistank|afarin|biaban|net\s*tv|kurdmax|kanal4|bmc|zoom\s*kurd|ئاڤا|کورد|کوردستان|ڕووداو|رووداو|ئێن\s*ئاڕ\s*تی|سپێدە|پەیام|کۆمەڵ|زاگرۆس|گەلی\s*کوردستان|کەرکووک|کوردماکس|بیابان/i;
+const RE_ISLAM = /\b(quran|quraan|koran|sunnah|sunna|makkah|madinah|mecca|medina|iqraa|almajd|majd|resala|alresalah|huda|peace\s*tv|azhar|ertugrul\s*islam|islamic|islam|eman|iman|insan|afasy|alafasy|fateh|tafsir|hadith)\b|قورئان|قورئانی|قرآن|قران|القرآن|تەفسیر|تفسير|سوننە|السنة|مەککە|مكة|مەدینە|المدينة|اقرأ|المجد|الرسالة|ئایین|ئاینی|ئیسلام|إسلام|اسلام|ئیمان|ایمان|العفاسي/i;
+const RE_SPORT = /\b(sport|sports|bein|dazn|ssc|alkass|espn|eurosport|skysport|sky\s*sports|tnt\s*sports|bt\s*sport|premier\s*sports|nba|ufc|wwe|f1|motogp|calcio|bundesliga|laliga|arena|match| Abu\s*Dhabi\s*Sport|AD\s*Sport|Dubai\s*Sport|On\s*Time\s*Sport|Arryadia|KTV\s*Sport|Oman\s*Sport|Bahrain\s*Sport|Sharjah\s*Sport|Iraqia\s*Sport)\b|وەرزش|سپۆرت|ریاض|رياض|الرياضية|بى\s*ئين|بی\s*ئین|بێن\s*سپۆرت|بین\s*سپۆرت|دەزن|دازن|الکاس|كأس/i;
+const RE_KIDS = /\b(kid|kids|cartoon|child|children|baby|junior|nick|nickelodeon|nicktoons|disney|boomerang|cartoonito|cbeebies|cbbc|pop|spacetoon|mbc\s*3|cn\s|cartoon\s*network|peppa|pelistank|afarin|afrin|majid|toyoraljana|toyor|karameesh|baraem|jeem|gulli|tiji|minika|trt\s*cocuk|zarok)\b|منداڵ|مندال|کارتۆن|کارتون|اطفال|أطفال|سپەیستوون|سبيستون|پەلیستانک|ئافەرین|پەپوولە|ماجد|طيور\s*الجنة|كراميش|سمسم|براعم|جيم/i;
+const RE_DOC = /\b(doc|docs|documentary|docu|documentaries|nat\s*geo|national\s*geographic|natgeo|wild|animal|animals|animal\s*planet|discovery|disc\s*science|id\s*xtra|investigation|history|h2|crime|smithsonian|curiosity|love\s*nature|bbc\s*earth|eden|yesterday|blaze|quest|dmax|travel|planet\s*earth|water\s*planet|terra|viasat\s*explore|viasat\s*history|viasat\s*nature|asharq\s*discovery|al\s*jazeera\s*doc)\b|دۆکیومێنت|دۆکیۆمێنت|ئاژەڵ|ئەنیمەڵ|وثائق|الوثائقية|ناشيونال|جيوغرافيك|أنيمال|انيمل|ديسكفري|تاريخ|طبيعة/i;
+const RE_MUSIC = /\b(music|musica|mtv\s*music|mtv\s*hits|mtv\s*live|mtv\s*club|vh1|mezzo|trace\s*urban|trace\s*latina|mazzika|melody\s*hits|rotana\s*clip|rotana\s*music|rotana\s*tarab|rotana\s*khalijia|aghani|wanasah|nojoum|kral\s*pop|power\s*turk|pmc|radio\s*javan|avang|gala\s*tv|korektv|korek|vin\s*tv|kurdmax\s*music|med\s*muzik)\b|میوزیک|مۆسیقا|گۆرانی|موسيقى|أغاني|اغاني|طرب|روتانا\s*كليب|روتانا\s*موسيقى|وناسة|مزيكا/i;
+const RE_TECH = /\b(tech|technology|science|sci\s*fi|nasa|space\s*tv|gadget|future\s*tech|discovery\s*science|nat\s*geo\s*science|ai\s*tv|cyber|gaming|esports|ginx|tech\s*tv)\b|تەکنەلۆجیا|تەکنەلۆژیا|زانست|زانستی|تكنولوجيا|علوم|العلوم|فضاء/i;
+const RE_EDU = /\b(edu|education|educational|school|academy|university|learn|learning|english\s*club|da\s*vinci|bbc\s*learning|pbs\s*kids\s*edu|madrasati|عين\s*التعليمية|مدرستي|تعليم|التعليمية)\b|پەروەردە|پەروەردەیی|فێرکاری|فێربوون|خوێندن|زانکۆ/i;
+const RE_NEWS_WORLD = /\b(bbc\s*world|bbc\s*news|cnn|fox\s*news|msnbc|sky\s*news\s*intl|sky\s*news\s*uk|euronews|france\s*24|dw|deutsche\s*welle|rt\s*news|rt\s*english|trt\s*world|cgtv|cgtn|nhk\s*world|al\s*jazeera\s*english|bloomberg|cnbc|gb\s*news|talk\s*tv|india\s*today|ndtv|wion)\b|سیاسی\s*جیهانی|هەواڵی\s*جیهانی|ئینگلیزی\s*هەواڵ/i;
+const RE_NEWS_ARAB = /\b(al\s*jazeera|aljazeera|jazeera|al\s*arabiya|alarabiya|arabiya|al\s*hadath|hadath|sky\s*news\s*arabia|bbc\s*arabic|france\s*24\s*arabic|dw\s*arabic|rt\s*arabic|trt\s*arabi|al\s*mayadeen|mayadeen|al\s*manar|manar|al\s*hurra|hurra|al\s*ghad|alghad|asharq\s*news|al\s*sharqiya\s*news|iraqia\s*news|sumaria\s*news|al\s*araby|alaraby|al\s*mamlaka|al\s*ekhbariya|ekhbariya|extra\s*news|al\s*qahera\s*news)\b|الجزيرة|جەزیرە|العربية|عەرەبیە|الحدث|سكاي\s*نيوز\s*عربية|الميادين|المنار|الحرة|الغد|الشرق\s*للأخبار|الإخبارية|القاهرة\s*الإخبارية|العربي\s*أخبار|سیاسی\s*عەرەبی|هەواڵی\s*عەرەبی|أخبار|اخبار/i;
+const RE_MOVIE = /\b(movie|movies|cinema|film|films|box\s*office|osn\s*movies|mbc\s*2|mbc\s*max|mbc\s*action|mbc\s*bollywood|rotana\s*cinema|rotana\s*classic|rotana\s*aflam|zee\s*aflam|b4u\s*aflam|art\s*aflam|cima|star\s*movies|fox\s*movies|paramount|tcm|sony\s*movies|film4|great\s*movies|horror|action\s*movies|top\s*movies|mix\s*hollywood|hbo|cinemax|showtime)\b|فیلم|فلیم|سینەما|أفلام|افلام|سينما|روتانا\s*سينما|روتانا\s*أفلام|بۆلیوود|هۆلیوود/i;
+const RE_DRAMA = /\b(drama|series|mosalsalat|mbc\s*drama|rotana\s*drama|osn\s*yahala|zee\s*alwan|alwan|art\s*hekayat|hekayat|cbc\s*drama|dmc\s*drama|on\s*drama|nahar\s*drama|sada\s*el\s*balad\s*drama|nile\s*drama|abu\s*dhabi\s*drama|dubai\s*zaman|syria\s*drama|roya\s*drama|weyyak)\b|دراما|زنجیرە|مسلسلات|حكايات|ألوان|الوان|ئەلوان|ئەڵوان|زي\s*الوان|روتانا\s*دراما/i;
+const RE_FAMILY = /\b(family|fam|home|lifestyle|tlc|hgtv|food\s*network|fatafeat|cbc\s*sofra|sofra|mbc\s*4|fox\s*life|e!|living|fine\s*living|zee\s*living|osn\s*living)\b|خێزانی|فامیلی|عائلية|العائلة|فتافيت|سفرة/i;
+const RE_ENT = /\b(entertainment|fun|comedy|reality|show|osn\s*comedy|mbc\s*masr|mbc\s*iraq|mbc\s*5|rotana\s*khalijia|dubai\s*one|osn\s*mezze|shahid|star\s*world|fx|syfy|e4|itv2|itv3|itv4|channel\s*4|channel\s*5|sky\s*max|sky\s*showcase|sky\s*witness|sky\s*atlantic|sky\s*comedy|comedy\s*central|gold|dave|alibi|w\s*channel)\b|تەرفیهی|کۆمیدی|کات\s*بەسەربردن|ترفيه|ترفيهية|كوميدي|وناسة/i;
+const RE_ARAB = /\b(arab|arabic|mbc|rotana|osn|art\s|lbc|lbci|mtv\s*lebanon|al\s*jadeed|jadeed|future\s*tv|otv|nbn|syria|sharqiya|sumaria|iraqia|rasheed|dijlah|fallujah|utv|zagros\s*arab|cbc|dmc|al\s*nahar|nahar|al\s*hayat|hayat|mehwar|ten\s*tv|sada\s*el\s*balad|maspero|nile|dubai|abu\s*dhabi|sharjah|sama\s*dubai|fujairah|ajman|kuwait|al\s*rai|bahrain|qatar|al\s*rayyan|saudi|sbc|oman|roya|jordan|palestine|libya|tunisia|wataniya|nessma|el\s*hiwar|echourouk|ennahar|samira|beur|2m|al\s*aoula|medi1|mauritania|sudan|yemen|aden|belqees|al\s*masirah)\b|عەرەب|عرب|عەرەبی|عربية|ڕۆتانا|روتانا|الشرقية|السومرية|العراقية|الرشيد|دجلة|الفلوجة|دبي|ابوظبي|أبوظبي|الشارقة|الكويت|البحرين|قطر|السعودية|عومان|عمان|الأردن|رؤيا/i;
 
 function smartCategorize(name, origCat){
- const full = `${name || ""} ${origCat || ""}`;
- if(RE_QURAN.test(full)) return CAT_KURD;
- if(RE_SPORT.test(full)) return CAT_SPORT;
+ const n = (name || "").trim();
+ const oc = (origCat || "").trim();
+ const full = `${n} ${oc}`;
+
+ // ١. ئامۆژگاری و 4Kurd هەمیشە لە کەناڵە کوردییەکاندا دەبن
+ if(RE_KURD_PIN.test(n)) return CAT_KURD;
+
+ // ٢. منداڵان
  if(RE_KIDS.test(full)) return CAT_KIDS;
+
+ // ٣. ئایینی و قورئانی پیرۆز
+ if(RE_ISLAM.test(full)) return CAT_ISLAM;
+
+ // ٤. وەرزشی
+ if(RE_SPORT.test(full)) return CAT_SPORT;
+
+ // ٥. دۆکیومێنتاری و ئاژەڵان
  if(RE_DOC.test(full)) return CAT_DOC;
+
+ // ٦. تەکنەلۆجیا و زانست
+ if(RE_TECH.test(full)) return CAT_TECH;
+
+ // ٧. پەروەردەیی
+ if(RE_EDU.test(full)) return CAT_EDU;
+
+ // ٨. میوزیک
+ if(RE_MUSIC.test(full)) return CAT_MUSIC;
+
+ // ٩. سیاسی و هەواڵی جیهانی
+ if(RE_NEWS_WORLD.test(full)) return CAT_NEWS_WORLD;
+
+ // ١٠. سیاسی و هەواڵی عەرەبی
+ if(RE_NEWS_ARAB.test(full)) return CAT_NEWS_ARAB;
+
+ // ١١. فیلم
+ if(RE_MOVIE.test(full)) return CAT_MOVIE;
+
+ // ١٢. دراما
+ if(RE_DRAMA.test(full)) return CAT_DRAMA;
+
+ // ١٣. خێزانی (فامیلی)
+ if(RE_FAMILY.test(full)) return CAT_FAMILY;
+
+ // ١٤. کەناڵە کوردییەکان (ئەگەر ناوی کوردی یان کاتێگۆری کوردی بوو)
+ if(RE_KURD_EXPLICIT.test(full)) return CAT_KURD;
+
+ // ١٥. تەرفیهی
+ if(RE_ENT.test(full)) return CAT_ENT;
+
+ // ١٦. کەناڵە عەرەبییەکان
  if(RE_ARAB.test(full)) return CAT_ARAB;
+
+ // ١٧. ئەگەر لە شیتەکەدا خۆی لە بەشی گشتی/کوردی بوو، دەچێتە کوردییەکان
  return CAT_KURD;
 }
 
 const isAmozhgary = name => /amozhgary|amozhgari|ئامۆژگاری|ئامۆژگاریی/i.test(name || "");
 const is4Kurd = name => /\b4\s*kurd\b|4kurd/i.test(name || "");
 
-var player,channels=[],categories=[],currentCat=CAT_ALL,currentUrl="",isSports=false,channelHasLiveBadge=false,manualLiveOverride=null;
+var player,channels=[],categories=[],currentCat=CAT_KURD,currentUrl="",isSports=false,channelHasLiveBadge=false,manualLiveOverride=null;
 
 function initPlayer(){
  if(player)return;
@@ -687,18 +788,65 @@ function handleTvBackAction(){
  return false;
 }
 
+let tvZone = "list";
 let tvCursorIdx = 0;
-function getNavItems(){
- return [...$("playlist-items").querySelectorAll(".group-card, .playlist-item")];
+let tvTabIdx = 0;
+let tvAzIdx = 0;
+let cachedNavItems = [];
+let prevSelectedEl = null;
+
+function clearTvHighlight(){
+ if(prevSelectedEl){
+  prevSelectedEl.classList.remove("tv-sel");
+  prevSelectedEl=null;
+ }
 }
+
+function highlightEl(el, scrollContainer){
+ clearTvHighlight();
+ if(!el)return;
+ el.classList.add("tv-sel");
+ prevSelectedEl=el;
+ if(scrollContainer){
+  const cTop=scrollContainer.scrollTop,cH=scrollContainer.clientHeight;
+  const eTop=el.offsetTop,eH=el.offsetHeight;
+  if(eTop<cTop+8){
+   scrollContainer.scrollTop=Math.max(0,eTop-8);
+  }else if(eTop+eH>cTop+cH-8){
+   scrollContainer.scrollTop=eTop+eH-cH+8;
+  }
+ }
+}
+
 function setTvCursor(idx){
- const items = getNavItems();
- items.forEach(el => el.classList.remove("tv-sel"));
- if(!items.length) return;
- tvCursorIdx = Math.max(0, Math.min(items.length - 1, idx));
- const target = items[tvCursorIdx];
- target.classList.add("tv-sel");
- target.scrollIntoView({block:"nearest"});
+ tvZone="list";
+ if(!cachedNavItems.length){clearTvHighlight();return}
+ tvCursorIdx = Math.max(0, Math.min(cachedNavItems.length - 1, idx));
+ highlightEl(cachedNavItems[tvCursorIdx], $("playlistWrapper"));
+}
+
+function focusTvZone(zone){
+ tvZone=zone;
+ if(zone==="head"){
+  highlightEl($("searchToggleBtn"),null);
+ }else if(zone==="tabs"){
+  const tabs=[...$("groupTabs").querySelectorAll(".category-tab")];
+  if(!tabs.length){setTvCursor(0);return}
+  tvTabIdx=Math.max(0,Math.min(tabs.length-1,tvTabIdx));
+  highlightEl(tabs[tvTabIdx],null);
+  tabs[tvTabIdx].scrollIntoView({inline:"center",block:"nearest"});
+ }else if(zone==="searchInput"){
+  const inp=$("searchInput");
+  highlightEl(inp,null);
+ }else if(zone==="az"){
+  const btns=[...$("azBar").querySelectorAll(".az-btn")];
+  if(!btns.length){setTvCursor(0);return}
+  tvAzIdx=Math.max(0,Math.min(btns.length-1,tvAzIdx));
+  highlightEl(btns[tvAzIdx],null);
+  btns[tvAzIdx].scrollIntoView({inline:"center",block:"nearest"});
+ }else{
+  setTvCursor(tvCursorIdx);
+ }
 }
 
 function stepChannel(delta){
@@ -718,14 +866,33 @@ function initRemoteAndKeyboard(){
   const tag=(e.target&&e.target.tagName)||"";
   const isInput=tag==="INPUT"||tag==="TEXTAREA";
 
-  // تەنها ئەگەر دوگمەی تایبەتی ڕیمۆتی تیڤی داگیرا دۆخی تیڤی کارا بکە (نەک کیبۆردی کۆمپیوتەر)
   if(["ChannelUp","ChannelDown","BrowserBack"].includes(e.key)||e.keyCode===427||e.keyCode===428){
    enableTvMode();
   }
 
   if(e.key==="Escape"||e.key==="Backspace"||e.key==="BrowserBack"||e.keyCode===4){
-   if(isInput&&e.key==="Backspace")return;
+   if(isInput){
+    if(e.key==="Escape"||e.key==="BrowserBack"||e.keyCode===4){
+     e.target.blur();
+     focusTvZone("az");
+     e.preventDefault();
+    }
+    return;
+   }
    if(handleTvBackAction()){e.preventDefault();e.stopPropagation();return}
+  }
+
+  if(isInput){
+   if(e.key==="ArrowDown"){
+    e.preventDefault();
+    e.target.blur();
+    focusTvZone("az");
+   }else if(e.key==="Enter"||e.keyCode===13){
+    e.preventDefault();
+    e.target.blur();
+    setTvCursor(0);
+   }
+   return;
   }
 
   if(e.key==="PageUp"||e.key==="ChannelUp"||e.keyCode===427){
@@ -737,8 +904,6 @@ function initRemoteAndKeyboard(){
   if(e.key==="MediaPlayPause"||e.keyCode===179){
    e.preventDefault();if(player)player.paused()?player.play():player.pause();return;
   }
-
-  if(isInput) return;
 
   const isDrawerMode = isTV || (window.innerWidth > window.innerHeight && window.innerHeight <= 600);
   const drawerOpen = document.body.classList.contains("drawer-open");
@@ -756,37 +921,93 @@ function initRemoteAndKeyboard(){
 
   if(e.key==="ArrowDown"){
    e.preventDefault();
-   setTvCursor(tvCursorIdx + 1);
-   return;
-  }
-  if(e.key==="ArrowUp"){
-   e.preventDefault();
-   setTvCursor(tvCursorIdx - 1);
-   return;
-  }
-  if(e.key==="Enter"||e.keyCode===13){
-   e.preventDefault();
-   const items = getNavItems();
-   if(items[tvCursorIdx]) items[tvCursorIdx].click();
-   return;
-  }
-  if(e.key==="ArrowRight" && view==="channels"){
-   e.preventDefault();
-   const gIdx = SMART_GROUPS.findIndex(g=>g.name===currentCat);
-   if(gIdx>0){
-    currentCat=SMART_GROUPS[gIdx-1].name;
-    renderChannels();
+   if(tvZone==="head"){
+    if(searchOpen) focusTvZone("searchInput");
+    else if(view==="channels") focusTvZone("tabs");
+    else setTvCursor(0);
+   }else if(tvZone==="tabs"){
+    if(searchOpen) focusTvZone("searchInput");
+    else setTvCursor(0);
+   }else if(tvZone==="searchInput"){
+    focusTvZone("az");
+   }else if(tvZone==="az"){
     setTvCursor(0);
+   }else{
+    setTvCursor(tvCursorIdx + 1);
    }
    return;
   }
-  if(e.key==="ArrowLeft" && view==="channels"){
+
+  if(e.key==="ArrowUp"){
    e.preventDefault();
-   const gIdx = SMART_GROUPS.findIndex(g=>g.name===currentCat);
-   if(gIdx>=0 && gIdx<SMART_GROUPS.length-1){
-    currentCat=SMART_GROUPS[gIdx+1].name;
-    renderChannels();
-    setTvCursor(0);
+   if(tvZone==="list"){
+    if(tvCursorIdx > 0){
+     setTvCursor(tvCursorIdx - 1);
+    }else{
+     if(searchOpen) focusTvZone("az");
+     else if(view==="channels") focusTvZone("tabs");
+     else focusTvZone("head");
+    }
+   }else if(tvZone==="az"){
+    focusTvZone("searchInput");
+   }else if(tvZone==="searchInput"){
+    focusTvZone(view==="channels"?"tabs":"head");
+   }else if(tvZone==="tabs"){
+    focusTvZone("head");
+   }
+   return;
+  }
+
+  if(e.key==="ArrowLeft" || e.key==="ArrowRight"){
+   const dir = e.key==="ArrowLeft" ? 1 : -1;
+   if(tvZone==="az"){
+    e.preventDefault();
+    const btns=[...$("azBar").querySelectorAll(".az-btn")];
+    tvAzIdx = Math.max(0, Math.min(btns.length-1, tvAzIdx - dir));
+    focusTvZone("az");
+    return;
+   }
+   if(tvZone==="tabs" || (tvZone==="list" && view==="channels")){
+    e.preventDefault();
+    const tabs=[...$("groupTabs").querySelectorAll(".category-tab")];
+    if(tvZone==="tabs"){
+     tvTabIdx = Math.max(0, Math.min(tabs.length-1, tvTabIdx + dir));
+     focusTvZone("tabs");
+    }else{
+     const activeGroups = getActiveGroups();
+     const gIdx = activeGroups.findIndex(g=>g.name===currentCat);
+     const nextG = gIdx + dir;
+     if(nextG>=0 && nextG<activeGroups.length){
+      currentCat=activeGroups[nextG].name;
+      renderChannels();
+      setTvCursor(0);
+     }
+    }
+    return;
+   }
+  }
+
+  if(e.key==="Enter"||e.keyCode===13){
+   e.preventDefault();
+   if(tvZone==="head"){
+    toggleSearch();
+    if(searchOpen) focusTvZone("az");
+    else setTvCursor(0);
+   }else if(tvZone==="tabs"){
+    const tabs=[...$("groupTabs").querySelectorAll(".category-tab")];
+    if(tabs[tvTabIdx]){
+     tabs[tvTabIdx].click();
+     if(searchOpen) focusTvZone("az");
+     else setTvCursor(0);
+    }
+   }else if(tvZone==="searchInput"){
+    $("searchInput").focus();
+   }else if(tvZone==="az"){
+    const btns=[...$("azBar").querySelectorAll(".az-btn")];
+    if(btns[tvAzIdx]) btns[tvAzIdx].click();
+    focusTvZone("az");
+   }else{
+    if(cachedNavItems[tvCursorIdx]) cachedNavItems[tvCursorIdx].click();
    }
    return;
   }
@@ -834,18 +1055,16 @@ function initManualCodeCover(){
  },true);
 }
 
-// پشکنینی بوونی نیشانەی LIVE لەسەر خودی کەناڵەکە (ژێر لۆگۆی beIN SPORTS)
 const liveCheckCanvas=document.createElement("canvas");
 const liveCheckCtx=liveCheckCanvas.getContext("2d",{willReadFrequently:true});
 let liveBadgeMissCount=0,liveBadgeHitCount=0;
 
 function detectBroadcastLiveBadge(){
- if(!player||!isSports||player.paused()||document.hidden)return;
+ if(isTV||!player||!isSports||player.paused()||document.hidden)return;
  let v;try{v=player.tech(true).el()}catch(e){return}
  if(!v||!v.videoWidth||!v.videoHeight)return;
  try{
   const vw=v.videoWidth,vh=v.videoHeight;
-  // ناوچەی ژێر لۆگۆی beIN SPORTS کە نیشانەی LIVE تێدا دەردەکەوێت
   const sx=Math.round(vw*0.895),sy=Math.round(vh*0.095);
   const sw=Math.max(16,Math.round(vw*0.062)),sh=Math.max(8,Math.round(vh*0.025));
   const bgY=Math.round(vh*0.128);
@@ -892,11 +1111,9 @@ function detectBroadcastLiveBadge(){
     updateLive();
    }
   }
- }catch(e){
-  // ئەگەر ستریمەکە ڕێگەی بە خوێندنەوەی پیکسڵ نەدا (CORS)
- }
+ }catch(e){}
 }
-setInterval(detectBroadcastLiveBadge,1500);
+setInterval(detectBroadcastLiveBadge,2000);
 
 function isLive(){
  if(manualLiveOverride!==null) return manualLiveOverride;
@@ -987,7 +1204,6 @@ function positionCover(left,top,dw,dh){
  });
 }
 
-// دانانی لۆگۆ ڕێک بە قیاس و شوێنی لۆگۆی beIN SPORTS لەسەر مۆبایل و کۆمپیوتەر
 function positionWatermark(){
  const w=$("playerWatermark");if(!w||!player)return;
  let v;try{v=player.tech(true).el()}catch(e){return}
@@ -996,7 +1212,6 @@ function positionWatermark(){
  const sc=Math.min(cw/vw,ch/vh),dw=vw*sc,dh=vh*sc;
  const left=(cw-dw)/2,top=(ch-dh)/2,st=w.style;
 
- // قەبارە و شوێنی دەقیق بەپێی قیاسی لۆگۆی beIN SPORTS لەسەر ڤیدیۆکە
  const barW = dw * 0.118;
  const barH = dh * 0.0285;
  const fs = Math.max(3.6, barH * 0.62);
@@ -1089,20 +1304,13 @@ function parseChannels(csv){
  return out;
 }
 
-const GROUP_PRIORITY = {
- [CAT_KURD]: 0,
- [CAT_SPORT]: 1,
- [CAT_DOC]: 2,
- [CAT_KIDS]: 3,
- [CAT_ARAB]: 4
-};
-
 function kurdPinWeight(ch){
  if(isAmozhgary(ch.name)) return -1000;
  if(is4Kurd(ch.name)) return 1000;
  return 0;
 }
 
+// ڕیزکردنی کەناڵەکان بەپێی گروپی هەڵبژێردراو یان ڕیزبەندیی تایبەتی ناو گروپی «گشتی»
 function getSortedIndices(cat){
  const idx=[];
  for(let i=0;i<channels.length;i++){
@@ -1111,7 +1319,7 @@ function getSortedIndices(cat){
  idx.sort((a,b)=>{
   const ca=channels[a],cb=channels[b];
   if(cat===CAT_ALL){
-   const ga=GROUP_PRIORITY[ca.cat]??9,gb=GROUP_PRIORITY[cb.cat]??9;
+   const ga=ALL_TAB_PRIORITY[ca.cat]??99,gb=ALL_TAB_PRIORITY[cb.cat]??99;
    if(ga!==gb)return ga-gb;
   }
   if(ca.cat===CAT_KURD&&cb.cat===CAT_KURD){
@@ -1123,6 +1331,11 @@ function getSortedIndices(cat){
  return idx;
 }
 
+function getActiveGroups(){
+ if(!channels.length) return SMART_GROUPS;
+ return SMART_GROUPS.filter(g => g.name === CAT_ALL || channels.some(x => x.cat === g.name));
+}
+
 function setData(list){
  channels=list.map(ch=>{
   const orig=ch.origCat||ch.cat||"";
@@ -1130,10 +1343,9 @@ function setData(list){
   const mL=ch.name.match(/[A-Za-z]/);
   return {...ch,cat:sc,origCat:orig,letter:mL?mL[0].toUpperCase():"#"};
  });
- categories=SMART_GROUPS.map(g=>g.name);
- if(!categories.includes(currentCat))currentCat=CAT_ALL;
+ categories=getActiveGroups().map(g=>g.name);
+ if(!categories.includes(currentCat))currentCat=CAT_KURD;
 
- // پاراستنی کەناڵی ئێستا لەکاتی ڕۆتەیت یان نوێبوونەوەی لیستەکە
  if(!currentUrl&&channels.length){
   const savedUrl=ls("ara_last_channel_url");
   const savedCh=savedUrl?channels.find(x=>x.url===savedUrl):null;
@@ -1209,15 +1421,20 @@ function toggleSearch(force){
  $("searchPanel").classList.toggle("show",searchOpen);
  $("searchToggleBtn").classList.toggle("active-btn",searchOpen);
  if(searchOpen){
-  if(view==="groups"){view="channels";if(!currentCat)currentCat=CAT_ALL}
+  if(view==="groups"){view="channels";currentCat=CAT_ALL}
   renderChannels();
-  if(!isTV)setTimeout(()=>$("searchInput").focus(),40);
+  if(isTV){
+   focusTvZone("az");
+  }else{
+   setTimeout(()=>$("searchInput").focus(),40);
+  }
  }else{
   searchQuery="";selectedLetter="ALL";
   $("searchInput").value="";
   $("clearSearch").classList.remove("show");
   $("azBar").querySelectorAll(".az-btn").forEach(x=>x.classList.toggle("active",x.dataset.l==="ALL"));
   renderChannels();
+  if(isTV) setTvCursor(0);
  }
 }
 
@@ -1230,27 +1447,34 @@ $("searchInput").addEventListener("input",e=>{
 });
 $("clearSearch").addEventListener("click",()=>{
  searchQuery="";$("searchInput").value="";$("clearSearch").classList.remove("show");
- renderChannels();$("searchInput").focus();
+ renderChannels();
+ if(!isTV)$("searchInput").focus();
 });
 
 function renderChannels(){
  const box=$("playlist-items"),f=document.createDocumentFragment(),back=$("backBtn");
+ cachedNavItems=[];
+ prevSelectedEl=null;
+ const activeGroups = getActiveGroups();
+
  if(view==="groups"&&!searchOpen){
   $("panelTitle").textContent="گروپەکان";back.style.display="none";$("groupTabs").style.display="none";
-  SMART_GROUPS.forEach(g=>{
+  activeGroups.forEach(g=>{
    const c=g.name;
    const n=c===CAT_ALL?channels.length:channels.filter(x=>x.cat===c).length;
    const d=document.createElement("div");
    d.className="group-card";d.dataset.cat=c;
    d.innerHTML=`<i class="fas ${g.icon} gi"></i><span class="gn"></span><span class="gc">${n}</span><i class="fas fa-chevron-left"></i>`;
    d.querySelector(".gn").textContent=c;
+   cachedNavItems.push(d);
    f.appendChild(d);
   });
+  tvCursorIdx=0;
  }else{
   $("panelTitle").textContent=searchOpen?"گەڕان لە کەناڵەکان":currentCat;
   back.style.display="";
   showTabs();
-  const baseIndices=getSortedIndices(currentCat);
+  const baseIndices=getSortedIndices(searchOpen?CAT_ALL:currentCat);
   let count=0,activePos=0;
   baseIndices.forEach(i=>{
    const ch=channels[i];
@@ -1274,6 +1498,7 @@ function renderChannels(){
    d.querySelector(".item-subcat").textContent=ch.cat;
    setLogo(d.querySelector(".ch-logo"),ch.logo);
    if(rec&&rec.url===ch.url){d.querySelector(".rec-btn").classList.add("recording");d.querySelector(".rec-timer-badge").style.display=""}
+   cachedNavItems.push(d);
    f.appendChild(d);
   });
   if(!count){
@@ -1285,13 +1510,16 @@ function renderChannels(){
   tvCursorIdx = activePos;
  }
  box.innerHTML="";box.appendChild(f);
- if(isTV && document.body.classList.contains("drawer-open")) setTvCursor(tvCursorIdx);
+ if(isTV && document.body.classList.contains("drawer-open") && tvZone==="list"){
+  setTvCursor(tvCursorIdx);
+ }
 }
 
 let tabsKey="";
 function showTabs(){
  const gt=$("groupTabs");gt.style.display="flex";
- const key=categories.join("|")+"|search";
+ const activeGroups=getActiveGroups();
+ const key=activeGroups.map(g=>g.name).join("|")+"|search";
  if(key!==tabsKey){
   tabsKey=key;gt.innerHTML="";const f=document.createDocumentFragment();
   const st=document.createElement("div");
@@ -1299,7 +1527,7 @@ function showTabs(){
   st.dataset.action="search";
   st.innerHTML='<i class="fas fa-search"></i> گەڕان A-Z';
   f.appendChild(st);
-  SMART_GROUPS.forEach(g=>{
+  activeGroups.forEach(g=>{
    const t=document.createElement("div");
    t.className="category-tab";
    t.innerHTML=`<i class="fas ${g.icon}"></i> <span></span>`;
@@ -1310,21 +1538,31 @@ function showTabs(){
   gt.appendChild(f);
  }
  let act=null;
- gt.childNodes.forEach(t=>{
+ gt.childNodes.forEach((t,idx)=>{
   if(t.dataset.action==="search"){
    t.classList.toggle("active",searchOpen);
+   if(searchOpen) tvTabIdx=idx;
    return;
   }
   const on=!searchOpen&&t.dataset.cat===currentCat;
   t.classList.toggle("active",on);
-  if(on)act=t;
+  if(on){act=t;tvTabIdx=idx}
  });
- if(act)setTimeout(()=>act.scrollIntoView({inline:"center",block:"nearest"}),30);
+ if(act&&!isTV)setTimeout(()=>act.scrollIntoView({inline:"center",block:"nearest"}),30);
 }
 
 $("groupTabs").addEventListener("click",e=>{
  const t=e.target.closest(".category-tab");if(!t)return;
  if(t.dataset.action==="search"){toggleSearch();return}
+ if(searchOpen){
+  searchOpen=false;
+  $("searchPanel").classList.remove("show");
+  $("searchToggleBtn").classList.remove("active-btn");
+  searchQuery="";selectedLetter="ALL";
+  $("searchInput").value="";
+  $("clearSearch").classList.remove("show");
+  $("azBar").querySelectorAll(".az-btn").forEach(x=>x.classList.toggle("active",x.dataset.l==="ALL"));
+ }
  currentCat=t.dataset.cat;
  renderChannels();
  $("playlistWrapper").scrollTop=0;
@@ -1339,6 +1577,7 @@ $("playlist-items").addEventListener("click",e=>{
  if(g){
   currentCat=g.dataset.cat;view="channels";renderChannels();
   $("playlistWrapper").scrollTop=0;
+  if(isTV) setTvCursor(0);
   return;
  }
  const it=e.target.closest(".playlist-item");if(!it||it.dataset.i===undefined)return;
@@ -1534,7 +1773,11 @@ function playChannel(ch,fromUserGesture=true){
   player.src({src:viaProxy(ch.url),type:"video/mp4"});
   if(v)forceUnmuteAndPlay(v,fromUserGesture);
  }
- document.querySelectorAll(".playlist-item").forEach(x=>x.classList.toggle("active",channels[x.dataset.i]&&channels[x.dataset.i].url===ch.url));
+ cachedNavItems.forEach(x=>{
+  if(x.dataset.i!==undefined){
+   x.classList.toggle("active",channels[x.dataset.i]&&channels[x.dataset.i].url===ch.url);
+  }
+ });
 }
 
 let rec=null;
@@ -1585,10 +1828,12 @@ function openDrawer(){
   if(c){currentCat=c.cat;view="channels"}
  }
  document.body.classList.add("drawer-open");
+ tvZone="list";
  renderChannels();
 }
 function closeDrawer(){
  document.body.classList.remove("drawer-open");
+ clearTvHighlight();
 }
 $("sideZone").addEventListener("click",openDrawer);
 $("menuFab").addEventListener("click",openDrawer);
