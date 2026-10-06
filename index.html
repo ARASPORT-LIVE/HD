@@ -61,13 +61,16 @@ video::-webkit-media-controls,video::-webkit-media-controls-enclosure,video::-we
 .freeze-canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;z-index:999;pointer-events:none;display:none;background:#000}
 .stream-status-overlay{position:absolute;inset:0;display:flex;justify-content:center;align-items:center;z-index:1001;font-size:32px;color:var(--ac);background:transparent;pointer-events:none;filter:drop-shadow(0 2px 8px rgba(0,0,0,.85))}
 
-/* شریتی پیشاندانی دەنگ (Volume HUD) لەکاتی دەستخشاندن بەلای ڕاست و چەپدا */
-.vol-hud{position:absolute;top:16%;left:50%;transform:translate(-50%,-10px);z-index:1005;display:flex;align-items:center;gap:10px;padding:8px 16px;border-radius:999px;background:rgba(15,23,42,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1.5px solid rgba(56,189,248,.55);box-shadow:0 8px 24px rgba(0,0,0,.65);direction:ltr;pointer-events:none;opacity:0;transition:opacity .18s,transform .18s}
+/* شریتی دەنگ (Volume HUD) و ژمارەلێدەری کەناڵ (Numeric Pad HUD) */
+.vol-hud{position:absolute;top:14%;left:50%;transform:translate(-50%,-10px);z-index:1005;display:flex;align-items:center;gap:10px;padding:8px 16px;border-radius:999px;background:rgba(15,23,42,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1.5px solid rgba(56,189,248,.55);box-shadow:0 8px 24px rgba(0,0,0,.65);direction:ltr;pointer-events:none;opacity:0;transition:opacity .18s,transform .18s}
 .vol-hud.show{opacity:1;transform:translate(-50%,0)}
 .vol-hud i{color:var(--ac);font-size:15px;width:18px;text-align:center}
 .vol-bar-wrap{width:110px;height:6px;border-radius:99px;background:rgba(255,255,255,.18);overflow:hidden}
 .vol-bar-fill{height:100%;width:100%;border-radius:99px;background:linear-gradient(90deg,var(--ac),var(--ac2));transition:width .05s linear}
 .vol-pct{font:900 12px 'Arial Black',Arial,sans-serif;color:#fff;min-width:34px;text-align:right}
+
+.num-osd{position:fixed;top:24px;left:24px;z-index:2147483647;padding:8px 18px;border-radius:14px;background:rgba(15,23,42,.92);border:2px solid var(--ac);color:#fff;font:900 22px 'Arial Black',Arial,sans-serif;letter-spacing:2px;direction:ltr;box-shadow:0 10px 25px rgba(0,0,0,.7);opacity:0;pointer-events:none;transform:translateY(-8px);transition:opacity .12s,transform .12s}
+.num-osd.show{opacity:1;transform:translateY(0)}
 
 .vjs-watermark-logo{position:absolute!important;z-index:1000;pointer-events:auto;cursor:pointer;display:none;flex-direction:column;align-items:flex-end;direction:ltr;user-select:none;width:max-content!important}
 .vjs-watermark-logo.show-watermark{display:inline-flex!important}
@@ -246,6 +249,7 @@ body.tv-mode .tv-sel{background:#0284c7!important;border-color:#fff!important;co
 </head>
 <body>
 <div id="toast" class="toast"></div>
+<div id="numOsd" class="num-osd"></div>
 <div id="chOsd" class="ch-osd">
  <div id="chOsdLogo" class="ch-osd-logo"><i class="fas fa-tv"></i></div>
  <div class="ch-osd-body">
@@ -407,7 +411,6 @@ let osdTimer;
 function showChannelOsd(ch, num, total){
  if(!ch)return;
  const osd=$("chOsd");
- // دڵنیابوونەوە لە دەرکەوتنی کارتی کەناڵ لە ناو فووڵ سکرینیشدا
  const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
  if(fsEl && osd.parentNode !== fsEl) fsEl.appendChild(osd);
  else if(!fsEl && osd.parentNode !== document.body) document.body.appendChild(osd);
@@ -437,6 +440,52 @@ function showVolumeHud(vol){
  hud.classList.add("show");
  clearTimeout(volHudTimer);
  volHudTimer = setTimeout(()=>hud.classList.remove("show"), 1400);
+}
+
+// لێدانی ژمارەی کەناڵ بە کۆنترۆڵ یان کیبۆرد (1-999)
+let numBuffer = "", numTimer = null;
+function handleNumericInput(digit){
+ if(digit === "0" && !numBuffer){
+  // دوگمەی 0 بە تەنها دەگەڕێتەوە سەر کەناڵی پێشوو (Recall)
+  recallPreviousChannel();
+  return;
+ }
+ numBuffer += digit;
+ if(numBuffer.length > 4) numBuffer = numBuffer.slice(0, 4);
+ const el = $("numOsd");
+ const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+ if(fsEl && el.parentNode !== fsEl) fsEl.appendChild(el);
+ else if(!fsEl && el.parentNode !== document.body) document.body.appendChild(el);
+
+ el.textContent = "#" + numBuffer;
+ el.classList.add("show");
+ clearTimeout(numTimer);
+ numTimer = setTimeout(() => {
+  el.classList.remove("show");
+  const targetNum = parseInt(numBuffer, 10);
+  numBuffer = "";
+  const list = getSortedIndices(currentCat);
+  if(targetNum >= 1 && targetNum <= list.length){
+   const ch = channels[list[targetNum - 1]];
+   if(ch){
+    showChannelOsd(ch, targetNum, list.length);
+    playChannel(ch, true);
+   }
+  } else {
+   showToast(`کەناڵی ژمارە ${targetNum} لەم گروپەدا نییە`);
+  }
+ }, 1100);
+}
+
+let previousChannelUrl = "";
+function recallPreviousChannel(){
+ if(!previousChannelUrl || previousChannelUrl === currentUrl) return;
+ const prevCh = channels.find(x => x.url === previousChannelUrl);
+ if(!prevCh) return;
+ const list = getSortedIndices(currentCat);
+ const pos = list.findIndex(i => channels[i].url === prevCh.url);
+ showChannelOsd(prevCh, pos >= 0 ? pos + 1 : 1, list.length);
+ playChannel(prevCh, true);
 }
 
 function captureStillFrame(){
@@ -749,11 +798,6 @@ const is4Kurd = name => /\b4\s*kurd\b|4kurd/i.test(name || "");
 
 var player,channels=[],categories=[],currentCat=CAT_KURD,currentUrl="",isSports=false,channelHasLiveBadge=false,manualLiveOverride=null;
 
-function isRotatedOrFullscreen(){
- const fs = !!(document.fullscreenElement || document.webkitFullscreenElement || (player && player.isFullscreen && player.isFullscreen()));
- return fs || (window.innerWidth > window.innerHeight);
-}
-
 function initPlayer(){
  if(player)return;
  const cached=ls("cached_sheets_channels");
@@ -777,7 +821,7 @@ function initPlayer(){
  player.ready(function(){
   const w=document.createElement("div");w.className="vjs-watermark-logo";w.id="playerWatermark";
   w.title="کلیک بکە بۆ دەرخستن یان شاردنەوەی نیشانەی ڕاستەوخۆ";
-  w.innerHTML='<div class="bein-bar"><div class="bein-main" id="wmMainText">ARA <b>SPORT</b></div><div class="bein-hd">HD</div></div><div class="vjs-live-tag"><i></i>ڕاستەوخۆ</div>';
+  w.innerHTML='<div class="bein-bar"><div class="bein-main">ARA <b>SPORT</b></div><div class="bein-hd">HD</div></div><div class="vjs-live-tag"><i></i>ڕاستەوخۆ</div>';
   w.addEventListener("click",e=>{
    e.stopPropagation();
    manualLiveOverride = manualLiveOverride===null ? !channelHasLiveBadge : !manualLiveOverride;
@@ -787,7 +831,7 @@ function initPlayer(){
 
   const cc=document.createElement("div");cc.id="codeCover";cc.className="code-cover";
   cc.title="کلیک بکە بۆ لادانی شاردنەوەی کۆد";
-  cc.innerHTML='<div class="cc-main" id="ccMainText">ARA <span>SPORT</span></div><div class="cc-hd">HD</div>';
+  cc.innerHTML='<div class="cc-main">ARA <span>SPORT</span></div><div class="cc-hd">HD</div>';
   cc.addEventListener("click",e=>{
    e.stopPropagation();
    codeBox=null;saveCodeBox(currentUrl,null);positionWatermark();
@@ -813,6 +857,7 @@ function initPlayer(){
  bindFab();
  initManualCodeCover();
  initVideoTouchAndWheelGestures();
+ initStreamWatchdog();
  initRemoteAndKeyboard();
  initBackNavigationTrap();
  enableMouseDragScroll($("playlistWrapper"),false);
@@ -849,12 +894,36 @@ function updateWatermark(){
  }
 }
 
-// سیستەمی تەچ (Swipe Up/Down بۆ کەناڵ وەک سۆشیال میدیا + Swipe Left/Right بۆ دەنگ) و سکرۆڵی ماوس بۆ کۆمپیوتەر
+// چاودێری خۆکاری پەخش (Auto-Unfreeze Watchdog): ئەگەر کەناڵێک لەسەر وێنەیەک چەقی، خۆی ڕیفرێشی دەکاتەوە
+let lastWatchTime = -1, stuckTicks = 0;
+function initStreamWatchdog(){
+ setInterval(() => {
+  if(!player || !currentUrl || document.hidden || player.paused()) { stuckTicks = 0; return; }
+  try {
+   const v = player.tech(true).el();
+   if(!v) return;
+   const ct = v.currentTime;
+   if(ct === lastWatchTime && v.readyState < 3){
+    stuckTicks++;
+    if(stuckTicks >= 4){
+     stuckTicks = 0;
+     const curCh = channels.find(x => x.url === currentUrl);
+     if(curCh) playChannel(curCh, false);
+    }
+   } else {
+    stuckTicks = 0;
+    lastWatchTime = ct;
+   }
+  } catch(e){}
+ }, 2800);
+}
+
+// سیستەمی تەچ (Swipe Up/Down بۆ کەناڵ + Swipe Left/Right بۆ دەنگ + Double-Tap فووڵ سکرین) و سکرۆڵی ماوس بۆ کۆمپیوتەر
 function initVideoTouchAndWheelGestures(){
  const vc = $("videoContainer");
  if(!vc) return;
 
- // ١. سکرۆڵی ماوس لەسەر کۆمپیوتەر بۆ گۆڕینی کەناڵ (سەرەوە و خوارەوە)
+ // ١. سکرۆڵی ماوس لەسەر کۆمپیوتەر بۆ گۆڕینی کەناڵ
  let wheelLock = 0;
  vc.addEventListener("wheel", e => {
   if(e.target.closest(".playlist-sidebar")) return;
@@ -863,12 +932,17 @@ function initVideoTouchAndWheelGestures(){
   if(now - wheelLock < 220) return;
   if(Math.abs(e.deltaY) < 12) return;
   wheelLock = now;
-  // سکرۆڵ بۆ خوارەوە = کەناڵی دواتر (+1)، سکرۆڵ بۆ سەرەوە = کەناڵی پێشتر (-1)
   stepChannel(e.deltaY > 0 ? 1 : -1);
  }, { passive: false });
 
- // ٢. تەچی سەر شاشەی ڤیدیۆ (فووڵ سکرین، پۆرترەیت، و ڕۆتەیت)
- let tStartX = 0, tStartY = 0, tStartVol = 1, tMode = null, tSwiped = false;
+ // ٢. دەبل-کلیک لەسەر کۆمپیوتەر بۆ فووڵ سکرین
+ vc.addEventListener("dblclick", e => {
+  if(e.target.closest(".vjs-control-bar, .menu-fab, .cover-tool-fab, .playlist-sidebar, .vjs-watermark-logo, .code-cover")) return;
+  if(player) player.isFullscreen() ? player.exitFullscreen() : player.requestFullscreen();
+ });
+
+ // ٣. تەچی سەر شاشەی ڤیدیۆ (فووڵ سکرین، پۆرترەیت، و ڕۆتەیت)
+ let tStartX = 0, tStartY = 0, tStartVol = 1, tMode = null, tSwiped = false, lastTapTime = 0;
 
  vc.addEventListener("touchstart", e => {
   if(pickCoverMode) return;
@@ -895,14 +969,12 @@ function initVideoTouchAndWheelGestures(){
 
   if(tMode === "pending"){
    if(Math.abs(dx) < 14 && Math.abs(dy) < 14) return;
-   // جیاکردنەوەی ئاراستەی پەنجە: ئاسۆیی (ڕاست و چەپ = دەنگ) یان ستوونی (سەر و خوار = کەناڵ)
    tMode = Math.abs(dx) > Math.abs(dy) * 1.15 ? "volume" : "channel";
   }
 
   if(tMode === "volume"){
    if(e.cancelable) e.preventDefault();
    const width = Math.max(220, vc.clientWidth * 0.75);
-   // بەلای ڕاستدا زیادکردنی دەنگ، بەلای چەپدا کەمکردنەوەی دەنگ
    const newVol = Math.max(0, Math.min(1, tStartVol + (dx / width)));
    try {
     const v = player.tech(true).el();
@@ -916,13 +988,21 @@ function initVideoTouchAndWheelGestures(){
    if(e.cancelable) e.preventDefault();
    if(!tSwiped && Math.abs(dy) >= 48){
     tSwiped = true;
-    // وەک سکرۆڵی سۆشیال میدیا: ڕاکێشان بۆ سەرەوە (dy < 0) دەچێتە کەناڵی دواتر (+1)، بۆ خوارەوە (dy > 0) کەناڵی پێشتر (-1)
     stepChannel(dy < 0 ? 1 : -1);
    }
   }
  }, { passive: false });
 
- vc.addEventListener("touchend", () => {
+ vc.addEventListener("touchend", e => {
+  if(tMode === "pending" && !tSwiped){
+   const now = Date.now();
+   if(now - lastTapTime < 280){
+    if(player) player.isFullscreen() ? player.exitFullscreen() : player.requestFullscreen();
+    lastTapTime = 0;
+   } else {
+    lastTapTime = now;
+   }
+  }
   tMode = null;
   tSwiped = false;
  }, { passive: true });
@@ -1069,6 +1149,20 @@ function initRemoteAndKeyboard(){
    return;
   }
 
+  // ژمارەکانی 0 تا 9 لەسەر کۆنترۆڵی تیڤی و کیبۆرد بۆ لێدانی ڕاستەوخۆی ژمارەی کەناڵ
+  if(/^[0-9]$/.test(e.key)){
+   e.preventDefault();
+   handleNumericInput(e.key);
+   return;
+  }
+
+  // دوگمەی R یان L بۆ گەڕانەوە سەر کەناڵی پێشوو
+  if(e.key==="r"||e.key==="R"||e.key==="l"||e.key==="L"){
+   e.preventDefault();
+   recallPreviousChannel();
+   return;
+  }
+
   if(e.key==="PageUp"||e.key==="ChannelUp"||e.keyCode===427){
    e.preventDefault();stepChannel(1);return;
   }
@@ -1205,7 +1299,7 @@ function initManualCodeCover(){
   pickCoverMode=!pickCoverMode;
   btn.classList.toggle("active",pickCoverMode);
   vc.classList.toggle("pick-cover-mode",pickCoverMode);
-  if(pickCoverMode)showToast("کلیک لەسەر شوێنی کۆدەکە بکە بۆ داپۆشینی دەستبەجێ");
+  if(pickCoverMode)showToast("کلیک لەسەر شوێنی کۆدەکە بکە بۆ داپۆشینی دەستبەجێ بە ARA SPORT HD");
  });
  vc.addEventListener("click",e=>{
   if(!pickCoverMode||!player)return;
@@ -1225,7 +1319,7 @@ function initManualCodeCover(){
   btn.classList.remove("active");
   vc.classList.remove("pick-cover-mode");
   positionWatermark();
-  showToast("کۆدەکە بە سەرکەوتوویی داپۆشرا");
+  showToast("کۆدەکە بە لۆگۆی ARA SPORT HD داپۆشرا");
  },true);
 }
 
@@ -1368,9 +1462,6 @@ async function codeScan(){
 function positionCover(left,top,dw,dh){
  const el=$("codeCover");if(!el)return;
  if(!codeBox){el.style.display="none";return}
- const rotated = isRotatedOrFullscreen();
- const ccMain = $("ccMainText");
- if(ccMain) ccMain.innerHTML = rotated ? 'ARA <span>TV</span>' : 'ARA <span>SPORT</span>';
  const x=left+codeBox.x0*dw,y=top+codeBox.y0*dh;
  const fs=Math.max(4, Math.min(14, dw * 0.0098));
  Object.assign(el.style,{
@@ -1381,7 +1472,7 @@ function positionCover(left,top,dw,dh){
  });
 }
 
-// دانانی لۆگۆی کەناڵە وەرزشییەکان (لە ڕۆتەیتدا دەبێتە ARA TV HD) ڕێک بە هەمان قیاس و شوێنی لۆگۆی beIN SPORTS
+// دانانی لۆگۆی ARA SPORT HD لەسەر هەموو کەناڵە وەرزشییەکان (لە پۆرترەیت و ڕۆتەیتدا) ڕێک لەسەر شوێن و سایزی beIN SPORTS
 function positionWatermark(){
  const w=$("playerWatermark");if(!w||!player)return;
  let v;try{v=player.tech(true).el()}catch(e){return}
@@ -1389,14 +1480,6 @@ function positionWatermark(){
  const vw=(v&&v.videoWidth)?v.videoWidth:1280,vh=(v&&v.videoHeight)?v.videoHeight:720;
  const sc=Math.min(cw/vw,ch/vh),dw=vw*sc,dh=vh*sc;
  const left=(cw-dw)/2,top=(ch-dh)/2,st=w.style;
-
- // لەکاتی ڕۆتەیتدا ناوی لۆگۆکە دەبێتە ARA TV HD بە هەمان سایز و شوێنی لۆگۆی beIN SPORTS
- const rotated = isRotatedOrFullscreen();
- const wmMain = $("wmMainText");
- if(wmMain){
-  wmMain.innerHTML = rotated ? 'ARA <b>TV</b>' : 'ARA <b>SPORT</b>';
-  wmMain.style.letterSpacing = rotated ? '.14em' : '.02em';
- }
 
  const barW = dw * 0.118;
  const barH = dh * 0.0285;
@@ -1450,13 +1533,11 @@ function drawTightBein(c,rightX,topY,fs,mainA,mainB,sub){
 function drawCover(c,w,h){
  if(!codeBox)return;
  const fs=Math.max(7,Math.round(w*0.0098));
- const labelB = isRotatedOrFullscreen() ? "TV" : "SPORT";
- drawTightBein(c,codeBox.x1*w,codeBox.y0*h,fs,"ARA ",labelB,"HD");
+ drawTightBein(c,codeBox.x1*w,codeBox.y0*h,fs,"ARA ","SPORT","HD");
 }
 function drawLogo(c,w,h,sports,live){
  const fs=Math.max(7,Math.round(w*0.0098));
- const labelB = (sports && !isRotatedOrFullscreen()) ? "SPORT" : "TV";
- const box=drawTightBein(c,w*0.958,h*0.0665,fs,"ARA ",labelB,"HD");
+ const box=drawTightBein(c,w*0.958,h*0.0665,fs,"ARA ",sports?"SPORT":"TV","HD");
  if(live){
   const lf=Math.max(6,Math.round(fs*0.64));
   c.font="bold "+lf+"px 'GoranFontRegular-Regular',Tahoma,Arial";c.textAlign="left";
@@ -1807,7 +1888,7 @@ function detectType(url){
 function forceUnmuteAndPlay(v,fromUserGesture){
  requestWakeLock();
  if(fromUserGesture||isTV){
-  try{v.muted=false;player.muted(false);player.volume(1)}catch(e){}
+  try{v.muted=false;player.muted(false)}catch(e){}
  }
  const p=v.play();
  if(p&&p.catch){
@@ -1936,6 +2017,7 @@ function playTs(url,useProxy=false,fromUserGesture=true){
 function playChannel(ch,fromUserGesture=true){
  if(!ch)return;
  if(currentUrl && currentUrl!==ch.url){
+  previousChannelUrl=currentUrl;
   captureStillFrame();
  }
  currentUrl=ch.url;
@@ -1947,6 +2029,7 @@ function playChannel(ch,fromUserGesture=true){
  manualLiveOverride=null;
  liveBadgeHitCount=0;
  liveBadgeMissCount=0;
+ stuckTicks=0;
  updateWatermark();
  updateLive();
  positionWatermark();
