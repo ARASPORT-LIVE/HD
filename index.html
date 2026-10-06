@@ -73,14 +73,17 @@ video::-webkit-media-controls,video::-webkit-media-controls-enclosure,video::-we
 
 .vjs-watermark-logo{position:absolute!important;z-index:1000;pointer-events:auto;cursor:pointer;display:none;flex-direction:column;align-items:flex-end;direction:ltr;user-select:none;width:max-content!important}
 .vjs-watermark-logo.show-watermark{display:inline-flex!important}
-.bein-bar{position:relative;display:inline-flex;align-items:stretch;justify-content:space-between;width:100%;height:100%;border-radius:.18em;overflow:hidden;background:linear-gradient(135deg,#1b0f30 0%,#351261 65%,#0f172a 100%);border:1px solid rgba(56,189,248,.65);box-shadow:0 2px 6px rgba(0,0,0,.65)}
+.bein-bar{position:relative;display:inline-flex;align-items:stretch;justify-content:space-between;width:100%;height:100%;border-radius:.18em;overflow:hidden;background:linear-gradient(135deg,#1b0f30 0%,#351261 65%,#0f172a 100%);border:1px solid rgba(56,189,248,.65);box-shadow:0 2px 6px rgba(0,0,0,.65);order:2}
 .bein-bar::after{content:"";position:absolute;top:0;left:-140%;width:65%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-25deg);animation:lightSweep 6s ease-in-out infinite;pointer-events:none}
 .bein-main{display:inline-flex;align-items:center;justify-content:center;gap:.2em;padding:0 .38em;font:900 1em 'Arial Black',Impact,Arial,sans-serif;letter-spacing:.02em;color:#fff;white-space:nowrap;line-height:1;flex:1}
 .bein-main b{color:#38bdf8;font-weight:900}
 .bein-hd{display:inline-flex;align-items:center;justify-content:center;padding:0 .34em;background:linear-gradient(135deg,#38bdf8,#0284c7);color:#061326;font:900 .82em 'Arial Black',Arial,sans-serif;letter-spacing:0;border-left:1px solid rgba(255,255,255,.35);line-height:1;white-space:nowrap}
-.vjs-live-tag{margin-top:.12em;display:none;align-items:center;justify-content:center;gap:.26em;padding:.12em .54em;border-radius:.18em;background:linear-gradient(90deg,#dc2626,#ef4444);font:bold .66em 'GoranFontRegular-Regular',Tahoma,Arial,sans-serif;line-height:1.1;color:#fff;white-space:nowrap;direction:rtl;box-shadow:0 2px 6px rgba(0,0,0,.65);border:1px solid rgba(255,255,255,.25)}
-.vjs-live-tag i{width:.4em;height:.4em;border-radius:50%;background:#fff;flex-shrink:0;animation:pulse 1.1s infinite}
+
+/* نیشانەی ڕاستەوخۆ: دەتوانێت لە سەرەوەی لۆگۆ (کاتێک LIVE لەسەرەوەیە) یان لە خوارەوەی لۆگۆ دابنرێت و وشە ئەسڵییەکە دابپۆشێت */
+.vjs-live-tag{margin-top:.12em;order:3;display:none;align-items:center;justify-content:center;gap:.26em;padding:.14em .58em;border-radius:.18em;background:linear-gradient(90deg,#dc2626,#ef4444);font:bold .68em 'GoranFontRegular-Regular',Tahoma,Arial,sans-serif;line-height:1.1;color:#fff;white-space:nowrap;direction:rtl;box-shadow:0 2px 6px rgba(0,0,0,.75);border:1px solid rgba(255,255,255,.28)}
+.vjs-live-tag i{width:.42em;height:.42em;border-radius:50%;background:#fff;flex-shrink:0;animation:pulse 1.1s infinite}
 .vjs-watermark-logo.is-live .vjs-live-tag{display:inline-flex}
+.vjs-watermark-logo.live-top .vjs-live-tag{order:1;margin-top:0;margin-bottom:.12em}
 
 .code-cover{position:absolute;z-index:1002;display:none;align-items:stretch;width:max-content;overflow:hidden;white-space:nowrap;direction:ltr;border-radius:.2em;background:linear-gradient(135deg,#1b0f30 0%,#351261 65%,#0f172a 100%);border:1px solid rgba(56,189,248,.75);box-shadow:0 2px 8px rgba(0,0,0,.8);cursor:pointer;user-select:none}
 .code-cover .cc-main{display:inline-flex;align-items:center;justify-content:center;gap:.2em;padding:.2em .42em;font:900 1em 'Arial Black',Arial,sans-serif;color:#fff;white-space:nowrap;line-height:1}
@@ -302,7 +305,7 @@ body.tv-mode .tv-sel{background:#0284c7!important;border-color:#fff!important;co
  </div>
  <div class="content-area">
   <div id="videoContainer" class="video-container">
-   <video id="ara-sport-player" class="video-js vjs-default-skin" controls preload="auto" playsinline poster="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"></video>
+   <video id="ara-sport-player" class="video-js vjs-default-skin" crossorigin="anonymous" controls preload="auto" playsinline poster="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"></video>
    <canvas id="freezeCanvas" class="freeze-canvas"></canvas>
    <div id="volHud" class="vol-hud">
     <i id="volIcon" class="fas fa-volume-high"></i>
@@ -793,7 +796,8 @@ function smartCategorize(name, origCat){
 const isAmozhgary = name => /amozhgary|amozhgari|ئامۆژگاری|ئامۆژگاریی/i.test(name || "");
 const is4Kurd = name => /\b4\s*kurd\b|4kurd/i.test(name || "");
 
-var player,channels=[],categories=[],currentCat=CAT_KURD,currentUrl="",isSports=false,channelHasLiveBadge=false,manualLiveOverride=null;
+var player,channels=[],categories=[],currentCat=CAT_KURD,currentUrl="",isSports=false,channelHasLiveBadge=false,liveBadgePosition="top",manualLiveOverride=null;
+const corsProxyNeeded={};
 
 function initPlayer(){
  if(player)return;
@@ -816,13 +820,14 @@ function initPlayer(){
   }
  });
  player.ready(function(){
-  const w=document.createElement("div");w.className="vjs-watermark-logo";w.id="playerWatermark";
+  const w=document.createElement("div");w.className="vjs-watermark-logo live-top";w.id="playerWatermark";
   w.title="کلیک بکە بۆ دەرخستن یان شاردنەوەی نیشانەی ڕاستەوخۆ";
   w.innerHTML='<div class="bein-bar"><div class="bein-main">ARA <b>SPORT</b></div><div class="bein-hd">HD</div></div><div class="vjs-live-tag"><i></i>ڕاستەوخۆ</div>';
   w.addEventListener("click",e=>{
    e.stopPropagation();
    manualLiveOverride = manualLiveOverride===null ? !channelHasLiveBadge : !manualLiveOverride;
    updateLive();
+   positionWatermark();
   });
   this.el().appendChild(w);
 
@@ -842,6 +847,7 @@ function initPlayer(){
   this.on(["loadedmetadata","durationchange","playing"],updateLive);
   try{
    const tv=this.tech(true).el();
+   tv.setAttribute("crossorigin","anonymous");
    tv.setAttribute("poster","data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7");
    tv.addEventListener("resize",positionWatermark);
    ["playing","timeupdate"].forEach(ev=>tv.addEventListener(ev,()=>{
@@ -1313,7 +1319,7 @@ function initManualCodeCover(){
  },true);
 }
 
-// سیستەمی خوێندنەوەی LIVE / DIRECT / مباشر بە OCR لەگەڵ پشکنینی وێنەیی بۆ گۆڕینی بە «ڕاستەوخۆ»
+// سیستەمی نوێکراوی خوێندنەوەی LIVE / DIRECT / مباشر لە سەرەوە و خوارەوەی لۆگۆی کەناڵە وەرزشییەکە
 const liveCheckCanvas=document.createElement("canvas");
 const liveCheckCtx=liveCheckCanvas.getContext("2d",{willReadFrequently:true});
 const ocrBadgeCanvas=document.createElement("canvas");
@@ -1321,8 +1327,8 @@ const ocrBadgeCtx=ocrBadgeCanvas.getContext("2d",{willReadFrequently:true});
 let liveBadgeMissCount=0,liveBadgeHitCount=0;
 let liveOcrWorker=null,liveOcrLoading=null,liveOcrBusy=false;
 
-// هاوتاکردنی پیتەکانی LIVE، DIRECT، و مباشر لە دەقی دەرچووی OCRدا
-const RE_OCR_LIVE_WORD = /live|l1ve|li\s*ve|l!ve|direct|d1rect|d!rect|dlrect|مباشر|مبأشر|مباش|مباشره|مباشرة|هباشر|مناشر/i;
+// ناسینەوەی هەموو شێوازەکانی LIVE و DIRECT و مباشر لە دەقی OCRدا
+const RE_OCR_LIVE_WORD = /live|l1ve|li\s*ve|l!ve|l\|ve|uve|iive|direct|d1rect|d!rect|dlrect|مباشر|مبأشر|مباش|مباشره|مباشرة|هباشر|مناشر/i;
 
 function loadTess(){
  if(window.Tesseract)return Promise.resolve();
@@ -1333,7 +1339,6 @@ async function getLiveOcrWorker(){
  if(liveOcrWorker)return liveOcrWorker;
  if(!liveOcrLoading)liveOcrLoading=(async()=>{
   await loadTess();
-  // بارکردنی زمانی ئینگلیزی و عەرەبی پێکەوە بۆ خوێندنەوەی LIVE / DIRECT / مباشر
   const w=await Tesseract.createWorker(["eng","ara"]);
   await w.setParameters({tessedit_pageseg_mode:"6"});
   return w;
@@ -1342,74 +1347,131 @@ async function getLiveOcrWorker(){
  return liveOcrWorker;
 }
 
+function findLiveWordYRatio(data, H){
+ if(!data) return null;
+ const words = data.words || [];
+ for(const w of words){
+  const t = (w.text || "").trim();
+  if(RE_OCR_LIVE_WORD.test(t) && w.bbox){
+   return ((w.bbox.y0 + w.bbox.y1) / 2) / H;
+  }
+ }
+ const lines = data.lines || [];
+ for(const ln of lines){
+  const t = (ln.text || "").trim();
+  if(RE_OCR_LIVE_WORD.test(t) || RE_OCR_LIVE_WORD.test(t.replace(/\s+/g,""))){
+   if(ln.bbox) return ((ln.bbox.y0 + ln.bbox.y1) / 2) / H;
+   return 0.25;
+  }
+ }
+ const full = (data.text || "").trim();
+ if(RE_OCR_LIVE_WORD.test(full) || RE_OCR_LIVE_WORD.test(full.replace(/\s+/g,""))){
+  return 0.25;
+ }
+ return null;
+}
+
 async function scanLiveTextByOcr(v){
  if(liveOcrBusy)return;
  liveOcrBusy=true;
  const urlAtStart=currentUrl;
  try{
   const vw=v.videoWidth,vh=v.videoHeight;
-  // ناوچەی ژێر لۆگۆی کەناڵە وەرزشییەکە (لای ڕاستی سەرەوە) کە LIVE / DIRECT / مباشر تێدا دەردەکەوێت
-  const sx=Math.round(vw*0.81),sy=Math.round(vh*0.075);
-  const sw=Math.max(40,Math.round(vw*0.165)),sh=Math.max(18,Math.round(vh*0.07));
-  const scale=2.5;
+  // پشکنینی ناوچەی سەرەوە و خوارەوەی لۆگۆ (لە 2% تا 15%ی بەرزی شاشەکە) بۆ گرتنی LIVE لە سەرەوە (وەک beIN Sport 1) یان خوارەوە
+  const sx=Math.round(vw*0.82),sy=Math.round(vh*0.02);
+  const sw=Math.max(50,Math.round(vw*0.165)),sh=Math.max(30,Math.round(vh*0.135));
+  const scale=2.6;
   const W=Math.round(sw*scale),H=Math.round(sh*scale);
   ocrBadgeCanvas.width=W;
   ocrBadgeCanvas.height=H;
   ocrBadgeCtx.drawImage(v,sx,sy,sw,sh,0,0,W,H);
 
-  // سافکردن و بەرزکردنەوەی کۆنتراستی پیتەکان تا OCR بە خێرایی و وردی بیخوێنێتەوە
+  // ١. تاقیکردنەوەی وێنەی کۆنتراست-بەرزکراو (ڕەش و سپی) بۆ پیتە سپییە رووناکەکانی LIVE / مباشر
   const imgData=ocrBadgeCtx.getImageData(0,0,W,H);
   const d=imgData.data;
   for(let i=0;i<d.length;i+=4){
    const r=d[i],g=d[i+1],b=d[i+2];
    const lum=0.299*r+0.587*g+0.114*b;
-   // پیتەکانی ناو نیشانەی LIVE / مباشر یان سپین لەسەر باگراوندی سوور/ڕەش، یان سوورن
-   const isText=(r>175&&g>175&&b>175)||(lum>165);
-   const vOut=isText?0:255;
+   const isBrightText=(r>175&&g>175&&b>175)||(lum>170);
+   const vOut=isBrightText?0:255;
    d[i]=d[i+1]=d[i+2]=vOut;
   }
   ocrBadgeCtx.putImageData(imgData,0,0);
 
   const w=await getLiveOcrWorker();
-  const res=await w.recognize(ocrBadgeCanvas);
+  let res=await w.recognize(ocrBadgeCanvas);
   if(urlAtStart!==currentUrl){liveOcrBusy=false;return}
-  const rawText=((res&&res.data&&res.data.text)||"").replace(/\s+/g," ").trim();
-  const compactText=rawText.replace(/\s+/g,"");
+  let yRel = findLiveWordYRatio(res && res.data, H);
 
-  if(RE_OCR_LIVE_WORD.test(rawText)||RE_OCR_LIVE_WORD.test(compactText)){
-   liveBadgeHitCount=2;
-   liveBadgeMissCount=0;
-   if(!channelHasLiveBadge){
-    channelHasLiveBadge=true;
-    updateLive();
-   }
-   liveOcrBusy=false;
-   return;
+  // ٢. ئەگەر لە دۆخی ڕەش و سپیدا نەدۆزرایەوە، لەسەر وێنە ڕەنگاوڕەنگە ئەسڵییەکەش بیخوێنەرەوە
+  if(yRel === null){
+   ocrBadgeCtx.drawImage(v,sx,sy,sw,sh,0,0,W,H);
+   res=await w.recognize(ocrBadgeCanvas);
+   if(urlAtStart!==currentUrl){liveOcrBusy=false;return}
+   yRel = findLiveWordYRatio(res && res.data, H);
   }
 
-  // ئەگەر بە کۆنتراست نەخوێندرایەوە، وێنە ئەسڵییەکەش تاقی بکەرەوە
-  ocrBadgeCtx.drawImage(v,sx,sy,sw,sh,0,0,W,H);
-  const resRaw=await w.recognize(ocrBadgeCanvas);
-  if(urlAtStart!==currentUrl){liveOcrBusy=false;return}
-  const rawText2=((resRaw&&resRaw.data&&resRaw.data.text)||"").replace(/\s+/g," ").trim();
-  const compactText2=rawText2.replace(/\s+/g,"");
-
-  if(RE_OCR_LIVE_WORD.test(rawText2)||RE_OCR_LIVE_WORD.test(compactText2)){
+  if(yRel !== null){
+   // دیاریکردنی ئەوەی ئایا وشەی LIVE لە سەرەوەی لۆگۆیە یان لە خوارەوەی لۆگۆکە
+   const actualY = 0.02 + yRel * 0.135;
+   liveBadgePosition = actualY < 0.08 ? "top" : "bottom";
    liveBadgeHitCount=2;
    liveBadgeMissCount=0;
-   if(!channelHasLiveBadge){
-    channelHasLiveBadge=true;
-    updateLive();
-   }
+   channelHasLiveBadge=true;
+   updateLive();
+   positionWatermark();
   }else{
    liveBadgeMissCount++;
-   if(liveBadgeMissCount>=2 && channelHasLiveBadge){
+   if(liveBadgeMissCount>=3 && channelHasLiveBadge){
     channelHasLiveBadge=false;
     updateLive();
+    positionWatermark();
    }
   }
- }catch(e){}
+ }catch(e){
+  // ئەگەر ستریمەکە ڕێگەی نەدا پیکسڵ بخوێندرێتەوە (CORS SecurityError)، یەکجار لە ڕێگەی پرۆکسییەوە بیکەرەوە تا OCR کار بکات
+  if(e && e.name === "SecurityError" && PROXY_URL && !corsProxyNeeded[urlAtStart]){
+   corsProxyNeeded[urlAtStart] = true;
+   const curCh = channels.find(x => x.url === urlAtStart);
+   if(curCh) playChannel(curCh, false);
+  }
+ }
  liveOcrBusy=false;
+}
+
+// پشکنینی خێرای وێنەیی بۆ هەردوو شوێنی سەرەوەی لۆگۆ (LIVE لە beIN) و خوارەوەی لۆگۆ (قوتووە سوورەکە)
+function scanZoneVisual(v, xRatio, yRatio, wRatio, hRatio){
+ const vw=v.videoWidth,vh=v.videoHeight;
+ const sx=Math.round(vw*xRatio),sy=Math.round(vh*yRatio);
+ const sw=Math.max(16,Math.round(vw*wRatio)),sh=Math.max(8,Math.round(vh*hRatio));
+ const bgY=Math.min(vh-sh-2, Math.round(vh*0.145));
+ liveCheckCanvas.width=sw;
+ liveCheckCanvas.height=sh*2;
+ liveCheckCtx.drawImage(v,sx,sy,sw,sh,0,0,sw,sh);
+ liveCheckCtx.drawImage(v,sx,bgY,sw,sh,0,sh,sw,sh);
+ const img=liveCheckCtx.getImageData(0,0,sw,sh*2).data;
+ let redPixels=0,whitePixels=0,sharpEdges=0,bgBright=0,total=sw*sh;
+ for(let y=0;y<sh;y++){
+  for(let x=0;x<sw;x++){
+   const idx=(y*sw+x)*4;
+   const r=img[idx],g=img[idx+1],b=img[idx+2];
+   const lum=0.299*r+0.587*g+0.114*b;
+   if(r>160 && g<75 && b<75) redPixels++;
+   if(r>205 && g>205 && b>205) whitePixels++;
+   if(x>0){
+    const pIdx=idx-4;
+    const pLum=0.299*img[pIdx]+0.587*img[pIdx+1]+0.114*img[pIdx+2];
+    if(Math.abs(lum-pLum)>52) sharpEdges++;
+   }
+   const bIdx=((y+sh)*sw+x)*4;
+   const bR=img[bIdx],bG=img[bIdx+1],bB=img[bIdx+2];
+   if((bR>205&&bG>205&&bB>205)||(bR>160&&bG<75&&bB<75)) bgBright++;
+  }
+ }
+ const badgeRatio=(redPixels+whitePixels)/total;
+ const bgRatio=bgBright/total;
+ const edgeRatio=sharpEdges/total;
+ return (redPixels/total>0.05 || (whitePixels/total>0.07 && whitePixels/total<0.45)) && (badgeRatio-bgRatio)>0.06 && edgeRatio>0.065;
 }
 
 function detectBroadcastLiveBadge(){
@@ -1417,58 +1479,43 @@ function detectBroadcastLiveBadge(){
  let v;try{v=player.tech(true).el()}catch(e){return}
  if(!v||!v.videoWidth||!v.videoHeight)return;
 
- // ١. خوێندنەوەی ڕاستەوخۆ بە OCR بۆ وشەکانی LIVE / DIRECT / مباشر
+ // ١. خوێندنەوە بە OCR (LIVE / DIRECT / مباشر) لە سەرەوە و خوارەوەی لۆگۆکە
  scanLiveTextByOcr(v);
 
- // ٢. پشکنینی خێرای ڕەنگ و لێواری نیشانە سوورەکەی ژێر لۆگۆ (وەک پشتگیریی دەستبەجێ)
+ // ٢. پشکنینی خێرای وێنەیی بۆ سەرەوەی لۆگۆ (وەک لە وێنەی کەناڵی beIN Sport 1) و خوارەوەی لۆگۆ
  try{
-  const vw=v.videoWidth,vh=v.videoHeight;
-  const sx=Math.round(vw*0.895),sy=Math.round(vh*0.095);
-  const sw=Math.max(16,Math.round(vw*0.062)),sh=Math.max(8,Math.round(vh*0.025));
-  const bgY=Math.round(vh*0.128);
-  liveCheckCanvas.width=sw;
-  liveCheckCanvas.height=sh*2;
-  liveCheckCtx.drawImage(v,sx,sy,sw,sh,0,0,sw,sh);
-  liveCheckCtx.drawImage(v,sx,bgY,sw,sh,0,sh,sw,sh);
-  const img=liveCheckCtx.getImageData(0,0,sw,sh*2).data;
-  let redPixels=0,whitePixels=0,sharpEdges=0,bgBright=0,total=sw*sh;
-  for(let y=0;y<sh;y++){
-   for(let x=0;x<sw;x++){
-    const idx=(y*sw+x)*4;
-    const r=img[idx],g=img[idx+1],b=img[idx+2];
-    const lum=0.299*r+0.587*g+0.114*b;
-    if(r>160 && g<75 && b<75) redPixels++;
-    if(r>200 && g>200 && b>200) whitePixels++;
-    if(x>0){
-     const pIdx=idx-4;
-     const pLum=0.299*img[pIdx]+0.587*img[pIdx+1]+0.114*img[pIdx+2];
-     if(Math.abs(lum-pLum)>55) sharpEdges++;
-    }
-    const bIdx=((y+sh)*sw+x)*4;
-    const bR=img[bIdx],bG=img[bIdx+1],bB=img[bIdx+2];
-    if((bR>200&&bG>200&&bB>200)||(bR>160&&bG<75&&bB<75)) bgBright++;
-   }
-  }
-  const badgeRatio=(redPixels+whitePixels)/total;
-  const bgRatio=bgBright/total;
-  const edgeRatio=sharpEdges/total;
-  const hasVisualBadge = (redPixels/total>0.06 || badgeRatio>0.14) && (badgeRatio-bgRatio)>0.08 && edgeRatio>0.07;
-  if(hasVisualBadge && !channelHasLiveBadge){
+  const topHit = scanZoneVisual(v, 0.915, 0.038, 0.046, 0.026);
+  const botHit = scanZoneVisual(v, 0.895, 0.095, 0.062, 0.025);
+  if(topHit || botHit){
    liveBadgeHitCount++;
-   if(liveBadgeHitCount>=2){
+   if(liveBadgeHitCount>=2 && !channelHasLiveBadge){
+    liveBadgePosition = topHit ? "top" : "bottom";
     channelHasLiveBadge=true;
     updateLive();
+    positionWatermark();
    }
   }
- }catch(e){}
+ }catch(e){
+  if(e && e.name === "SecurityError" && PROXY_URL && !corsProxyNeeded[currentUrl]){
+   corsProxyNeeded[currentUrl] = true;
+   const curCh = channels.find(x => x.url === currentUrl);
+   if(curCh) playChannel(curCh, false);
+  }
+ }
 }
-setInterval(detectBroadcastLiveBadge,2200);
+setInterval(detectBroadcastLiveBadge,1800);
 
 function isLive(){
  if(manualLiveOverride!==null) return manualLiveOverride;
  return isSports && channelHasLiveBadge;
 }
-function updateLive(){const w=$("playerWatermark");if(w)w.classList.toggle("is-live",isLive())}
+function updateLive(){
+ const w=$("playerWatermark");
+ if(w){
+  w.classList.toggle("is-live",isLive());
+  w.classList.toggle("live-top",liveBadgePosition==="top");
+ }
+}
 
 let codeBox=null,codeMiss=0,codeWorker=null,codeLoading=null,codeNeedFull=false,codeFullMiss=0,codeLoopOn=false;
 const codeFail={};
@@ -1549,6 +1596,7 @@ function positionCover(left,top,dw,dh){
  });
 }
 
+// دانانی لۆگۆی ARA SPORT HD لە شوێنی جێگیری beIN SPORTS و دانانی «ڕاستەوخۆ» لە سەرەوە یان خوارەوەی بۆ داپۆشینی LIVE
 function positionWatermark(){
  const w=$("playerWatermark");if(!w||!player)return;
  let v;try{v=player.tech(true).el()}catch(e){return}
@@ -1561,11 +1609,14 @@ function positionWatermark(){
  const barH = dh * 0.0285;
  const fs = Math.max(3.6, barH * 0.62);
  const rightOffset = cw - (left + dw * 0.958);
- const topEdge = top + dh * 0.0665;
+ // ئەگەر LIVE لە سەرەوەی لۆگۆ بوو، باڵەکە لە سەرەوە درێژ دەبێتەوە تا ڕێک وشەی LIVE دابپۆشێت و لۆگۆی ARA SPORT HD هەر لەسەر beIN بمێنێتەوە
+ const showTopTag = isLive() && liveBadgePosition === "top";
+ const tagH = barH * 0.82;
+ const topEdge = top + (dh * 0.0665) - (showTopTag ? tagH : 0);
 
  st.setProperty("right",Math.max(2, rightOffset)+"px","important");
  st.setProperty("left","auto","important");
- st.setProperty("top",topEdge+"px","important");
+ st.setProperty("top",Math.max(2, topEdge)+"px","important");
  st.setProperty("width",barW+"px","important");
  st.setProperty("transform","none","important");
  st.fontSize=fs+"px";
@@ -1615,11 +1666,12 @@ function drawLogo(c,w,h,sports,live){
  const fs=Math.max(7,Math.round(w*0.0098));
  const box=drawTightBein(c,w*0.958,h*0.0665,fs,"ARA ",sports?"SPORT":"TV","HD");
  if(live){
-  const lf=Math.max(6,Math.round(fs*0.64));
+  const lf=Math.max(6,Math.round(fs*0.66));
   c.font="bold "+lf+"px 'GoranFontRegular-Regular',Tahoma,Arial";c.textAlign="left";
   const txt="ڕاستەوخۆ";
-  const tw=c.measureText(txt).width,dot=lf*0.4,lw=tw+dot+lf*1.3,lh=lf*1.45,lx=box.bx+box.bw-lw,ly=box.by+box.bh+3;
-  c.fillStyle="rgba(239,68,68,.94)";rr(c,lx,ly,lw,lh,lf*0.22);c.fill();
+  const tw=c.measureText(txt).width,dot=lf*0.4,lw=tw+dot+lf*1.3,lh=lf*1.45,lx=box.bx+box.bw-lw;
+  const ly = liveBadgePosition==="top" ? (box.by - lh - 2) : (box.by + box.bh + 2);
+  c.fillStyle="rgba(239,68,68,.95)";rr(c,lx,ly,lw,lh,lf*0.22);c.fill();
   c.fillStyle="#fff";c.beginPath();c.arc(lx+lw-lf*0.42-dot/2,ly+lh/2,dot/2,0,7);c.fill();
   c.fillText(txt,lx+lf*0.42,ly+lh/2);
  }
@@ -1982,8 +2034,9 @@ function forceUnmuteAndPlay(v,fromUserGesture){
 function playHls(url,useProxy=false,fromUserGesture=true){
  destroyEngines();
  let v;try{v=player.tech(true).el()}catch(e){return}
- v.removeAttribute("crossorigin");
- const streamUrl=viaProxy(url,useProxy);
+ v.setAttribute("crossorigin","anonymous");
+ const forceProxy = useProxy || !!corsProxyNeeded[url];
+ const streamUrl=viaProxy(url,forceProxy);
  const slow=isSlowConnection();
 
  if(window.Hls&&Hls.isSupported()){
@@ -2020,7 +2073,7 @@ function playHls(url,useProxy=false,fromUserGesture=true){
     hlsRetries++;
     if(data.type===Hls.ErrorTypes.MEDIA_ERROR&&hlsRetries<=2){
      hp.recoverMediaError();
-    }else if(hlsRetries===1&&!useProxy&&PROXY_URL){
+    }else if(hlsRetries===1&&!forceProxy&&PROXY_URL){
      playHls(url,true,fromUserGesture);
     }else if(hlsRetries<=3){
      hp.startLoad();
@@ -2038,8 +2091,9 @@ function playHls(url,useProxy=false,fromUserGesture=true){
 function playTs(url,useProxy=false,fromUserGesture=true){
  destroyEngines();
  let v;try{v=player.tech(true).el()}catch(e){return}
- v.removeAttribute("crossorigin");
- const streamUrl=viaProxy(url,useProxy);
+ v.setAttribute("crossorigin","anonymous");
+ const forceProxy = useProxy || !!corsProxyNeeded[url];
+ const streamUrl=viaProxy(url,forceProxy);
  const slow=isSlowConnection();
 
  if(!window.mpegts||!mpegts.isSupported()){
@@ -2072,7 +2126,7 @@ function playTs(url,useProxy=false,fromUserGesture=true){
  me.on(mpegts.Events.ERROR,()=>{
   if(tsPlayer!==me||currentUrl!==url)return;
   tsRetries++;
-  if(tsRetries===1&&!useProxy&&PROXY_URL){
+  if(tsRetries===1&&!forceProxy&&PROXY_URL){
    playTs(url,true,fromUserGesture);
    return;
   }
@@ -2102,6 +2156,7 @@ function playChannel(ch,fromUserGesture=true){
  codeMiss=0;codeNeedFull=false;codeFullMiss=0;
  isSports=(ch.cat===CAT_SPORT)||RE_SPORT.test(ch.name);
  channelHasLiveBadge=false;
+ liveBadgePosition="top";
  manualLiveOverride=null;
  liveBadgeHitCount=0;
  liveBadgeMissCount=0;
