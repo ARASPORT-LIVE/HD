@@ -38,7 +38,6 @@ body::after{background:var(--ac2);bottom:-25vmax;left:-15vmax}
 .brand-wrap::after{content:"";position:absolute;top:0;left:-130%;width:70%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-25deg);animation:lightSweep 5.5s ease-in-out infinite;pointer-events:none}
 @keyframes lightSweep{0%,62%{left:-130%}88%,100%{left:160%}}
 
-/* ستایلی لۆگۆی ARA TV لە ناو تیکەری خوارەوەدا */
 .ticker-brand{display:inline-flex;align-items:center;gap:3px;padding:1px 8px;margin:0 3px;border-radius:9px;background:linear-gradient(135deg,#0f172a,#2e1065);border:1px solid rgba(56,189,248,.55);font:900 11px 'Arial Black',Arial,sans-serif;color:#fff;direction:ltr;unicode-bidi:isolate;vertical-align:middle;line-height:1.2;box-shadow:0 0 6px rgba(56,189,248,.2)}
 .ticker-brand span{color:var(--ac)}
 
@@ -51,24 +50,30 @@ body::after{background:var(--ac2);bottom:-25vmax;left:-15vmax}
 @keyframes pulse{50%{opacity:.5}}
 
 .content-area{display:flex;flex:1;min-height:0;position:relative}
-.video-container{flex:1;position:relative;background:#000;overflow:hidden}
-.video-js{width:100%!important;height:100%!important;font-family:Arial,sans-serif!important}
-.video-js,.video-js .vjs-tech{background-color:#000!important}
+.video-container{flex:1;position:relative;background:#000;overflow:hidden;touch-action:none}
+.video-js{width:100%!important;height:100%!important;font-family:Arial,sans-serif!important;touch-action:none}
+.video-js,.video-js .vjs-tech{background-color:#000!important;touch-action:none}
 .video-container .video-js{position:absolute!important;inset:0}
 
-/* شاردنەوەی یەکجارەکی ئایکۆنە ڕەشەکەی پلەی لە ئەندرۆید و وێبگەڕەکان */
 .video-js .vjs-big-play-button,.video-js .vjs-loading-spinner,.video-js .vjs-poster{display:none!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important}
 video::-webkit-media-controls,video::-webkit-media-controls-enclosure,video::-webkit-media-controls-panel,video::-webkit-media-controls-overlay-play-button,video::-webkit-media-controls-start-playback-button{display:none!important;-webkit-appearance:none!important;opacity:0!important;pointer-events:none!important}
 
-/* پەردەی هێشتنەوەی وێنەی کەناڵی پێشتر (Still Frame Freeze) تا کەناڵی نوێ دەکرێتەوە */
 .freeze-canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;z-index:999;pointer-events:none;display:none;background:#000}
 .stream-status-overlay{position:absolute;inset:0;display:flex;justify-content:center;align-items:center;z-index:1001;font-size:32px;color:var(--ac);background:transparent;pointer-events:none;filter:drop-shadow(0 2px 8px rgba(0,0,0,.85))}
+
+/* شریتی پیشاندانی دەنگ (Volume HUD) لەکاتی دەستخشاندن بەلای ڕاست و چەپدا */
+.vol-hud{position:absolute;top:16%;left:50%;transform:translate(-50%,-10px);z-index:1005;display:flex;align-items:center;gap:10px;padding:8px 16px;border-radius:999px;background:rgba(15,23,42,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1.5px solid rgba(56,189,248,.55);box-shadow:0 8px 24px rgba(0,0,0,.65);direction:ltr;pointer-events:none;opacity:0;transition:opacity .18s,transform .18s}
+.vol-hud.show{opacity:1;transform:translate(-50%,0)}
+.vol-hud i{color:var(--ac);font-size:15px;width:18px;text-align:center}
+.vol-bar-wrap{width:110px;height:6px;border-radius:99px;background:rgba(255,255,255,.18);overflow:hidden}
+.vol-bar-fill{height:100%;width:100%;border-radius:99px;background:linear-gradient(90deg,var(--ac),var(--ac2));transition:width .05s linear}
+.vol-pct{font:900 12px 'Arial Black',Arial,sans-serif;color:#fff;min-width:34px;text-align:right}
 
 .vjs-watermark-logo{position:absolute!important;z-index:1000;pointer-events:auto;cursor:pointer;display:none;flex-direction:column;align-items:flex-end;direction:ltr;user-select:none;width:max-content!important}
 .vjs-watermark-logo.show-watermark{display:inline-flex!important}
 .bein-bar{position:relative;display:inline-flex;align-items:stretch;justify-content:space-between;width:100%;height:100%;border-radius:.18em;overflow:hidden;background:linear-gradient(135deg,#1b0f30 0%,#351261 65%,#0f172a 100%);border:1px solid rgba(56,189,248,.65);box-shadow:0 2px 6px rgba(0,0,0,.65)}
 .bein-bar::after{content:"";position:absolute;top:0;left:-140%;width:65%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-25deg);animation:lightSweep 6s ease-in-out infinite;pointer-events:none}
-.bein-main{display:inline-flex;align-items:center;justify-content:center;gap:.2em;padding:0 .42em;font:900 1em 'Arial Black',Impact,Arial,sans-serif;letter-spacing:.01em;color:#fff;white-space:nowrap;line-height:1;flex:1}
+.bein-main{display:inline-flex;align-items:center;justify-content:center;gap:.2em;padding:0 .38em;font:900 1em 'Arial Black',Impact,Arial,sans-serif;letter-spacing:.02em;color:#fff;white-space:nowrap;line-height:1;flex:1}
 .bein-main b{color:#38bdf8;font-weight:900}
 .bein-hd{display:inline-flex;align-items:center;justify-content:center;padding:0 .34em;background:linear-gradient(135deg,#38bdf8,#0284c7);color:#061326;font:900 .82em 'Arial Black',Arial,sans-serif;letter-spacing:0;border-left:1px solid rgba(255,255,255,.35);line-height:1;white-space:nowrap}
 .vjs-live-tag{margin-top:.16em;display:none;align-items:center;justify-content:center;gap:.26em;padding:.1em .48em;border-radius:.18em;background:linear-gradient(90deg,#dc2626,#ef4444);font:bold .64em 'GoranFontRegular-Regular',Tahoma,Arial,sans-serif;line-height:1.1;color:#fff;white-space:nowrap;direction:rtl;box-shadow:0 2px 5px rgba(0,0,0,.5)}
@@ -125,7 +130,6 @@ video::-webkit-media-controls,video::-webkit-media-controls-enclosure,video::-we
 .playlist-item.tv-sel,.category-tab.tv-sel,.az-btn.tv-sel,.icon-btn.tv-sel,.badge.tv-sel{background:rgba(56,189,248,.35)!important;border-color:#38bdf8!important}
 .ch-left{display:flex;align-items:center;gap:9px;flex:1;min-width:0;pointer-events:none}
 
-/* چوارچێوەی لۆگۆی کەناڵەکان بە سترۆکی ڕاوند و گۆشەی خڕکراوە */
 .ch-logo{width:38px;height:38px;flex-shrink:0;border-radius:11px;padding:3px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:rgba(15,23,42,.9);border:1.5px solid rgba(56,189,248,.35);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);color:var(--ac);font-size:13px}
 .ch-logo img{width:100%;height:100%;object-fit:contain;display:block;border-radius:8px}
 .playlist-item.active .ch-logo{border-color:rgba(255,255,255,.65);background:rgba(15,23,42,.95)}
@@ -175,8 +179,7 @@ video::-webkit-media-controls,video::-webkit-media-controls-enclosure,video::-we
 .toast{position:fixed;left:50%;bottom:calc(30px + env(safe-area-inset-bottom));transform:translate(-50%,20px);z-index:20000;max-width:90%;padding:10px 18px;border-radius:14px;background:rgba(15,23,42,.92);border:1px solid rgba(56,189,248,.4);color:#fff;font-size:14px;text-align:center;opacity:0;pointer-events:none;transition:opacity .15s,transform .15s}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 
-/* بانەری زانیاری کەناڵ لەکاتی گۆڕینی کەناڵ بە کۆنترۆڵ (بە لۆگۆ و ژمارەی کەناڵەوە) */
-.ch-osd{position:fixed;left:50%;bottom:calc(36px + env(safe-area-inset-bottom));transform:translate(-50%,16px);z-index:20001;display:flex;align-items:center;gap:12px;padding:10px 16px;border-radius:18px;background:rgba(15,23,42,.94);border:1.5px solid rgba(56,189,248,.55);box-shadow:0 12px 30px rgba(0,0,0,.75);direction:rtl;min-width:250px;max-width:92vw;opacity:0;pointer-events:none;transition:opacity .14s,transform .14s}
+.ch-osd{position:fixed;left:50%;bottom:calc(36px + env(safe-area-inset-bottom));transform:translate(-50%,16px);z-index:2147483647;display:flex;align-items:center;gap:12px;padding:10px 16px;border-radius:18px;background:rgba(15,23,42,.94);border:1.5px solid rgba(56,189,248,.55);box-shadow:0 12px 30px rgba(0,0,0,.75);direction:rtl;min-width:250px;max-width:92vw;opacity:0;pointer-events:none;transition:opacity .14s,transform .14s}
 .ch-osd.show{opacity:1;transform:translate(-50%,0)}
 .ch-osd-logo{width:46px;height:46px;flex-shrink:0;border-radius:13px;padding:3px;background:#090f1d;border:2px solid var(--ac);display:flex;align-items:center;justify-content:center;overflow:hidden;color:var(--ac);font-size:18px}
 .ch-osd-logo img{width:100%;height:100%;object-fit:contain;border-radius:9px;display:block}
@@ -219,7 +222,6 @@ video::-webkit-media-controls,video::-webkit-media-controls-enclosure,video::-we
  body.drawer-open .playlist-sidebar{right:0}
 }
 
-/* دۆخی تیڤی: لادانی تەواوی بلەری ژێر لیستەکە بۆ بەرزترین خێرایی لەکاتی گۆڕینی کەناڵ و لیستدا */
 body.tv-mode{padding:0!important;background:#000!important}
 body.tv-mode::before,body.tv-mode::after{display:none!important}
 body.tv-mode *,body.tv-mode *::before,body.tv-mode *::after{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;box-shadow:none!important;text-shadow:none!important;transition:none!important}
@@ -299,6 +301,11 @@ body.tv-mode .tv-sel{background:#0284c7!important;border-color:#fff!important;co
   <div id="videoContainer" class="video-container">
    <video id="ara-sport-player" class="video-js vjs-default-skin" controls preload="auto" playsinline poster="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"></video>
    <canvas id="freezeCanvas" class="freeze-canvas"></canvas>
+   <div id="volHud" class="vol-hud">
+    <i id="volIcon" class="fas fa-volume-high"></i>
+    <div class="vol-bar-wrap"><div id="volBarFill" class="vol-bar-fill"></div></div>
+    <span id="volPct" class="vol-pct">100%</span>
+   </div>
    <div id="sideZone" class="side-zone"></div>
    <div id="menuFab" class="menu-fab"><i class="fas fa-list"></i></div>
    <div id="coverToolFab" class="cover-tool-fab" title="شاردنەوەی دەستبەجێی کۆدی سەر شاشە"><i class="fas fa-eye-slash"></i></div>
@@ -396,11 +403,15 @@ let toastTimer;
 function showToast(t){const el=$("toast");el.textContent=t;el.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove("show"),2200)}
 window.alert=showToast;
 
-// پیشاندانی کارتی کەناڵ بە لۆگۆ و ژمارەی ڕیزبەندییەوە لەکاتی گۆڕینی کەناڵدا
 let osdTimer;
 function showChannelOsd(ch, num, total){
  if(!ch)return;
  const osd=$("chOsd");
+ // دڵنیابوونەوە لە دەرکەوتنی کارتی کەناڵ لە ناو فووڵ سکرینیشدا
+ const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+ if(fsEl && osd.parentNode !== fsEl) fsEl.appendChild(osd);
+ else if(!fsEl && osd.parentNode !== document.body) document.body.appendChild(osd);
+
  $("chOsdNum").textContent = total ? `${num} / ${total}` : `#${num}`;
  $("chOsdCat").textContent = ch.cat || "";
  $("chOsdName").textContent = ch.name || "";
@@ -410,7 +421,24 @@ function showChannelOsd(ch, num, total){
  osdTimer=setTimeout(()=>osd.classList.remove("show"), 2600);
 }
 
-// گرتنی دوایین وێنەی کەناڵی پێشوو (Still Frame Freeze) تا کەناڵی نوێ دەکرێتەوە
+let volHudTimer;
+function showVolumeHud(vol){
+ const hud=$("volHud");
+ const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+ const targetParent = (player && player.el()) ? player.el() : $("videoContainer");
+ if(fsEl && hud.parentNode !== fsEl) fsEl.appendChild(hud);
+ else if(!fsEl && hud.parentNode !== targetParent) targetParent.appendChild(hud);
+
+ const pct = Math.round(Math.max(0, Math.min(1, vol)) * 100);
+ $("volBarFill").style.width = pct + "%";
+ $("volPct").textContent = pct + "%";
+ const ic = $("volIcon");
+ ic.className = pct === 0 ? "fas fa-volume-xmark" : (pct < 50 ? "fas fa-volume-low" : "fas fa-volume-high");
+ hud.classList.add("show");
+ clearTimeout(volHudTimer);
+ volHudTimer = setTimeout(()=>hud.classList.remove("show"), 1400);
+}
+
 function captureStillFrame(){
  if(!player)return;
  try{
@@ -616,7 +644,6 @@ async function checkActivation(manual=false,silent=false){
  return true;
 }
 
-// ناوی گروپەکان بە کورتی و ڕێکی بێ وشەی «کەناڵ»
 const CAT_KURD       = "کوردی";
 const CAT_KIDS       = "منداڵان";
 const CAT_DOC        = "دۆکیومێنتاری";
@@ -635,7 +662,6 @@ const CAT_TECH       = "تەکنەلۆجیا";
 const CAT_MUSIC      = "میوزیک";
 const CAT_ALL        = "گشتی";
 
-// ١. ڕیزبەندیی گروپەکان لە لیست و تابەکاندا
 const SMART_GROUPS = [
  { name: CAT_KURD,       icon: "fa-sun" },
  { name: CAT_KIDS,       icon: "fa-child-reaching" },
@@ -656,7 +682,6 @@ const SMART_GROUPS = [
  { name: CAT_ALL,        icon: "fa-globe" }
 ];
 
-// ٢. ڕیزبەندیی ناو گروپی «گشتی»
 const ALL_TAB_PRIORITY = {
  [CAT_KURD]:       0,
  [CAT_KIDS]:       1,
@@ -724,6 +749,11 @@ const is4Kurd = name => /\b4\s*kurd\b|4kurd/i.test(name || "");
 
 var player,channels=[],categories=[],currentCat=CAT_KURD,currentUrl="",isSports=false,channelHasLiveBadge=false,manualLiveOverride=null;
 
+function isRotatedOrFullscreen(){
+ const fs = !!(document.fullscreenElement || document.webkitFullscreenElement || (player && player.isFullscreen && player.isFullscreen()));
+ return fs || (window.innerWidth > window.innerHeight);
+}
+
 function initPlayer(){
  if(player)return;
  const cached=ls("cached_sheets_channels");
@@ -747,7 +777,7 @@ function initPlayer(){
  player.ready(function(){
   const w=document.createElement("div");w.className="vjs-watermark-logo";w.id="playerWatermark";
   w.title="کلیک بکە بۆ دەرخستن یان شاردنەوەی نیشانەی ڕاستەوخۆ";
-  w.innerHTML='<div class="bein-bar"><div class="bein-main">ARA <b>SPORT</b></div><div class="bein-hd">HD</div></div><div class="vjs-live-tag"><i></i>ڕاستەوخۆ</div>';
+  w.innerHTML='<div class="bein-bar"><div class="bein-main" id="wmMainText">ARA <b>SPORT</b></div><div class="bein-hd">HD</div></div><div class="vjs-live-tag"><i></i>ڕاستەوخۆ</div>';
   w.addEventListener("click",e=>{
    e.stopPropagation();
    manualLiveOverride = manualLiveOverride===null ? !channelHasLiveBadge : !manualLiveOverride;
@@ -757,7 +787,7 @@ function initPlayer(){
 
   const cc=document.createElement("div");cc.id="codeCover";cc.className="code-cover";
   cc.title="کلیک بکە بۆ لادانی شاردنەوەی کۆد";
-  cc.innerHTML='<div class="cc-main">ARA <span>SPORT</span></div><div class="cc-hd">HD</div>';
+  cc.innerHTML='<div class="cc-main" id="ccMainText">ARA <span>SPORT</span></div><div class="cc-hd">HD</div>';
   cc.addEventListener("click",e=>{
    e.stopPropagation();
    codeBox=null;saveCodeBox(currentUrl,null);positionWatermark();
@@ -767,7 +797,7 @@ function initPlayer(){
 
   positionWatermark();
   if(window.ResizeObserver)new ResizeObserver(positionWatermark).observe(this.el());
-  this.on("loadedmetadata",positionWatermark);
+  this.on(["loadedmetadata","fullscreenchange"],positionWatermark);
   this.on(["loadedmetadata","durationchange","playing"],updateLive);
   try{
    const tv=this.tech(true).el();
@@ -782,6 +812,7 @@ function initPlayer(){
  });
  bindFab();
  initManualCodeCover();
+ initVideoTouchAndWheelGestures();
  initRemoteAndKeyboard();
  initBackNavigationTrap();
  enableMouseDragScroll($("playlistWrapper"),false);
@@ -810,7 +841,92 @@ function initPlayer(){
 }
 
 function showWait(w){$("streamStatusOverlay").style.display=w?"flex":"none"}
-function updateWatermark(){const w=$("playerWatermark");if(w)w.classList.toggle("show-watermark",isSports)}
+function updateWatermark(){
+ const w=$("playerWatermark");
+ if(w){
+  w.classList.toggle("show-watermark",isSports);
+  positionWatermark();
+ }
+}
+
+// سیستەمی تەچ (Swipe Up/Down بۆ کەناڵ وەک سۆشیال میدیا + Swipe Left/Right بۆ دەنگ) و سکرۆڵی ماوس بۆ کۆمپیوتەر
+function initVideoTouchAndWheelGestures(){
+ const vc = $("videoContainer");
+ if(!vc) return;
+
+ // ١. سکرۆڵی ماوس لەسەر کۆمپیوتەر بۆ گۆڕینی کەناڵ (سەرەوە و خوارەوە)
+ let wheelLock = 0;
+ vc.addEventListener("wheel", e => {
+  if(e.target.closest(".playlist-sidebar")) return;
+  e.preventDefault();
+  const now = Date.now();
+  if(now - wheelLock < 220) return;
+  if(Math.abs(e.deltaY) < 12) return;
+  wheelLock = now;
+  // سکرۆڵ بۆ خوارەوە = کەناڵی دواتر (+1)، سکرۆڵ بۆ سەرەوە = کەناڵی پێشتر (-1)
+  stepChannel(e.deltaY > 0 ? 1 : -1);
+ }, { passive: false });
+
+ // ٢. تەچی سەر شاشەی ڤیدیۆ (فووڵ سکرین، پۆرترەیت، و ڕۆتەیت)
+ let tStartX = 0, tStartY = 0, tStartVol = 1, tMode = null, tSwiped = false;
+
+ vc.addEventListener("touchstart", e => {
+  if(pickCoverMode) return;
+  if(e.touches.length !== 1) { tMode = null; return; }
+  const tgt = e.target;
+  if(tgt.closest(".vjs-control-bar, .menu-fab, .cover-tool-fab, .playlist-sidebar, .vjs-watermark-logo, .code-cover")) {
+   tMode = null;
+   return;
+  }
+  tStartX = e.touches[0].clientX;
+  tStartY = e.touches[0].clientY;
+  tMode = "pending";
+  tSwiped = false;
+  try {
+   const v = player.tech(true).el();
+   tStartVol = (v.muted || player.muted()) ? 0 : (typeof player.volume() === "number" ? player.volume() : 1);
+  } catch(err) { tStartVol = 1; }
+ }, { passive: true });
+
+ vc.addEventListener("touchmove", e => {
+  if(!tMode || e.touches.length !== 1) return;
+  const dx = e.touches[0].clientX - tStartX;
+  const dy = e.touches[0].clientY - tStartY;
+
+  if(tMode === "pending"){
+   if(Math.abs(dx) < 14 && Math.abs(dy) < 14) return;
+   // جیاکردنەوەی ئاراستەی پەنجە: ئاسۆیی (ڕاست و چەپ = دەنگ) یان ستوونی (سەر و خوار = کەناڵ)
+   tMode = Math.abs(dx) > Math.abs(dy) * 1.15 ? "volume" : "channel";
+  }
+
+  if(tMode === "volume"){
+   if(e.cancelable) e.preventDefault();
+   const width = Math.max(220, vc.clientWidth * 0.75);
+   // بەلای ڕاستدا زیادکردنی دەنگ، بەلای چەپدا کەمکردنەوەی دەنگ
+   const newVol = Math.max(0, Math.min(1, tStartVol + (dx / width)));
+   try {
+    const v = player.tech(true).el();
+    v.muted = (newVol === 0);
+    player.muted(newVol === 0);
+    v.volume = newVol;
+    player.volume(newVol);
+   } catch(err){}
+   showVolumeHud(newVol);
+  } else if(tMode === "channel"){
+   if(e.cancelable) e.preventDefault();
+   if(!tSwiped && Math.abs(dy) >= 48){
+    tSwiped = true;
+    // وەک سکرۆڵی سۆشیال میدیا: ڕاکێشان بۆ سەرەوە (dy < 0) دەچێتە کەناڵی دواتر (+1)، بۆ خوارەوە (dy > 0) کەناڵی پێشتر (-1)
+    stepChannel(dy < 0 ? 1 : -1);
+   }
+  }
+ }, { passive: false });
+
+ vc.addEventListener("touchend", () => {
+  tMode = null;
+  tSwiped = false;
+ }, { passive: true });
+}
 
 function initBackNavigationTrap(){
  try{history.pushState({ara:1},"",location.href)}catch(e){}
@@ -898,7 +1014,6 @@ function focusTvZone(zone){
  }
 }
 
-// گۆڕینی خێرای کەناڵ بە کۆنترۆڵ (وەک سەتەلایت) لەگەڵ پیشاندانی لۆگۆ و ژمارەی کەناڵ
 let zapDebounceTimer=null;
 let zapTargetUrl="";
 
@@ -916,7 +1031,7 @@ function stepChannel(delta){
   zapDebounceTimer=setTimeout(()=>{
    zapTargetUrl="";
    playChannel(nextCh,true);
-  }, 140);
+  }, 130);
  }
 }
 
@@ -954,7 +1069,6 @@ function initRemoteAndKeyboard(){
    return;
   }
 
-  // ئاراستەی گۆڕینی کەناڵ وەک سەتەلایت: سەرەوە (+1 کەناڵی دواتر)، خوارەوە (-1 کەناڵی پێشتر)
   if(e.key==="PageUp"||e.key==="ChannelUp"||e.keyCode===427){
    e.preventDefault();stepChannel(1);return;
   }
@@ -974,7 +1088,6 @@ function initRemoteAndKeyboard(){
     openDrawer();
     return;
    }
-   // لە کاتی داخراوی لیستدا: سەرەوە دەچێتە کەناڵی دواتر (+1)، خوارەوە دەچێتە کەناڵی پێشتر (-1)
    if(e.key==="ArrowUp"){e.preventDefault();stepChannel(1);return}
    if(e.key==="ArrowDown"){e.preventDefault();stepChannel(-1);return}
    return;
@@ -1092,7 +1205,7 @@ function initManualCodeCover(){
   pickCoverMode=!pickCoverMode;
   btn.classList.toggle("active",pickCoverMode);
   vc.classList.toggle("pick-cover-mode",pickCoverMode);
-  if(pickCoverMode)showToast("کلیک لەسەر شوێنی کۆدەکە بکە بۆ داپۆشینی دەستبەجێ بە ARA SPORT HD");
+  if(pickCoverMode)showToast("کلیک لەسەر شوێنی کۆدەکە بکە بۆ داپۆشینی دەستبەجێ");
  });
  vc.addEventListener("click",e=>{
   if(!pickCoverMode||!player)return;
@@ -1112,7 +1225,7 @@ function initManualCodeCover(){
   btn.classList.remove("active");
   vc.classList.remove("pick-cover-mode");
   positionWatermark();
-  showToast("کۆدەکە بە لۆگۆی ARA SPORT HD داپۆشرا");
+  showToast("کۆدەکە بە سەرکەوتوویی داپۆشرا");
  },true);
 }
 
@@ -1255,6 +1368,9 @@ async function codeScan(){
 function positionCover(left,top,dw,dh){
  const el=$("codeCover");if(!el)return;
  if(!codeBox){el.style.display="none";return}
+ const rotated = isRotatedOrFullscreen();
+ const ccMain = $("ccMainText");
+ if(ccMain) ccMain.innerHTML = rotated ? 'ARA <span>TV</span>' : 'ARA <span>SPORT</span>';
  const x=left+codeBox.x0*dw,y=top+codeBox.y0*dh;
  const fs=Math.max(4, Math.min(14, dw * 0.0098));
  Object.assign(el.style,{
@@ -1265,6 +1381,7 @@ function positionCover(left,top,dw,dh){
  });
 }
 
+// دانانی لۆگۆی کەناڵە وەرزشییەکان (لە ڕۆتەیتدا دەبێتە ARA TV HD) ڕێک بە هەمان قیاس و شوێنی لۆگۆی beIN SPORTS
 function positionWatermark(){
  const w=$("playerWatermark");if(!w||!player)return;
  let v;try{v=player.tech(true).el()}catch(e){return}
@@ -1272,6 +1389,14 @@ function positionWatermark(){
  const vw=(v&&v.videoWidth)?v.videoWidth:1280,vh=(v&&v.videoHeight)?v.videoHeight:720;
  const sc=Math.min(cw/vw,ch/vh),dw=vw*sc,dh=vh*sc;
  const left=(cw-dw)/2,top=(ch-dh)/2,st=w.style;
+
+ // لەکاتی ڕۆتەیتدا ناوی لۆگۆکە دەبێتە ARA TV HD بە هەمان سایز و شوێنی لۆگۆی beIN SPORTS
+ const rotated = isRotatedOrFullscreen();
+ const wmMain = $("wmMainText");
+ if(wmMain){
+  wmMain.innerHTML = rotated ? 'ARA <b>TV</b>' : 'ARA <b>SPORT</b>';
+  wmMain.style.letterSpacing = rotated ? '.14em' : '.02em';
+ }
 
  const barW = dw * 0.118;
  const barH = dh * 0.0285;
@@ -1325,11 +1450,13 @@ function drawTightBein(c,rightX,topY,fs,mainA,mainB,sub){
 function drawCover(c,w,h){
  if(!codeBox)return;
  const fs=Math.max(7,Math.round(w*0.0098));
- drawTightBein(c,codeBox.x1*w,codeBox.y0*h,fs,"ARA ","SPORT","HD");
+ const labelB = isRotatedOrFullscreen() ? "TV" : "SPORT";
+ drawTightBein(c,codeBox.x1*w,codeBox.y0*h,fs,"ARA ",labelB,"HD");
 }
 function drawLogo(c,w,h,sports,live){
  const fs=Math.max(7,Math.round(w*0.0098));
- const box=drawTightBein(c,w*0.958,h*0.0665,fs,"ARA ",sports?"SPORT":"TV","HD");
+ const labelB = (sports && !isRotatedOrFullscreen()) ? "SPORT" : "TV";
+ const box=drawTightBein(c,w*0.958,h*0.0665,fs,"ARA ",labelB,"HD");
  if(live){
   const lf=Math.max(6,Math.round(fs*0.64));
   c.font="bold "+lf+"px 'GoranFontRegular-Regular',Tahoma,Arial";c.textAlign="left";
@@ -1808,7 +1935,6 @@ function playTs(url,useProxy=false,fromUserGesture=true){
 
 function playChannel(ch,fromUserGesture=true){
  if(!ch)return;
- // پاراستنی دوایین وێنەی کەناڵی پێشوو لەسەر شاشە تا کەناڵی نوێ دەکرێتەوە
  if(currentUrl && currentUrl!==ch.url){
   captureStillFrame();
  }
@@ -1833,7 +1959,7 @@ function playChannel(ch,fromUserGesture=true){
 
  let v;try{v=player.tech(true).el()}catch(e){}
  if((fromUserGesture||isTV)&&v){
-  try{v.muted=false;player.muted(false);player.volume(1)}catch(e){}
+  try{v.muted=false;player.muted(false)}catch(e){}
  }
 
  if(kind==="ts"){
@@ -1909,8 +2035,10 @@ function closeDrawer(){
 $("sideZone").addEventListener("click",openDrawer);
 $("menuFab").addEventListener("click",openDrawer);
 $("drawerBackdrop").addEventListener("click",closeDrawer);
-window.addEventListener("resize",()=>setTimeout(positionWatermark,100));
-window.addEventListener("orientationchange",()=>setTimeout(positionWatermark,180));
+window.addEventListener("resize",()=>setTimeout(positionWatermark,80));
+window.addEventListener("orientationchange",()=>setTimeout(positionWatermark,150));
+document.addEventListener("fullscreenchange",()=>setTimeout(positionWatermark,80));
+document.addEventListener("webkitfullscreenchange",()=>setTimeout(positionWatermark,80));
 function bindFab(){
  if(!player)return;
  player.on("userinactive",()=>{$("menuFab").classList.add("idle");$("coverToolFab").classList.add("idle")});
