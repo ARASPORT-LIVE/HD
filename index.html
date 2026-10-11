@@ -312,8 +312,11 @@ html.native-fs .playlist-sidebar{
 }
 html.native-fs body.drawer-open .playlist-sidebar{right:0}
 /* ===== گرادێنتی فول سکرینی پۆرتریت (تەنها لەسەر لەسەرەوە و خوارەوەی ڤیدیۆ، ڤیدیۆکە نەپۆشێت) ===== */
-html.native-vlc .video-js.fs-portrait .fs-top{background:radial-gradient(circle at 90% 0%,rgba(14,165,233,.5),transparent 75%),#070b16}
-html.native-vlc .video-js.fs-portrait .fs-bottom{background:radial-gradient(circle at 10% 100%,rgba(139,92,246,.5),transparent 75%),#070b16}
+html.native-vlc .video-js.fs-portrait .fs-top{background:radial-gradient(ellipse 130% 100% at 50% 0%,rgba(14,165,233,.5),transparent 80%),#070b16}
+html.native-vlc .video-js.fs-portrait .fs-bottom{background:radial-gradient(ellipse 130% 100% at 50% 100%,rgba(139,92,246,.55),transparent 80%),#070b16}
+/* دەنگ لە ناوەڕاستی سەرەوە لە فول سکرینی پۆرتریت */
+.vol-hud.hud-portrait.hud-fs-top{left:50%;transform:translate(-50%,-10px)}
+.vol-hud.hud-portrait.hud-fs-top.show{transform:translate(-50%,0)}
 </style>
 </head>
 <body>
@@ -409,7 +412,7 @@ html.native-vlc .video-js.fs-portrait .fs-bottom{background:radial-gradient(circ
  <div class="ticker-bar glass">
   <div class="ticker-clock-box"><i class="far fa-clock"></i><span id="digitalClock">00:00:00</span></div>
   <div class="ticker-track">
-   <div class="ticker-text">بەخێر بێن بۆ سیستمی پەخشی <span class="ticker-brand">ARA <span>TV</span></span>، تکایە لەکاتی بوونی هەر کێشە و گرفتێکدا پەیوەندی بکەن بە ژمارە تەلەفۆنی 07748134314 یان 07501224994 &nbsp;&nbsp;|&nbsp;&nbsp; ئەم ماک ئەدرێسە تایبەتە بە ئامێرەکەت: <b id="tickerMac" style="direction:ltr;unicode-bidi:isolate;color:#38bdf8"></b> &nbsp;—&nbsp; لەکاتی کێشەی تەکنیکی پەیوەندیمان پێوەبکە و ماک ئەدرێسەکەت بنێرە بۆ تیمی تەکنیکی <span class="ticker-brand">ARA <span>TV</span></span></div>
+   <div class="ticker-text">بەخێر بێن بۆ سیستمی پەخشی <span class="ticker-brand">ARA <span>TV</span></span>، تکایە لەکاتی بوونی هەر کێشە و گرفتێکدا پەیوەندی بکەن بە ژمارە تەلەفۆنی 07748134314 یان 07501224994 &nbsp;&nbsp;|&nbsp;&nbsp; ئەم ماک ئەدرێسە تایبەتە بە ئامێرەکەت: <b id="tickerMac" style="direction:ltr;unicode-bidi:isolate;color:#38bdf8"></b> &nbsp;—&nbsp; لەکاتی کێشەی تەکنیکی پەیوەندیمان پێوەبکە و ماک ئەدرێسەکەت بنێرە بۆ تیمی تەکنیکی <span class="ticker-brand">ARA <span>TV</span></span> &nbsp;&nbsp;|&nbsp;&nbsp; بۆ بینینی سەرجەم کەناڵەکان بەبێ پچڕان و کوالێتی بەرز، تکایە ئەپی <b style="direction:ltr;unicode-bidi:isolate;color:#38bdf8">VLC</b> دابەزێنە</div>
   </div>
  </div>
 </div>
