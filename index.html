@@ -270,6 +270,9 @@ body.tv-mode .tv-sel{background:#0284c7!important;border-color:#fff!important;co
 .fs-rec.recording{background:rgba(239,68,68,.4)}
 .fs-rec.recording i{animation:pulse 1.1s infinite}
 .fs-rec-timer{font-size:12px;color:#fca5a5;background:rgba(15,23,42,.85);padding:1px 7px;border-radius:6px;border:1px solid rgba(239,68,68,.45);direction:ltr}
+.fs-vlc{flex-shrink:0;display:flex;align-items:center;justify-content:center;gap:6px;max-width:96%;font-size:11.5px;line-height:1.6;font-weight:bold;color:#fff;direction:rtl;text-align:center}
+.fs-vlc i{color:#38bdf8;font-size:13px}
+.fs-vlc bdi{color:#38bdf8;direction:ltr;unicode-bidi:isolate}
 .fs-info-box{min-height:0;flex-shrink:1;width:100%;max-height:100%;overflow:hidden;padding:10px 12px;border-radius:18px;direction:rtl;background:rgba(255,255,255,.07);border:1.5px solid rgba(56,189,248,.5);box-shadow:0 0 14px rgba(56,189,248,.15)}
 .fs-info-box p{font-size:11px;line-height:1.75;color:#e2e8f0;margin:0}
 .fs-info-box p+p{margin-top:2px}
@@ -412,7 +415,7 @@ html.native-vlc .video-js.fs-portrait .fs-bottom{background:radial-gradient(elli
  <div class="ticker-bar glass">
   <div class="ticker-clock-box"><i class="far fa-clock"></i><span id="digitalClock">00:00:00</span></div>
   <div class="ticker-track">
-   <div class="ticker-text">بەخێر بێن بۆ سیستمی پەخشی <span class="ticker-brand">ARA <span>TV</span></span>، تکایە لەکاتی بوونی هەر کێشە و گرفتێکدا پەیوەندی بکەن بە ژمارە تەلەفۆنی 07748134314 یان 07501224994 &nbsp;&nbsp;|&nbsp;&nbsp; ئەم ماک ئەدرێسە تایبەتە بە ئامێرەکەت: <b id="tickerMac" style="direction:ltr;unicode-bidi:isolate;color:#38bdf8"></b> &nbsp;—&nbsp; لەکاتی کێشەی تەکنیکی پەیوەندیمان پێوەبکە و ماک ئەدرێسەکەت بنێرە بۆ تیمی تەکنیکی <span class="ticker-brand">ARA <span>TV</span></span> &nbsp;&nbsp;|&nbsp;&nbsp; بۆ بینینی سەرجەم کەناڵەکان بەبێ پچڕان و کوالێتی بەرز، تکایە ئەپی <b style="direction:ltr;unicode-bidi:isolate;color:#38bdf8">VLC</b> دابەزێنە</div>
+   <div class="ticker-text">بەخێر بێن بۆ سیستمی پەخشی <span class="ticker-brand">ARA <span>TV</span></span>، تکایە لەکاتی بوونی هەر کێشە و گرفتێکدا پەیوەندی بکەن بە ژمارە تەلەفۆنی 07748134314 یان 07501224994 &nbsp;&nbsp;|&nbsp;&nbsp; ئەم ماک ئەدرێسە تایبەتە بە ئامێرەکەت: <b id="tickerMac" style="direction:ltr;unicode-bidi:isolate;color:#38bdf8"></b> &nbsp;—&nbsp; لەکاتی کێشەی تەکنیکی پەیوەندیمان پێوەبکە و ماک ئەدرێسەکەت بنێرە بۆ تیمی تەکنیکی <span class="ticker-brand">ARA <span>TV</span></span> &nbsp;&nbsp;|&nbsp;&nbsp; بۆ بینینی سەرجەم کەناڵەکان بەبێ پچڕان و کوالیتی بەرز، تکایە ئەپی <b style="direction:ltr;unicode-bidi:isolate;color:#38bdf8">VLC</b> دابەزێنە</div>
   </div>
  </div>
 </div>
@@ -1012,11 +1015,11 @@ function initPlayer(){
    '<div class="fs-credit">دیزاین و پەرەپێدەری <bdi>ARA TV</bdi>: مامۆستا گۆران محمد </div>';
   const fb=document.createElement("div");fb.className="fs-bottom";
   fb.innerHTML='<div class="fs-rec"><i class="fas fa-circle"></i><span class="fs-rec-timer" style="display:none">00:00</span><span class="fs-rec-label">ڕیکۆردی بکە</span></div>'+
+   '<div class="fs-vlc"><i class="fas fa-circle-play"></i><span>بۆ بینینی سەرجەم کەناڵەکان بەبێ پچڕان و کوالیتی بەرز، تکایە ئەپی <bdi>VLC</bdi> دابەزێنە</span></div>'+
    '<div class="fs-info-box">'+
    '<p>بەخێر بێن بۆ سیستمی پەخشی <b>ARA TV</b></p>'+
    '<p>بۆ هەر کێشەیەک پەیوەندی بکە: <b>07748134314</b> | <b>07501224994</b></p>'+
-   '<p>ماک ئەدرێسی ئامێرەکەت: <b>'+currentMac+'</b></p>'+
-   '<p>لەکاتی کێشەی تەکنیکی ماک ئەدرێسەکەت بنێرە بۆ تیمی تەکنیکی</p></div>';
+   '<p>ماک ئەدرێسی ئامێرەکەت: <b>'+currentMac+'</b></p></div>';
   this.el().appendChild(ft);this.el().appendChild(fb);
   const rs=fb.querySelector(".fs-rec");
   ["touchstart","dblclick","mousedown"].forEach(ev=>rs.addEventListener(ev,e=>e.stopPropagation()));
@@ -2439,7 +2442,7 @@ function playTs(url,useProxy=false,fromUserGesture=true){
 function playChannel(ch,fromUserGesture=true){
  if(!ch)return;
  
- if(rec&&rec.url!==ch.url)stopRec(false);
+ if(rec&&!rec.native&&rec.url!==ch.url)stopRec(false);
  if(currentUrl && currentUrl!==ch.url){
   previousChannelUrl=currentUrl;
   captureStillFrame();
@@ -2595,6 +2598,8 @@ function waitForPlaying(cb,maxMs){
 function toggleRec(ch){
  if(rec){stopRec(false);return}
  hideSaveBtn();
+ // لە ئەپی ئەندرۆید پێویست ناکات کەناڵەکە بگۆڕدرێت، VLC لە پشتەوە ڕیکۆرد دەکات
+ if(window.AndroidPlayer){beginRec(ch);return}
  freeOcrWorkers();
  if(currentUrl!==ch.url){
   playChannel(ch,true);
@@ -2646,7 +2651,10 @@ function makeRecStream(v,ch,mode){
   if(cv.width!==W||cv.height!==H){cv.width=W;cv.height=H}
  };
  fit();
- try{c.drawImage(v,0,0,cv.width,cv.height);c.getImageData(0,0,1,1)}catch(e){return null}
+ try{c.drawImage(v,0,0,cv.width,cv.height);c.getImageData(0,0,1,1)}catch(e){
+  if(PROXY_URL&&!corsProxyNeeded[ch.url]){corsProxyNeeded[ch.url]=true;return "reload"}
+  return null;
+ }
  const sports=(ch.cat===CAT_SPORT)||RE_SPORT.test(ch.name);
  const dv=setInterval(()=>{
   if(!v.videoWidth)return;
@@ -2667,7 +2675,27 @@ function makeRecStream(v,ch,mode){
  return {stream,dv};
 }
 
+// ڕیکۆردی ڕاستەوخۆی VLC لە ئەپی ئەندرۆید
+function beginNativeRec(ch){
+ if(!window.AndroidPlayer||!AndroidPlayer.startRecord){
+  showToast("ئەم وەشانەی ئەپەکە ڕیکۆرد پشتگیری ناکات، ئەپەکە نوێ بکەرەوە");
+  return false;
+ }
+ const fileName=ch.name.replace(/[\/:*?"<>|]/g,"_")+"_"+Date.now()+".ts";
+ try{AndroidPlayer.startRecord(ch.url,fileName)}catch(e){showToast("ڕیکۆرد نەکرا");return false}
+ rec={native:true,url:ch.url,state:{bytes:1},t0:Date.now(),iv:setInterval(()=>{
+  updateRecStrip();
+  const s=Math.floor((Date.now()-rec.t0)/1000),b=document.querySelector(".rec-btn.recording");
+  if(b){const t=b.parentNode.querySelector(".rec-timer-badge");if(t)t.textContent=pad(Math.floor(s/60))+":"+pad(s%60)}
+  if(s>=REC_MAX_SEC){stopRec(false);showToast("ڕیکۆرد بە خۆکار وەستا (١٥ دەقیقە)")}
+ },1000)};
+ showToast("ڕیکۆرد دەستی پێکرد");
+ renderChannels();
+ return true;
+}
+
 function beginRec(ch,mode,diag){
+ if(window.AndroidPlayer)return beginNativeRec(ch);
  diag=diag||[];
  let v;try{v=player.tech(true).el()}catch(e){return false}
  if(!v||!v.videoWidth){showToast("چاوەڕێ بکە تا ڤیدیۆکە دەست پێبکات");return false}
@@ -2685,6 +2713,12 @@ function beginRec(ch,mode,diag){
 
  let made=null;
  try{made=makeRecStream(v,ch,mode==="plain"?"canvas":mode)}catch(e){made=null}
+ if(made==="reload"){
+  showToast("ڕیکۆرد دەست پێدەکات...");
+  playChannel(ch,true);
+  waitForPlaying(()=>{if(!rec&&currentUrl===ch.url)beginRec(ch,"canvas",diag)},12000);
+  return false;
+ }
  if(!made)return fail("nostream");
  const {stream,dv}=made;
 
@@ -2747,6 +2781,13 @@ function beginRec(ch,mode,diag){
 
 function stopRec(discard){
  if(!rec)return;
+ if(rec.native){
+  clearInterval(rec.iv);
+  try{AndroidPlayer.stopRecord()}catch(e){}
+  rec=null;renderChannels();updateRecStrip();
+  showToast("ڕیکۆرد وەستا، پاشەکەوت دەکرێت...");
+  return;
+ }
  rec.state.discard=!!discard;
  clearInterval(rec.iv);if(rec.dv)clearInterval(rec.dv);
  try{rec.mr.stop()}catch(e){}
