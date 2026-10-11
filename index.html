@@ -2810,6 +2810,52 @@ function closeDrawer(){
 $("sideZone").addEventListener("click",openDrawer);
 $("menuFab").addEventListener("click",openDrawer);
 $("drawerBackdrop").addEventListener("click",closeDrawer);
+
+/* ===== کێشانی لیستەکە بۆ لای ڕاست بۆ لابردنی (فول سکرین) ===== */
+(function initDrawerSwipe(){
+ const sb=$("playlistSidebar");
+ if(!sb)return;
+ let sx=0,sy=0,dx=0,mode=null;
+ const isOpen=()=>document.body.classList.contains("drawer-open");
+ sb.addEventListener("touchstart",e=>{
+  if(!isOpen()||e.touches.length!==1||e.target.closest("input,.group-tabs,.az-bar")){mode=null;return}
+  sx=e.touches[0].clientX;sy=e.touches[0].clientY;dx=0;mode="pending";
+ },{passive:true});
+ sb.addEventListener("touchmove",e=>{
+  if(!mode||e.touches.length!==1)return;
+  const mx=e.touches[0].clientX-sx,my=e.touches[0].clientY-sy;
+  if(mode==="pending"){
+   if(Math.abs(mx)<10&&Math.abs(my)<10)return;
+   if(mx>0&&Math.abs(mx)>Math.abs(my)*1.2){mode="drag";sb.style.transition="none"}
+   else{mode=null;return}
+  }
+  if(e.cancelable)e.preventDefault();
+  dx=Math.max(0,mx);
+  sb.style.transform="translateX("+dx+"px)";
+ },{passive:false});
+ const end=()=>{
+  if(mode!=="drag"){mode=null;return}
+  mode=null;
+  const w=sb.offsetWidth||300;
+  if(dx>Math.min(80,w*0.25)){
+   sb.style.transition="transform .16s ease-out";
+   sb.style.transform="translateX("+w+"px)";
+   setTimeout(()=>{
+    sb.style.transition="none";
+    closeDrawer();
+    sb.style.transform="";
+    void sb.offsetWidth;
+    requestAnimationFrame(()=>{sb.style.transition=""});
+   },170);
+  }else{
+   sb.style.transition="transform .16s ease-out";
+   sb.style.transform="translateX(0)";
+   setTimeout(()=>{sb.style.transition="";sb.style.transform=""},180);
+  }
+ };
+ sb.addEventListener("touchend",end,{passive:true});
+ sb.addEventListener("touchcancel",end,{passive:true});
+})();
 function relocateCoverFab(){
  const f=$("coverToolFab");if(!f)return;
  const fsEl=document.fullscreenElement||document.webkitFullscreenElement;
