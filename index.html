@@ -283,6 +283,14 @@ body.tv-mode .tv-sel{background:#0284c7!important;border-color:#fff!important;co
 .save-rec-btn{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:2147483647;align-items:center;gap:10px;padding:12px 18px;border-radius:999px;border:1.5px solid #38bdf8;background:rgba(15,23,42,.96);color:#fff;font-family:inherit;font-size:14px;font-weight:bold;cursor:pointer;direction:rtl;box-shadow:0 8px 24px rgba(0,0,0,.7);max-width:92vw}
 .save-rec-btn i{color:#38bdf8}
 .srb-x{margin-right:4px;padding:2px 8px;border-radius:50%;background:rgba(255,255,255,.14);font-size:12px}
+/* ===== VLCی ئەندرۆید لەناو فرەیمی ڤیدیۆ ===== */
+html.native-vlc,html.native-vlc body{background:transparent!important}
+html.native-vlc body::before,html.native-vlc body::after{display:none!important}
+html.native-vlc .main-wrapper{background:transparent!important}
+html.native-vlc .video-container,
+html.native-vlc .video-js,
+html.native-vlc .video-js .vjs-tech,
+html.native-vlc .video-container .video-js.fs-portrait{background:transparent!important}
 </style>
 </head>
 <body>
@@ -400,6 +408,42 @@ const $=id=>document.getElementById(id);
 const ls=(k,v)=>{try{if(v===undefined)return localStorage.getItem(k);if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){return null}};
 const pad=n=>n<10?"0"+n:n;
 
+/* ===== VLCی ئەندرۆید لەناو فرەیم ===== */
+function nativeFrame(){
+ try{
+  if(!window.AndroidPlayer||!AndroidPlayer.setFrame)return;
+  const r=$("videoContainer").getBoundingClientRect();
+  AndroidPlayer.setFrame(r.left,r.top,r.width,r.height,window.innerWidth,window.innerHeight);
+  const ic=document.querySelector("#nativeFsFab i");
+  if(ic)ic.className=window.innerWidth>window.innerHeight?"fas fa-compress":"fas fa-expand";
+ }catch(e){}
+}
+function nativeHooks(){
+ if(!window.AndroidPlayer||!player||window.__araNativeHooks)return;
+ window.__araNativeHooks=true;
+ // فول سکرین = لاندسکەیپ، دەستی بەکارهێنەر
+ player.isFullscreen=()=>window.innerWidth>window.innerHeight;
+ player.requestFullscreen=()=>{try{AndroidPlayer.setFullscreen(true)}catch(e){}};
+ player.exitFullscreen=()=>{try{AndroidPlayer.setFullscreen(false)}catch(e){}};
+ const b=document.createElement("div");
+ b.id="nativeFsFab";b.className="cover-tool-fab";
+ b.style.cssText="top:auto;bottom:10px;left:auto;right:10px";
+ b.innerHTML='<i class="fas fa-expand"></i>';
+ b.addEventListener("click",e=>{
+  e.stopPropagation();
+  player.isFullscreen()?player.exitFullscreen():player.requestFullscreen();
+ });
+ $("videoContainer").appendChild(b);
+}
+if(window.AndroidPlayer){
+ document.documentElement.classList.add("native-vlc");
+ window.addEventListener("resize",()=>setTimeout(nativeFrame,60));
+ window.addEventListener("orientationchange",()=>setTimeout(nativeFrame,200));
+ setInterval(nativeFrame,800);
+ if(window.ResizeObserver)new ResizeObserver(nativeFrame).observe($("videoContainer"));
+ nativeFrame();
+}
+
 let isTV = /Android\s+TV|SmartTV|SMART-TV|BRAVIA|AFT[A-Z0-9]*|MiBOX|SHIELD|GoogleTV|HbbTV|Web0S|WebOS|Tizen|CrKey|TV\s*Box|Leanback|VIDAA|NetCast|Hisense|Viera|PhilipsTV|Opera\s*TV/i.test(navigator.userAgent);
 
 function enableTvMode(){
@@ -465,6 +509,7 @@ function showChannelOsd(ch, num, total){
 
 let volHudTimer;
 function showVolumeHud(vol){
+ try{if(window.AndroidPlayer&&AndroidPlayer.setVolume)AndroidPlayer.setVolume(vol)}catch(e){}
  const hud=$("volHud");
  const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
  const targetParent = (player && player.el()) ? player.el() : $("videoContainer");
@@ -954,6 +999,7 @@ function initPlayer(){
   }catch(e){}
  });
  bindFab();
+ nativeHooks();
  initManualCodeCover();
  initVideoTouchAndWheelGestures();
  initStreamWatchdog();
@@ -2189,6 +2235,7 @@ $("playlist-items").addEventListener("click",e=>{
 let tsPlayer=null,hlsPlayer=null,hlsErrHandler=null,tsRetries=0,hlsRetries=0;
 
 function destroyEngines(){
+ try{if(window.AndroidPlayer&&AndroidPlayer.stopStream)AndroidPlayer.stopStream()}catch(e){}
  if(tsPlayer){
   try{tsPlayer.pause();tsPlayer.unload();tsPlayer.detachMediaElement();tsPlayer.destroy()}catch(e){}
   tsPlayer=null;
@@ -2347,14 +2394,6 @@ function playTs(url,useProxy=false,fromUserGesture=true){
 function playChannel(ch,fromUserGesture=true){
  if(!ch)return;
  
- // -----------------------------------------------------
- // ئەگەر ئەپەکە لەناو ئەندرۆید بێت، ئەوا ڕاستەوخۆ دەینێرێت بۆ پلەیەری دەرەکی مۆبایلەکە یان تیڤییەکە
- if(window.AndroidPlayer){
-  window.AndroidPlayer.playStream(ch.url, ch.name);
-  return;
- }
- // -----------------------------------------------------
-
  if(rec&&rec.url!==ch.url)stopRec(false);
  if(currentUrl && currentUrl!==ch.url){
   previousChannelUrl=currentUrl;
@@ -2376,6 +2415,17 @@ function playChannel(ch,fromUserGesture=true){
  positionWatermark();
  codeLoop();
 
+ if(window.AndroidPlayer){
+  showWait(false);
+  nativeFrame();
+  AndroidPlayer.playStream(ch.url, ch.name);
+  cachedNavItems.forEach(x=>{
+   if(x.dataset.i!==undefined){
+    x.classList.toggle("active",channels[x.dataset.i]&&channels[x.dataset.i].url===ch.url);
+   }
+  });
+  return;
+ }
  const kind=detectType(ch.url);
  showWait(true);tsRetries=0;hlsRetries=0;
  if(hlsErrHandler){player.off("error",hlsErrHandler);hlsErrHandler=null}
