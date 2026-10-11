@@ -291,6 +291,26 @@ html.native-vlc .video-container,
 html.native-vlc .video-js,
 html.native-vlc .video-js .vjs-tech,
 html.native-vlc .video-container .video-js.fs-portrait{background:transparent!important}
+/* ===== فول سکرینی دەستی لە پۆرتریت ===== */
+html.native-fs body{padding:0}
+html.native-fs .main-wrapper{border-radius:0;border:0}
+html.native-fs .player-header,html.native-fs .ticker-bar{display:none}
+html.native-fs .content-area{position:fixed;inset:0;display:block;z-index:10}
+html.native-fs .video-container{position:fixed;inset:0;width:100%;height:100%;aspect-ratio:auto;z-index:1}
+html.native-fs .side-zone{display:block;position:absolute;top:0;right:0;bottom:56px;width:14%;z-index:1002}
+html.native-fs .menu-fab{display:flex}
+html.native-fs .drawer-backdrop{position:fixed;inset:0;z-index:3900;background:transparent!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+html.native-fs body:not(.drawer-open) .drawer-backdrop{display:none!important}
+html.native-fs body.drawer-open .drawer-backdrop{display:block!important}
+html.native-fs .playlist-sidebar{
+ position:fixed;top:0;bottom:0;right:-105%;height:100%;width:min(360px,82vw);z-index:4000;
+ transition:right .22s cubic-bezier(.22,1,.36,1);
+ border-width:0 0 0 1px;
+ background:rgba(15,23,42,.72)!important;
+ pointer-events:auto!important;
+ display:flex;flex-direction:column;overflow:hidden
+}
+html.native-fs body.drawer-open .playlist-sidebar{right:0}
 </style>
 </head>
 <body>
@@ -409,22 +429,34 @@ const ls=(k,v)=>{try{if(v===undefined)return localStorage.getItem(k);if(v===null
 const pad=n=>n<10?"0"+n:n;
 
 /* ===== VLCی ئەندرۆید لەناو فرەیم ===== */
+let nativeFs=false;
+const nativeLandscape=()=>window.innerWidth>window.innerHeight;
 function nativeFrame(){
  try{
   if(!window.AndroidPlayer||!AndroidPlayer.setFrame)return;
   const r=$("videoContainer").getBoundingClientRect();
   AndroidPlayer.setFrame(r.left,r.top,r.width,r.height,window.innerWidth,window.innerHeight);
   const ic=document.querySelector("#nativeFsFab i");
-  if(ic)ic.className=window.innerWidth>window.innerHeight?"fas fa-compress":"fas fa-expand";
+  if(ic)ic.className=(nativeFs||nativeLandscape())?"fas fa-compress":"fas fa-expand";
  }catch(e){}
+}
+// فول سکرینی دەستی: لە پۆرتریت = فول سکرینی پۆرتریت، ڕۆتەیت = فول سکرینی لاندسکەیپ
+function setNativeFs(on){
+ const wasLandscape=nativeLandscape();
+ nativeFs=!!on;
+ document.documentElement.classList.toggle("native-fs",nativeFs);
+ try{AndroidPlayer.setFullscreen(nativeFs)}catch(e){}
+ if(!on&&wasLandscape){try{AndroidPlayer.exitLandscape()}catch(e){}}
+ if(!on){try{closeDrawer()}catch(e){}}
+ [60,250,600].forEach(t=>setTimeout(()=>{nativeFrame();try{positionWatermark()}catch(e){}},t));
 }
 function nativeHooks(){
  if(!window.AndroidPlayer||!player||window.__araNativeHooks)return;
  window.__araNativeHooks=true;
  // فول سکرین = لاندسکەیپ، دەستی بەکارهێنەر
- player.isFullscreen=()=>window.innerWidth>window.innerHeight;
- player.requestFullscreen=()=>{try{AndroidPlayer.setFullscreen(true)}catch(e){}};
- player.exitFullscreen=()=>{try{AndroidPlayer.setFullscreen(false)}catch(e){}};
+ player.isFullscreen=()=>nativeFs||nativeLandscape();
+ player.requestFullscreen=()=>setNativeFs(true);
+ player.exitFullscreen=()=>setNativeFs(false);
  const b=document.createElement("div");
  b.id="nativeFsFab";b.className="cover-tool-fab";
  b.style.cssText="top:auto;bottom:10px;left:auto;right:10px";
@@ -438,6 +470,13 @@ function nativeHooks(){
 if(window.AndroidPlayer){
  document.documentElement.classList.add("native-vlc");
  window.addEventListener("resize",()=>setTimeout(nativeFrame,60));
+ window.addEventListener("resize",()=>{
+  if(nativeFs&&nativeLandscape()){
+   nativeFs=false;
+   document.documentElement.classList.remove("native-fs");
+   try{AndroidPlayer.setFullscreen(false)}catch(e){}
+  }
+ });
  window.addEventListener("orientationchange",()=>setTimeout(nativeFrame,200));
  setInterval(nativeFrame,800);
  if(window.ResizeObserver)new ResizeObserver(nativeFrame).observe($("videoContainer"));
